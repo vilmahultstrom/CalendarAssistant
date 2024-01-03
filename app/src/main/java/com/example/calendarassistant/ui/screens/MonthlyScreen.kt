@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,16 +15,13 @@ import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
-import com.example.calendarassistant.ui.screens.components.ButtonSection
-import com.example.calendarassistant.ui.screens.components.DepartureSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.NextEventSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
-fun DailyScreen(
+fun MonthlyScreen(
     vm: TestVM,
     navController: NavController
 ) {
@@ -37,7 +33,7 @@ fun DailyScreen(
         Column {
             InformationSection()
 
-            Text(text = "Welcome to the Daily Screen", color = TextWhite, modifier = Modifier.padding(30.dp))
+            Text(text = "Welcome to the Monthly Screen", color = TextWhite, modifier = Modifier.padding(30.dp))
         }
         BottomMenu(
             items = listOf(

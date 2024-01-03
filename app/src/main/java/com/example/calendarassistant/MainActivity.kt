@@ -14,9 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
-import com.example.calendarassistant.network.location.LocationService
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
+import androidx.navigation.compose.rememberNavController
+import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.ui.screens.DailyScreen
+import com.example.calendarassistant.ui.screens.MonthlyScreen
+import com.example.calendarassistant.ui.screens.WeeklyScreen
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
 // TODO: Remove rotation
@@ -44,7 +50,26 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(testVM)
+                    val testVM = TestVM()
+
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = BMRoutes.Home.route
+                    ) {
+                        composable(BMRoutes.Home.route) {
+                            HomeScreen(testVM, navController)
+                        }
+                        composable(BMRoutes.Daily.route) {
+                            DailyScreen(testVM, navController)
+                        }
+                        composable(BMRoutes.Weekly.route) {
+                            WeeklyScreen(testVM, navController)
+                        }
+                        composable(BMRoutes.Monthly.route) {
+                            MonthlyScreen(testVM, navController)
+                        }
+                    }
                 }
             }
         }

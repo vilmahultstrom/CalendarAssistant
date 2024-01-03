@@ -7,22 +7,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import com.example.calendarassistant.R
+import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.ButtonSection
 import com.example.calendarassistant.ui.screens.components.DepartureSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.screens.components.NextEventSection
 import com.example.calendarassistant.ui.theme.DeepBlue
-import com.example.calendarassistant.ui.viewmodels.BottomMenuContent
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
-fun HomeScreen(vm: TestVM) {
-    val text = "Hello HomeScreen"
-
-
-
+fun HomeScreen(
+    // TODO: add VM here
+    vm: TestVM,
+    navController: NavController
+) {
     Box(
         modifier = Modifier
             .background(DeepBlue)
@@ -36,11 +38,13 @@ fun HomeScreen(vm: TestVM) {
         }
         BottomMenu(
             items = listOf(
-                BottomMenuContent("Home", R.drawable.baseline_home_24),
-                BottomMenuContent("Daily", R.drawable.baseline_calendar_today_24),
-                BottomMenuContent("Weekly", R.drawable.baseline_calendar_month_24),
-                BottomMenuContent("Monthly", R.drawable.baseline_construction_24),
-            ), modifier = Modifier.align(Alignment.BottomCenter)
+                BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
+                BottomMenuContent("Daily", R.drawable.baseline_calendar_today_24, BMRoutes.Daily.route),
+                BottomMenuContent("Weekly", R.drawable.baseline_calendar_month_24, BMRoutes.Weekly.route),
+                BottomMenuContent("Monthly", R.drawable.baseline_construction_24, BMRoutes.Monthly.route),
+            ),
+            modifier = Modifier.align(Alignment.BottomCenter),
+            navController = navController
         )
     }
 }
