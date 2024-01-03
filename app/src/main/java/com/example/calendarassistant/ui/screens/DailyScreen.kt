@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -17,7 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
@@ -95,19 +99,25 @@ fun DateSection(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
+                    .padding(start = 12.dp, top = 12.dp, bottom = 12.dp)
+                    .width(70.dp)
                     .clickable {
                         selectedDateIndex = it.toString()
                         // TODO: Load information about this date from VM
                     }
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .background(
                         if (selectedDateIndex == it.toString()) ButtonBlue
                         else DarkerButtonBlue
                     )
                     .padding(15.dp)
             ) {
-                Text(text = dates[it], color = TextWhite)
+                Text(
+                    text = dates[it],
+                    color = TextWhite,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
         }
     }
