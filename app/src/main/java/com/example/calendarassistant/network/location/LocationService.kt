@@ -1,14 +1,9 @@
 package com.example.calendarassistant.network.location
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
-import androidx.core.app.NotificationCompat
-import com.example.calendarassistant.R
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +16,7 @@ import kotlinx.coroutines.flow.onEach
 class LocationService : Service() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var locationClient: LocationClient
+    private lateinit var ILocationClient: ILocationClient
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -29,7 +24,7 @@ class LocationService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        locationClient = DefaultLocationClient(
+        ILocationClient = LocationClient(
             applicationContext, LocationServices.getFusedLocationProviderClient(applicationContext)
         )
     }
@@ -53,7 +48,7 @@ class LocationService : Service() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         */
-        locationClient.getLocationsUpdates(10000L)
+        ILocationClient.getLocationsUpdates(10000L)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
                 LocationRepository.updateLocation(location)
