@@ -18,6 +18,18 @@ private interface IDirectionsApi {
         @Query("mode") mode: String,
         @Query("key") key: String = mapsApiKey
     ): Response<GoogleDirectionsResponse>
+
+
+    @GET("/maps/api/directions/json")
+    suspend fun getDirectionsByCoordinates(
+        @Query("origin") origin: String,
+        @Query("destination") destination: String,
+        @Query("mode") mode: String,
+        @Query("key") key: String = mapsApiKey
+    ): Response<GoogleDirectionsResponse>
+
+
+
 }
 
 object GoogleApi {
@@ -38,4 +50,16 @@ object GoogleApi {
             origin, destination, mode.toString()
         )
     }
+
+    // origin=41.43206,-81.38992
+    suspend fun getDirectionsByCoordinates(
+        origin: Pair<Float, Float>,
+        destination: Pair<Float, Float>,
+        mode: TravelMode
+    ): Response<GoogleDirectionsResponse> {
+        val originString = origin.first.toString() + "," + origin.second.toString()
+        val destinationString = destination.first.toString() + "," + destination.second.toString()
+        return directionsInstance.getDirectionsByCoordinates(originString, destinationString, mode.toString())
+    }
+
 }
