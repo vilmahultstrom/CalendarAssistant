@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             ),
             0
         )
-        
+
 
         setContent {
             CalendarAssistantTheme {
