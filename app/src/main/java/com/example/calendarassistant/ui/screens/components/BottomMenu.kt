@@ -81,7 +81,6 @@ fun BottomMenuItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.clickable {
-            // TODO: Replace with real Navigation to different screens
             onItemClick()
         }
     ) {

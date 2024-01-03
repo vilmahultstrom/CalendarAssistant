@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
+import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.ButtonSection
@@ -37,10 +38,10 @@ fun HomeScreen(
         }
         BottomMenu(
             items = listOf(
-                BottomMenuContent("Home", R.drawable.baseline_home_24, "0"),
-                BottomMenuContent("Daily", R.drawable.baseline_calendar_today_24, "1"),
-                BottomMenuContent("Weekly", R.drawable.baseline_calendar_month_24, "2"),
-                BottomMenuContent("Monthly", R.drawable.baseline_construction_24, "3"),
+                BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
+                BottomMenuContent("Daily", R.drawable.baseline_calendar_today_24, BMRoutes.Daily.route),
+                BottomMenuContent("Weekly", R.drawable.baseline_calendar_month_24, BMRoutes.Weekly.route),
+                BottomMenuContent("Monthly", R.drawable.baseline_construction_24, BMRoutes.Monthly.route),
             ),
             modifier = Modifier.align(Alignment.BottomCenter),
             navController = navController

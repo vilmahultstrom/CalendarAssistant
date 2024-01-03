@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import androidx.navigation.compose.rememberNavController
+import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.ui.screens.DailyScreen
 import com.example.calendarassistant.ui.screens.MonthlyScreen
 import com.example.calendarassistant.ui.screens.WeeklyScreen
@@ -38,18 +39,18 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = "0"
+                        startDestination = BMRoutes.Home.route
                     ) {
-                        composable("0") {
+                        composable(BMRoutes.Home.route) {
                             HomeScreen(testVM, navController)
                         }
-                        composable("1") {
+                        composable(BMRoutes.Daily.route) {
                             DailyScreen(testVM, navController)
                         }
-                        composable("2") {
+                        composable(BMRoutes.Weekly.route) {
                             WeeklyScreen(testVM, navController)
                         }
-                        composable("3") {
+                        composable(BMRoutes.Monthly.route) {
                             MonthlyScreen(testVM, navController)
                         }
                     }
