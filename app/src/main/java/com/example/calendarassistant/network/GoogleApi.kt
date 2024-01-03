@@ -8,16 +8,14 @@ import retrofit2.http.Query
 private const val mapsApiKey = "AIzaSyCdZXOjkf2AWnwZoGQy5rzoJ_lToiK8DpE" // Bör lagras som en env.
 private interface IDirectionsApi {
     // Api calls for the directions Api
-    @GET("/maps/api/directions")
+    @GET("/maps/api/directions/json")
     suspend fun getDirectionsByPlace(
         @Query("origin") origin: String,
         @Query("destination") destination: String,
         @Query("key") key: String = mapsApiKey
-    ) : Response<String>
-
-
+    ) : Response<GoogleDirectionsResponse>
 }
-class GoogleApi {
+object GoogleApi {
 
     private val directionsInstance = Retrofit.googleDirectionsInstance.create(IDirectionsApi::class.java)
 
@@ -26,6 +24,6 @@ class GoogleApi {
     */
     // Only for testing
     suspend fun getDirectionsByPlace(origin: String, destination: String): Response<GoogleDirectionsResponse> {
-        return directionsInstance.getDirectionsByPlace("Boston, MA", "Concord, Ma");
+        return directionsInstance.getDirectionsByPlace(origin, destination);
     }
 }

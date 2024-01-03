@@ -14,11 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,23 +26,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.ui.theme.Beige2
-import com.example.calendarassistant.ui.theme.BlueViolet2
+import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.ui.theme.ButtonBlue
-import com.example.calendarassistant.ui.theme.DarkerButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
-import com.example.calendarassistant.ui.theme.LightGreen1
 import com.example.calendarassistant.ui.theme.LightGreen2
-import com.example.calendarassistant.ui.theme.LightGreen3
-import com.example.calendarassistant.ui.theme.LightRed
-import com.example.calendarassistant.ui.theme.OrangeYellow3
 import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
-fun HomeScreen(
-    // add VM here
-) {
+fun HomeScreen(vm: TestVM) {
     val text = "Hello HomeScreen"
     Box(
         modifier = Modifier
@@ -57,6 +46,9 @@ fun HomeScreen(
             InformationSection()
             NextEventSection()
             DepartureSection()
+            Button(onClick = {vm.getDirections()}) {
+                
+            }
         }
     }
 }
