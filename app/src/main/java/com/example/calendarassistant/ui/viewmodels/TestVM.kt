@@ -11,10 +11,16 @@ private const val TAG = "TestVm"
 
 class TestVM() : ViewModel() {
 
-    fun getDirections() {
+    fun getDirectionsByPlace() {
         viewModelScope.launch {
-            val response = GoogleApi.getDirectionsByPlace("Stockholm", "Nyköping", TravelMode.Transit)
+            val response = GoogleApi.getDirectionsByPlace("Nyköping", "Stockholm", TravelMode.Transit)
             Log.d(TAG, response.body().toString())
+        }
+    }
+
+    fun getDirectionsByCoordinates() {
+        viewModelScope.launch {
+            val response = GoogleApi.getDirectionsByCoordinates(Pair(58.75311F, 17.009333F), Pair(59.33459f, 18.063240f), TravelMode.Transit)
         }
     }
 }
