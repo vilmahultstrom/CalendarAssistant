@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,12 +17,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.ui.screens.DailyScreen
 import com.example.calendarassistant.ui.screens.MonthlyScreen
 import com.example.calendarassistant.ui.screens.WeeklyScreen
+import com.example.calendarassistant.ui.viewmodels.TestVM
 
 // TODO: Remove rotation
 // TODO: Implement dependency injection
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val testVM = TestVM()
+
         setContent {
             CalendarAssistantTheme {
                 Surface(

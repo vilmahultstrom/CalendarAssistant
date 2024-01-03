@@ -16,10 +16,13 @@ import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.screens.components.NextEventSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.model.BottomMenuContent
+import com.example.calendarassistant.ui.viewmodels.BottomMenuContent
+import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
 fun HomeScreen(
     // TODO: add VM here
+    vm: TestVM,
     navController: NavController
 ) {
     Box(
