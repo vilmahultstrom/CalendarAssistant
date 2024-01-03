@@ -12,10 +12,10 @@ import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
-import com.example.calendarassistant.ui.screens.components.ButtonSection
-import com.example.calendarassistant.ui.screens.components.DepartureSection
+import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.ButtonSection
+import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.DepartureSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.NextEventSection
+import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
