@@ -9,14 +9,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
+import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.ButtonSection
 import com.example.calendarassistant.ui.screens.components.DepartureSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.screens.components.NextEventSection
 import com.example.calendarassistant.ui.theme.DeepBlue
-import com.example.calendarassistant.model.BottomMenuContent
-import com.example.calendarassistant.ui.viewmodels.BottomMenuContent
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable

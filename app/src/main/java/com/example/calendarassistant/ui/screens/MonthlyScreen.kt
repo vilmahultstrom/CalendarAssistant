@@ -17,10 +17,11 @@ import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
 fun MonthlyScreen(
-    // TODO: add VM here
+    vm: TestVM,
     navController: NavController
 ) {
     Box(

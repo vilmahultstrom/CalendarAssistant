@@ -21,10 +21,11 @@ import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.screens.components.NextEventSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
 fun DailyScreen(
-    // TODO: add VM here
+    vm: TestVM,
     navController: NavController
 ) {
     Box(

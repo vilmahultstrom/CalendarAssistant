@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // TODO: Instantiate VM
+                    val testVM = TestVM()
 
                     val navController = rememberNavController()
                     NavHost(
@@ -41,16 +41,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = "0"
                     ) {
                         composable("0") {
-                            HomeScreen(navController)
+                            HomeScreen(testVM, navController)
                         }
                         composable("1") {
-                            DailyScreen(navController)
+                            DailyScreen(testVM, navController)
                         }
                         composable("2") {
-                            WeeklyScreen(navController)
+                            WeeklyScreen(testVM, navController)
                         }
                         composable("3") {
-                            MonthlyScreen(navController)
+                            MonthlyScreen(testVM, navController)
                         }
                     }
                 }
