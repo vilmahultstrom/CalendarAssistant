@@ -6,6 +6,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.calendarassistant.R
 import com.google.android.gms.location.LocationServices
@@ -21,8 +22,9 @@ class LocationService : Service() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var locationClient: LocationClient
+
     override fun onBind(intent: Intent?): IBinder? {
-        return null;
+        return null
     }
 
     override fun onCreate() {
@@ -33,7 +35,7 @@ class LocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when(intent?.action) {
+        when (intent?.action) {
             ACTION_START -> start()
             ACTION_STOP -> stop()
         }
@@ -48,16 +50,23 @@ class LocationService : Service() {
             .setSmallIcon(R.drawable.baseline_info_24)
             .setOngoing(true)
 
-        val notificationManager = getSystemService(Context.LOCATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         locationClient.getLocationsUpdates(10000L)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
+                LocationRepository.updateLocation(location)
                 val lat = location.latitude.toString()
                 val long = location.longitude.toString()
+                Log.d(
+                    "LocationService",
+                    "Current location:: Latitude: $lat, Longitude $long (in LocationService)"
+                )
                 val updatedNotification = notification.setContentText(
                     "Location: ($lat, $long)"
                 )
+
                 notificationManager.notify(1, updatedNotification.build())
             }
             .launchIn(serviceScope)
