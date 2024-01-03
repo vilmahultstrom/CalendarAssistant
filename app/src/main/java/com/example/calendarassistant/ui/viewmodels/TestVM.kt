@@ -1,15 +1,24 @@
 package com.example.calendarassistant.ui.viewmodels
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.network.GoogleApi
+import com.example.calendarassistant.network.location.LocationService
 import kotlinx.coroutines.launch
 
 private const val TAG = "TestVm"
 
 class TestVM() : ViewModel() {
+
+
+
+
+
 
     fun getDirectionsByPlace() {
         viewModelScope.launch {
