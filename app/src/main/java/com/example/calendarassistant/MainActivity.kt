@@ -10,8 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
+import androidx.navigation.compose.rememberNavController
+import com.example.calendarassistant.ui.screens.DailyScreen
+import com.example.calendarassistant.ui.screens.MonthlyScreen
+import com.example.calendarassistant.ui.screens.WeeklyScreen
 
 // TODO: Remove rotation
 // TODO: Implement dependency injection
@@ -24,8 +30,26 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // TODO: Add navigation
-                    HomeScreen()
+                    // TODO: Instantiate VM
+
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = "0"
+                    ) {
+                        composable("0") {
+                            HomeScreen(navController)
+                        }
+                        composable("1") {
+                            DailyScreen(navController)
+                        }
+                        composable("2") {
+                            WeeklyScreen(navController)
+                        }
+                        composable("3") {
+                            MonthlyScreen(navController)
+                        }
+                    }
                 }
             }
         }

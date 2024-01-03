@@ -19,7 +19,7 @@ import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
-fun WeeklyScreen(
+fun MonthlyScreen(
     // TODO: add VM here
     navController: NavController
 ) {
@@ -31,7 +31,7 @@ fun WeeklyScreen(
         Column {
             InformationSection()
 
-            Text(text = "Welcome to the Weekly Screen", color = TextWhite, modifier = Modifier.padding(30.dp))
+            Text(text = "Welcome to the Monthly Screen", color = TextWhite, modifier = Modifier.padding(30.dp))
         }
         BottomMenu(
             items = listOf(

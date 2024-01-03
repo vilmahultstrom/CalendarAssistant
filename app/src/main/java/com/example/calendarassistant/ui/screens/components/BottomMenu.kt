@@ -23,10 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.calendarassistant.ui.theme.AquaBlue
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
-import com.example.calendarassistant.ui.viewmodels.BottomMenuContent
+import com.example.calendarassistant.model.BottomMenuContent
 
 @Composable
 fun BottomMenu(
@@ -35,11 +37,14 @@ fun BottomMenu(
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0
+    initialSelectedItemIndex: Int = 0,
+    navController: NavController
 ) {
+    val currentRoute = getCurrentRoute(navController)
     var selectedItemIndex by remember {
         mutableStateOf(initialSelectedItemIndex)
     }
+    selectedItemIndex = items.indexOfFirst { it.route == currentRoute }
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -54,9 +59,10 @@ fun BottomMenu(
                 isSelected = index == selectedItemIndex,
                 activeHighlightColor = activeHighlightColor,
                 activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor
+                inactiveTextColor = inactiveTextColor,
             ) {
                 selectedItemIndex = index
+                navController.navigate(item.route)
             }
         }
     }
@@ -98,4 +104,10 @@ fun BottomMenuItem(
             color = if(isSelected) activeTextColor else inactiveTextColor
         )
     }
+}
+
+@Composable
+fun getCurrentRoute(navController: NavController): String? {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    return navBackStackEntry?.destination?.route
 }
