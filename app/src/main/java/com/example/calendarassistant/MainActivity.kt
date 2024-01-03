@@ -41,8 +41,7 @@ class MainActivity : ComponentActivity() {
             ),
             0
         )
-
-        val testVM = TestVM()
+        
 
         setContent {
             CalendarAssistantTheme {
