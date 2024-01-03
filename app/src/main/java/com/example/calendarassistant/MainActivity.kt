@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 
+// TODO: Remove rotation
+// TODO: Implement dependency injection
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    // TODO: Add navigation
                     HomeScreen()
                 }
             }
