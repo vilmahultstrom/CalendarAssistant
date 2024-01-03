@@ -8,6 +8,9 @@ import android.content.Context
 class CalendarAssistantApp: Application() {
     override fun onCreate() {
         super.onCreate()
+
+        // För notiser vid gps
+        /*
         val channel = NotificationChannel(
             "location",
             "Location",
@@ -15,6 +18,9 @@ class CalendarAssistantApp: Application() {
         )
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
+
+
+         */
 
     }
 }

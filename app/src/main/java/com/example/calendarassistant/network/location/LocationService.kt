@@ -44,19 +44,21 @@ class LocationService : Service() {
 
     @SuppressLint("ServiceCast")
     private fun start() {
+        /*
         val notification = NotificationCompat.Builder(this, "location")
             .setContentTitle("Tracking location..")
             .setContentText("Location: null")
             .setSmallIcon(R.drawable.baseline_info_24)
             .setOngoing(true)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        */
         locationClient.getLocationsUpdates(10000L)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
                 LocationRepository.updateLocation(location)
+                /*
+                // Detta för att skicka notis, fick inte upp på min telefon
                 val lat = location.latitude.toString()
                 val long = location.longitude.toString()
                 Log.d(
@@ -68,9 +70,11 @@ class LocationService : Service() {
                 )
 
                 notificationManager.notify(1, updatedNotification.build())
+
+                 */
             }
             .launchIn(serviceScope)
-        startForeground(1, notification.build())
+        //startForeground(1, notification.build())
     }
 
     private fun stop() {

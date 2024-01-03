@@ -29,7 +29,6 @@ import com.example.calendarassistant.ui.viewmodels.TestVM
 // TODO: Implement dependency injection
 class MainActivity : ComponentActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityCompat.requestPermissions(
@@ -37,7 +36,7 @@ class MainActivity : ComponentActivity() {
             arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.FOREGROUND_SERVICE
+                //Manifest.permission.FOREGROUND_SERVICE
             ),
             0
         )

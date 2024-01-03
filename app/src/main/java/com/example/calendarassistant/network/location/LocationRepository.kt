@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 object LocationRepository {
-    private val locationUpdates = MutableSharedFlow<Location>(replay = 1)
+    private val locationUpdates = MutableSharedFlow<Location>()
 
     suspend fun updateLocation(location: Location) {
         locationUpdates.emit(location)
