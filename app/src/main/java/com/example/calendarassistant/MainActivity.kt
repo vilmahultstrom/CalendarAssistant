@@ -13,6 +13,8 @@ import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
+// TODO: Remove rotation
+// TODO: Implement dependency injection
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
