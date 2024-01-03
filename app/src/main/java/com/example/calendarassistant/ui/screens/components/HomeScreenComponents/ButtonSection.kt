@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components
+package com.example.calendarassistant.ui.screens.components.HomeScreenComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,10 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.ui.theme.ButtonBlue
-import com.example.calendarassistant.ui.theme.DarkerButtonBlue
 import com.example.calendarassistant.ui.theme.Pink40
-import com.example.calendarassistant.ui.theme.Pink80
-import com.example.calendarassistant.ui.theme.PurpleGrey40
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable

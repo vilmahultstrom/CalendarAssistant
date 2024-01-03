@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,10 +22,10 @@ import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.BoxButton
-import com.example.calendarassistant.ui.screens.components.ButtonSection
-import com.example.calendarassistant.ui.screens.components.DepartureSection
+import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.ButtonSection
+import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.DepartureSection
+import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.NextEventSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.TestVM

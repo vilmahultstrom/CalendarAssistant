@@ -23,7 +23,8 @@ import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun InformationSection(
-    name: String = "User"
+    greeting: String = "Hello, User",
+    secondGreeting: String = "I hope you're not late today"
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -36,13 +37,13 @@ fun InformationSection(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Hello, $name",
+                text = greeting,
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite,
                 fontWeight = FontWeight.ExtraBold,
             )
             Text(
-                text = "I hope you're not late today",
+                text = secondGreeting,
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite,
                 fontWeight = FontWeight.Bold,
