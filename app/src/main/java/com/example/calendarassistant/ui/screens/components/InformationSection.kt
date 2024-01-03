@@ -17,6 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
+import com.example.calendarassistant.ui.theme.Gothica1Bold
+import com.example.calendarassistant.ui.theme.Roboto
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
@@ -37,13 +39,13 @@ fun InformationSection(
                 text = "Hello, $name",
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.ExtraBold,
             )
             Text(
                 text = "I hope you're not late today",
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
         Icon(
