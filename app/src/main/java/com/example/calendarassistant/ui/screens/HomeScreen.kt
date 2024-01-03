@@ -25,9 +25,9 @@ import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.BoxButton
-import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.ButtonSection
-import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.DepartureSection
-import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.NextEventSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.ButtonSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
