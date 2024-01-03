@@ -24,7 +24,7 @@ import com.example.calendarassistant.ui.theme.TextWhite
 @Composable
 fun InformationSection(
     greeting: String = "Hello, User",
-    secondGreeting: String = "I hope you're not late today"
+    secondGreeting: String = "I hope you're not late today",
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,

@@ -1,6 +1,10 @@
 package com.example.calendarassistant.ui.screens
 
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,14 +25,15 @@ import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.BoxButton
-import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.ButtonSection
-import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.DepartureSection
-import com.example.calendarassistant.ui.screens.components.HomeScreenComponents.NextEventSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.ButtonSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.TestVM
-
+import com.example.calendarassistant.utilities.Event
+private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
     // TODO: add VM here
@@ -37,18 +41,14 @@ fun HomeScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val uiState by vm.uiState.collectAsState()
-
     // For starting Gps tracking
     val startServiceAction by vm.startServiceAction
-    startServiceAction?.getContentIfNotHandled()?.let { action ->
-        LaunchedEffect(action) {
-            Intent(context, LocationService::class.java).apply {
-                this.action = action
-                context.startService(this)
-            }
-        }
-    }
+    val uiState by vm.uiState.collectAsState()
+
+    initGpsTracking(context, startServiceAction)
+
+
+
 
 
 
@@ -59,7 +59,7 @@ fun HomeScreen(
     ) {
         Column {
             InformationSection()
-            NextEventSection()
+            NextEventSection(onClick = { openGoogleMaps(context, 59.33, 18.06) }) //TODO: Set coordinates dynamically (Click on arrow icon)
             DepartureSection()
             ButtonSection()
             Column(
@@ -98,5 +98,24 @@ fun HomeScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
             navController = navController
         )
+    }
+}
+private fun openGoogleMaps(context: Context, latitude: Double, longitude: Double) {
+    try {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${latitude},${longitude}")))
+    } catch (e: ActivityNotFoundException){
+        Log.d(TAG, "Google Maps not installed on device, opening browser.")
+        //"http://maps.google.com/maps?saddr=${startLatitude},${startLongitude}&daddr=${latitude},${longitude}"
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude})")))
+    }
+
+}
+
+private fun initGpsTracking(context: Context, startServiceAction: Event<String>?) {
+    startServiceAction?.getContentIfNotHandled()?.let { action ->
+        Intent(context, LocationService::class.java).apply {
+            this.action = action
+            context.startService(this)
+        }
     }
 }
