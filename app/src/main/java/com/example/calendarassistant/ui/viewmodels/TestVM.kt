@@ -12,14 +12,17 @@ import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.utilities.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "TestVm"
 
-class TestVM : ViewModel() {
+@HiltViewModel
+class TestVM @Inject constructor() : ViewModel() {
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState

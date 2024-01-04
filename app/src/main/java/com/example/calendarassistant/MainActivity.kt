@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,9 +23,11 @@ import com.example.calendarassistant.ui.screens.MonthlyScreen
 import com.example.calendarassistant.ui.screens.WeeklyScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
+import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Remove rotation
 // TODO: Implement dependency injection
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val testVM = TestVM()
+                    val testVM = hiltViewModel<TestVM>()
 
                     val navController = rememberNavController()
                     NavHost(
@@ -54,16 +57,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = BMRoutes.Home.route
                     ) {
                         composable(BMRoutes.Home.route) {
-                            HomeScreen(testVM, navController)
+                            HomeScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Daily.route) {
-                            DailyScreen(testVM, navController)
+                            DailyScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Weekly.route) {
-                            WeeklyScreen(testVM, navController)
+                            WeeklyScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Monthly.route) {
-                            MonthlyScreen(testVM, navController)
+                            MonthlyScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)

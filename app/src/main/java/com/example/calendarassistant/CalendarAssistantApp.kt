@@ -1,7 +1,9 @@
 package com.example.calendarassistant
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class CalendarAssistantApp : Application() {
     override fun onCreate() {
         super.onCreate()

@@ -36,7 +36,6 @@ import com.example.calendarassistant.utilities.Event
 private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
-    // TODO: add VM here
     vm: TestVM,
     navController: NavController
 ) {
