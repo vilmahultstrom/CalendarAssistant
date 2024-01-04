@@ -47,11 +47,6 @@ fun HomeScreen(
 
     initGpsTracking(context, startServiceAction)
 
-
-
-
-
-
     Box(
         modifier = Modifier
             .background(DeepBlue)
@@ -72,7 +67,7 @@ fun HomeScreen(
                     onClick = vm::onStartServiceClicked,
                     buttonText = "Start/stop gps-tracking"
                 )
-                Text(text = "Current pos: Lat: ${uiState.latitude}, Lon: ${uiState.longitude}")
+                Text(text = "Current pos: Lat: ${uiState.currentLatitude}, Lon: ${uiState.currentLongitude}")
 
             }
         }
