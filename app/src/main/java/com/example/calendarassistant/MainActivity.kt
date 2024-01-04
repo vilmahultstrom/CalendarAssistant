@@ -1,5 +1,6 @@
 package com.example.calendarassistant
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,17 +10,38 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.ui.screens.DailyScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
+import com.example.calendarassistant.ui.screens.LoginScreen
+import com.example.calendarassistant.ui.screens.MonthlyScreen
+import com.example.calendarassistant.ui.screens.WeeklyScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
+import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Remove rotation
 // TODO: Implement dependency injection
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                //Manifest.permission.FOREGROUND_SERVICE
+            ),
+            0
+        )
 
-        val testVM = TestVM()
 
         setContent {
             CalendarAssistantTheme {
@@ -27,7 +49,29 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(testVM)
+                    val testVM = hiltViewModel<TestVM>()
+
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = BMRoutes.Home.route
+                    ) {
+                        composable(BMRoutes.Home.route) {
+                            HomeScreen(vm = testVM, navController)
+                        }
+                        composable(BMRoutes.Daily.route) {
+                            DailyScreen(vm = testVM, navController)
+                        }
+                        composable(BMRoutes.Weekly.route) {
+                            WeeklyScreen(vm = testVM, navController)
+                        }
+                        composable(BMRoutes.Monthly.route) {
+                            MonthlyScreen(vm = testVM, navController)
+                        }
+                        composable(BMRoutes.Login.route) {
+                            LoginScreen(testVM, navController)
+                        }
+                    }
                 }
             }
         }

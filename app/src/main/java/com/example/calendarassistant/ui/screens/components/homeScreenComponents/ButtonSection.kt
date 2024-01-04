@@ -1,7 +1,9 @@
-package com.example.calendarassistant.ui.screens.components
+package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,12 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.calendarassistant.ui.theme.DarkerButtonBlue
+import com.example.calendarassistant.ui.theme.ButtonBlue
+import com.example.calendarassistant.ui.theme.Pink40
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun ButtonSection(
-    color: Color = DarkerButtonBlue
+    color: Color = Pink40
 ) {
     Row (
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -46,11 +48,23 @@ fun ButtonSection(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Button(onClick = { /*TODO: Implement*/ }) {
-                    Text(text = "I was late")
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .background(ButtonBlue, shape = RoundedCornerShape(8.dp))
+                        .clickable { /* Handle click */ }
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(text = "I was late", color = TextWhite)
                 }
-                Button(onClick = { /*TODO: Implement*/ }) {
-                    Text(text = "I arrived in time")
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .background(ButtonBlue, shape = RoundedCornerShape(8.dp))
+                        .clickable { /* Handle click */ }
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(text = "I arrived in time", color = TextWhite)
                 }
             }
         }

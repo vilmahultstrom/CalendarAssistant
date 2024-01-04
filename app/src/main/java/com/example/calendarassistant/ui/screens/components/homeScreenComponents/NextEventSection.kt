@@ -1,6 +1,7 @@
-package com.example.calendarassistant.ui.screens.components
+package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,8 @@ import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun NextEventSection(
-    color: Color = Purple40
+    color: Color = Purple40,
+    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -58,9 +60,9 @@ fun NextEventSection(
                 .size(60.dp)
                 .clip(CircleShape)
                 .background(ButtonBlue)
-                .padding(10.dp)
+                .padding(10.dp).clickable {onClick()}
         ) {
-            // TODO: Add a button that starts navigation here
+
             Icon(
                 painter = painterResource(id = R.drawable.baseline_navigation_24),
                 contentDescription = "Play",

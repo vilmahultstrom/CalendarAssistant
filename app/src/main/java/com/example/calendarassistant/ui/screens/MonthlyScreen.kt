@@ -15,61 +15,35 @@ import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
-import com.example.calendarassistant.ui.screens.components.DailyScreenComponents.DatePickSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
 import com.example.calendarassistant.ui.viewmodels.TestVM
-import com.example.calendarassistant.utilities.DateHelpers
-import java.time.LocalDate
 
 @Composable
-fun DailyScreen(
+fun MonthlyScreen(
     vm: TestVM,
     navController: NavController
 ) {
-    // TODO: Get date logic from backend
-    val specificDate = LocalDate.of(2024, 1, 3)
-    val daysInMonth = DateHelpers.getCurrentMonthDates(specificDate)
     Box(
         modifier = Modifier
             .background(DeepBlue)
             .fillMaxSize()
     ) {
         Column {
-            InformationSection("Daily overview", specificDate.toString())
-            DatePickSection(
-                dates = daysInMonth,
-                startIndex = (specificDate.dayOfMonth - 1).toString()
-            )
-            Text(
-                text = "Welcome to the Daily Screen",
-                color = TextWhite,
-                modifier = Modifier.padding(30.dp)
-            )
+            InformationSection()
+
+            Text(text = "Welcome to the Monthly Screen", color = TextWhite, modifier = Modifier.padding(30.dp))
         }
         BottomMenu(
             items = listOf(
                 BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
-                BottomMenuContent(
-                    "Daily",
-                    R.drawable.baseline_calendar_today_24,
-                    BMRoutes.Daily.route
-                ),
-                BottomMenuContent(
-                    "Weekly",
-                    R.drawable.baseline_calendar_month_24,
-                    BMRoutes.Weekly.route
-                ),
-                BottomMenuContent(
-                    "Monthly",
-                    R.drawable.baseline_construction_24,
-                    BMRoutes.Monthly.route
-                ),
+                BottomMenuContent("Daily", R.drawable.baseline_calendar_today_24, BMRoutes.Daily.route),
+                BottomMenuContent("Weekly", R.drawable.baseline_calendar_month_24, BMRoutes.Weekly.route),
+                BottomMenuContent("Monthly", R.drawable.baseline_construction_24, BMRoutes.Monthly.route),
             ),
             modifier = Modifier.align(Alignment.BottomCenter),
             navController = navController
         )
     }
 }
-
