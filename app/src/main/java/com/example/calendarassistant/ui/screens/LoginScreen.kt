@@ -8,7 +8,6 @@ import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
 fun LoginScreen(
-    // TODO: add VM here
     vm: TestVM,
     navController: NavController
 ) {
