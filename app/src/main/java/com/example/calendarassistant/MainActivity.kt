@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.ui.screens.DailyScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
+import com.example.calendarassistant.ui.screens.LoginScreen
 import com.example.calendarassistant.ui.screens.MonthlyScreen
 import com.example.calendarassistant.ui.screens.WeeklyScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
@@ -63,6 +64,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(BMRoutes.Monthly.route) {
                             MonthlyScreen(testVM, navController)
+                        }
+                        composable(BMRoutes.Login.route) {
+                            LoginScreen(testVM, navController)
                         }
                     }
                 }
