@@ -11,7 +11,7 @@ import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
-import com.example.calendarassistant.service.NetworkService
+import com.example.calendarassistant.services.NetworkService
 import com.example.calendarassistant.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +42,9 @@ class TestVM @Inject constructor(
     fun onStartServiceClicked() {
         if (!isFetchingLocationData) {
             _startServiceAction.value = Event(LocationService.ACTION_START)
+            viewModelScope.launch {
+                networkService.getTimeToLeave(TravelMode.Transit)
+            }
             isFetchingLocationData = true
         } else {
             _startServiceAction.value = Event(LocationService.ACTION_STOP)
@@ -50,7 +53,7 @@ class TestVM @Inject constructor(
         }
     }
 
-    fun login(){
+    fun login() {
         viewModelScope.launch {
             Log.d(TAG, "loggin in button pressed")
         }
@@ -68,9 +71,7 @@ class TestVM @Inject constructor(
     fun getDirectionsByCoordinates() {
         viewModelScope.launch {
             val response = GoogleApi.getDirectionsByCoordinates(
-                Pair(58.75311F, 17.009333F),
-                Pair(59.33459f, 18.063240f),
-                TravelMode.Transit
+                Pair(58.75311F, 17.009333F), Pair(59.33459f, 18.063240f), TravelMode.Transit
             )
         }
     }
@@ -78,18 +79,23 @@ class TestVM @Inject constructor(
 
     init {
         viewModelScope.launch {
-            LocationRepository.getLocationUpdates().collect { location ->
-                _uiState.update {
-                    _uiState.value.copy(
-                        currentLatitude = location.latitude.toString(),
-                        currentLongitude = location.longitude.toString()
-                    )
+            launch {
+                _startServiceAction.value =
+                    Event(LocationService.ACTION_GET) // sets current location so its not null
+            }
+
+            launch {
+                LocationRepository.getLocationUpdates().collect { location ->
+                    _uiState.update {
+                        _uiState.value.copy(
+                            currentLatitude = location.latitude.toString(),
+                            currentLongitude = location.longitude.toString()
+                        )
+                    }
                 }
             }
         }
-
         _uiState.update { _uiState.value.copy(nextEvent = MockEvent.getMockEvents().first()) }
-        Log.d(TAG, networkService.hello())
     }
 }
 

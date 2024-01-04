@@ -1,9 +1,9 @@
 package com.example.calendarassistant.network.location
 
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,11 +12,13 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+private const val TAG = "LocationService"
 class LocationService : Service() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var ILocationClient: ILocationClient
+    private lateinit var locationClient: ILocationClient
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -24,7 +26,7 @@ class LocationService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        ILocationClient = LocationClient(
+        locationClient = LocationClient(
             applicationContext, LocationServices.getFusedLocationProviderClient(applicationContext)
         )
     }
@@ -33,43 +35,26 @@ class LocationService : Service() {
         when (intent?.action) {
             ACTION_START -> start()
             ACTION_STOP -> stop()
+            ACTION_GET -> {
+                serviceScope.launch {
+                    withContext(Dispatchers.Main) {
+                        getCurrent()
+                    }
+                }
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
-    @SuppressLint("ServiceCast")
     private fun start() {
-        /*
-        val notification = NotificationCompat.Builder(this, "location")
-            .setContentTitle("Tracking location..")
-            .setContentText("Location: null")
-            .setSmallIcon(R.drawable.baseline_info_24)
-            .setOngoing(true)
-
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        */
-        ILocationClient.getLocationsUpdates(10000L)
-            .catch { e -> e.printStackTrace() }
+        locationClient.getLocationsUpdates(10000L).catch { e -> e.printStackTrace() }
             .onEach { location ->
                 LocationRepository.updateLocation(location)
-                /*
-                // Detta för att skicka notis, fick inte upp på min telefon
-                val lat = location.latitude.toString()
-                val long = location.longitude.toString()
-                Log.d(
-                    "LocationService",
-                    "Current location:: Latitude: $lat, Longitude $long (in LocationService)"
-                )
-                val updatedNotification = notification.setContentText(
-                    "Location: ($lat, $long)"
-                )
+            }.launchIn(serviceScope)
+    }
 
-                notificationManager.notify(1, updatedNotification.build())
-
-                 */
-            }
-            .launchIn(serviceScope)
-        //startForeground(1, notification.build())
+    private suspend fun getCurrent() {
+        LocationRepository.setCurrentLocation(locationClient.getCurrentLocation())
     }
 
     private fun stop() {
@@ -83,6 +68,7 @@ class LocationService : Service() {
     }
 
     companion object {
+        const val ACTION_GET = "ACTION_GET"
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
     }
