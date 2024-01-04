@@ -43,6 +43,12 @@ class TestVM : ViewModel() {
         }
     }
 
+    fun login(){
+        viewModelScope.launch {
+            Log.d(TAG, "loggin in button pressed")
+        }
+    }
+
 
     fun getDirectionsByPlace() {
         viewModelScope.launch {
