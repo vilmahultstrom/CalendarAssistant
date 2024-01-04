@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = BMRoutes.Login.route
+                        startDestination = BMRoutes.Home.route
                     ) {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(testVM, navController)

@@ -19,6 +19,12 @@ import com.google.android.gms.common.api.ApiException
 
 const private val TAG= "GoogleSignIn"
 
+/**
+ * followed this tutorial:
+ * https://www.youtube.com/watch?v=Zz3412C4BSA&ab_channel=CodesEasy
+ * https://developers.google.com/identity/one-tap/android/get-started
+ * https://developers.google.com/identity/one-tap/android/create-new-accounts#kotlin_1
+ */
 class Signin: AppCompatActivity() {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signUpRequest: BeginSignInRequest
@@ -43,8 +49,8 @@ class Signin: AppCompatActivity() {
                     .setFilterByAuthorizedAccounts(false)
                     .build())
             .build()
-        // ...
 
+        //använder denna istället för
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // Handle the successful result
