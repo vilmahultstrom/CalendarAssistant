@@ -20,7 +20,7 @@ import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
 import com.example.calendarassistant.ui.viewmodels.TestVM
-import com.example.calendarassistant.utilities.getCurrentMonthDates
+import com.example.calendarassistant.utilities.DateHelpers
 import java.time.LocalDate
 
 @Composable
@@ -30,7 +30,7 @@ fun DailyScreen(
 ) {
     // TODO: Get date logic from backend
     val specificDate = LocalDate.of(2024, 1, 3)
-    val daysInMonth = getCurrentMonthDates(specificDate)
+    val daysInMonth = DateHelpers.getCurrentMonthDates(specificDate)
     Box(
         modifier = Modifier
             .background(DeepBlue)

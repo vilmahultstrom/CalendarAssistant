@@ -7,9 +7,25 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 object LocationRepository {
     private val locationUpdates = MutableSharedFlow<Location>()
+    private var currentLocation: Location? = null
 
     suspend fun updateLocation(location: Location) {
+        currentLocation = location
         locationUpdates.emit(location)
+    }
+
+    fun getLastLocation() : Pair<String, String>? {
+        val lastLatitude = currentLocation?.latitude
+        val lastLongitude = currentLocation?.longitude
+
+        if (lastLatitude == null || lastLongitude == null){
+            return null
+        }
+        return Pair(lastLatitude.toString(), lastLongitude.toString())
+    }
+
+    fun setCurrentLocation(currentLocation: Location) {
+        this.currentLocation = currentLocation
     }
 
     fun getLocationUpdates(): SharedFlow<Location> = locationUpdates.asSharedFlow()
