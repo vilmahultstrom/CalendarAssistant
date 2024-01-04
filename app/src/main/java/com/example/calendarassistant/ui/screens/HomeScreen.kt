@@ -36,7 +36,6 @@ import com.example.calendarassistant.utilities.Event
 private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
-    // TODO: add VM here
     vm: TestVM,
     navController: NavController
 ) {
@@ -46,11 +45,6 @@ fun HomeScreen(
     val uiState by vm.uiState.collectAsState()
 
     initGpsTracking(context, startServiceAction)
-
-
-
-
-
 
     Box(
         modifier = Modifier
@@ -72,7 +66,7 @@ fun HomeScreen(
                     onClick = vm::onStartServiceClicked,
                     buttonText = "Start/stop gps-tracking"
                 )
-                Text(text = "Current pos: Lat: ${uiState.latitude}, Lon: ${uiState.longitude}")
+                Text(text = "Current pos: Lat: ${uiState.currentLatitude}, Lon: ${uiState.currentLongitude}")
 
             }
         }
