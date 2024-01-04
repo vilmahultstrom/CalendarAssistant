@@ -11,6 +11,7 @@ import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
+import com.example.calendarassistant.service.NetworkService
 import com.example.calendarassistant.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,9 @@ import javax.inject.Inject
 private const val TAG = "TestVm"
 
 @HiltViewModel
-class TestVM @Inject constructor() : ViewModel() {
+class TestVM @Inject constructor(
+    private val networkService: NetworkService
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
@@ -86,6 +89,7 @@ class TestVM @Inject constructor() : ViewModel() {
         }
 
         _uiState.update { _uiState.value.copy(nextEvent = MockEvent.getMockEvents().first()) }
+        Log.d(TAG, networkService.hello())
     }
 }
 

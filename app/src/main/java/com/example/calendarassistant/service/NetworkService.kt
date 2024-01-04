@@ -4,6 +4,9 @@ class NetworkService() {
 
 
 
+    fun hello() : String {
+        return "Hello"
+    }
 
 
 
