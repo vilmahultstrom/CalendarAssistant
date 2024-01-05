@@ -16,11 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.ui.screens.DailyScreen
+import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
-import com.example.calendarassistant.ui.screens.MonthlyScreen
-import com.example.calendarassistant.ui.screens.WeeklyScreen
+import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,14 +58,11 @@ class MainActivity : ComponentActivity() {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(vm = testVM, navController)
                         }
-                        composable(BMRoutes.Daily.route) {
-                            DailyScreen(vm = testVM, navController)
+                        composable(BMRoutes.Calendar.route) {
+                            CalendarScreen(vm = testVM, navController)
                         }
-                        composable(BMRoutes.Weekly.route) {
-                            WeeklyScreen(vm = testVM, navController)
-                        }
-                        composable(BMRoutes.Monthly.route) {
-                            MonthlyScreen(vm = testVM, navController)
+                        composable(BMRoutes.Settings.route) {
+                            SettingsScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)

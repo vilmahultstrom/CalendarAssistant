@@ -29,16 +29,19 @@ class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UiState(nextEventInformation = NextEventInformation()))
+    private val _mockEvents = MutableStateFlow(MockEvent.getMockEvents())
+    val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
+
+    private val _uiState = MutableStateFlow(UiState(
+        events = _mockEvents.value,
+        nextEventInformation = NextEventInformation()
+    ))
     val uiState: StateFlow<UiState> = _uiState
 
     private var isFetchingLocationData: Boolean = false
 
     private val _startServiceAction = mutableStateOf<Event<String>?>(null)
     val startServiceAction: State<Event<String>?> = _startServiceAction
-    private val _mockEvents = MutableStateFlow(MockEvent.getMockEvents())
-    val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
-
 
     // Start fetching gps data
     fun onStartServiceClicked() {
@@ -82,7 +85,8 @@ class TestVM @Inject constructor(
     init {
         viewModelScope.launch {
             launch {
-                _startServiceAction.value = Event(LocationService.ACTION_GET) // sets current location so its not null
+                _startServiceAction.value =
+                    Event(LocationService.ACTION_GET) // sets current location so its not null
                 delay(10000) // delay for gps init
                 networkService.getTimeToLeave(_uiState.value.travelMode)
             }
@@ -113,6 +117,7 @@ class TestVM @Inject constructor(
 data class UiState(
     val currentLatitude: String = "",
     val currentLongitude: String = "",
+    val events: List<MockCalendarEvent> = listOf(),
     val nextEventInformation: NextEventInformation,
     val travelMode: TravelMode = TravelMode.Transit
 )

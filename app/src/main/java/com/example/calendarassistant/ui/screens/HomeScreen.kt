@@ -44,11 +44,8 @@ fun HomeScreen(
     val startServiceAction by vm.startServiceAction
     initGpsTracking(context, startServiceAction)
 
-
     val uiState by vm.uiState.collectAsState()
     val destCoords = uiState.nextEventInformation.destinationCoordinates
-
-
 
     Box(
         modifier = Modifier
@@ -80,19 +77,14 @@ fun HomeScreen(
             items = listOf(
                 BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
                 BottomMenuContent(
-                    "Daily",
-                    R.drawable.baseline_calendar_today_24,
-                    BMRoutes.Daily.route
-                ),
-                BottomMenuContent(
-                    "Weekly",
+                    "Calendar",
                     R.drawable.baseline_calendar_month_24,
-                    BMRoutes.Weekly.route
+                    BMRoutes.Calendar.route
                 ),
                 BottomMenuContent(
-                    "Monthly",
-                    R.drawable.baseline_construction_24,
-                    BMRoutes.Monthly.route
+                    "Settings",
+                    R.drawable.baseline_settings_24,
+                    BMRoutes.Settings.route
                 ),
             ),
             modifier = Modifier.align(Alignment.BottomCenter),
