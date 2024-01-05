@@ -1,9 +1,16 @@
 package com.example.calendarassistant
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.ui.screens.DailyScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
@@ -23,15 +31,26 @@ import com.example.calendarassistant.ui.screens.MonthlyScreen
 import com.example.calendarassistant.ui.screens.WeeklyScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
+
+const private val TAG= "MainActivity"
 
 // TODO: Remove rotation
 // TODO: Implement dependency injection
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // To start Signin Activity
+        val intent = Intent(this, Signin::class.java)
+        startActivity(intent)
+
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -77,6 +96,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable

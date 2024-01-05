@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
+import com.example.calendarassistant.login.SignInInterface
+import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.network.GoogleApi
@@ -26,6 +28,11 @@ private const val TAG = "TestVm"
 class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
+
+    private var signInAttemptListener: SignInInterface? = null
+    fun setSignInAttemptListener(listener: SignInInterface) {
+        signInAttemptListener = listener
+    }
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
@@ -52,9 +59,12 @@ class TestVM @Inject constructor(
 
     fun login(){
         viewModelScope.launch {
+            signInAttemptListener?.attemptSignIn()
+            //signin.attemptSignIn()
             Log.d(TAG, "loggin in button pressed")
         }
     }
+
 
 
     fun getDirectionsByPlace() {
