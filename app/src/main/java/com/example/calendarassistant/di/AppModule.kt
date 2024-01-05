@@ -21,11 +21,11 @@ object AppModule {
         return NetworkService()
     }
 
-    @Singleton
-    @Provides
-    fun provideSignIn() : Signin {
-        return Signin()
-    }
+    //@Singleton
+    //@Provides
+    //fun provideSignIn() : Signin {
+    //    return Signin()
+    //}
 
 
 
