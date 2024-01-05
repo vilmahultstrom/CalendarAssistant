@@ -15,6 +15,7 @@ import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.NetworkService
 import com.example.calendarassistant.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -81,8 +82,9 @@ class TestVM @Inject constructor(
     init {
         viewModelScope.launch {
             launch {
-                _startServiceAction.value =
-                    Event(LocationService.ACTION_GET) // sets current location so its not null
+                _startServiceAction.value = Event(LocationService.ACTION_GET) // sets current location so its not null
+                delay(10000) // delay for gps init
+                networkService.getTimeToLeave(_uiState.value.travelMode)
             }
 
             launch {
@@ -93,6 +95,7 @@ class TestVM @Inject constructor(
                             currentLongitude = location.longitude.toString()
                         )
                     }
+                    networkService.getTimeToLeave(_uiState.value.travelMode)
                 }
             }
 
@@ -100,7 +103,6 @@ class TestVM @Inject constructor(
                 MockEvent.getNextEventInformation().collect { next: NextEventInformation ->
                     Log.d(TAG, "Collecting: $next")
                     _uiState.update { currentState -> currentState.copy(nextEventInformation = next) }
-
                 }
             }
 
@@ -111,5 +113,6 @@ class TestVM @Inject constructor(
 data class UiState(
     val currentLatitude: String = "",
     val currentLongitude: String = "",
-    val nextEventInformation: NextEventInformation
+    val nextEventInformation: NextEventInformation,
+    val travelMode: TravelMode = TravelMode.Transit
 )

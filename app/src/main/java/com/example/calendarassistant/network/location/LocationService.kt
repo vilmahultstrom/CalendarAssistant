@@ -47,7 +47,7 @@ class LocationService : Service() {
     }
 
     private fun start() {
-        locationClient.getLocationsUpdates(10000L).catch { e -> e.printStackTrace() }
+        locationClient.getLocationsUpdates(60000L).catch { e -> e.printStackTrace() }
             .onEach { location ->
                 LocationRepository.updateLocation(location)
             }.launchIn(serviceScope)
