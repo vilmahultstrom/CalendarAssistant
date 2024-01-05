@@ -5,14 +5,13 @@ import com.example.calendarassistant.network.dto.google.directions.GoogleDirecti
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.util.Locale
 
 private const val mapsApiKey = "AIzaSyCdZXOjkf2AWnwZoGQy5rzoJ_lToiK8DpE" // Bör lagras som en env.
 
 private interface IDirectionsApi {
     // Api calls for the directions Api
     @GET("/maps/api/directions/json")
-    suspend fun getDirectionsByPlace(
+    suspend fun getDirections(
         @Query("origin") origin: String,
         @Query("destination") destination: String,
         @Query("mode") mode: String,
@@ -21,13 +20,13 @@ private interface IDirectionsApi {
 
 
     @GET("/maps/api/directions/json")
-    suspend fun getDirectionsByCoordinates(
+    suspend fun getDirectionsArrivalTime(
+        @Query("arrival_time") arrivalTime: Long,
         @Query("origin") origin: String,
         @Query("destination") destination: String,
         @Query("mode") mode: String,
         @Query("key") key: String = mapsApiKey
     ): Response<GoogleDirectionsResponse>
-
 
 
 }
@@ -40,13 +39,12 @@ object GoogleApi {
     /*
         Implement methods here eg:
     */
-    // Only for testing
     suspend fun getDirectionsByPlace(
         origin: String,
         destination: String,
         mode: TravelMode
     ): Response<GoogleDirectionsResponse> {
-        return directionsInstance.getDirectionsByPlace(
+        return directionsInstance.getDirections(
             origin, destination, mode.toString()
         )
     }
@@ -59,7 +57,17 @@ object GoogleApi {
     ): Response<GoogleDirectionsResponse> {
         val originString = origin.first.toString() + "," + origin.second.toString()
         val destinationString = destination.first.toString() + "," + destination.second.toString()
-        return directionsInstance.getDirectionsByCoordinates(originString, destinationString, mode.toString())
+        return directionsInstance.getDirections(originString, destinationString, mode.toString())
+    }
+
+    suspend fun getDirectionsByCoordinatesOriginDestinationPlace(
+        arrivalTime: Long,
+        origin: Pair<String, String>,
+        destination: String,
+        mode: TravelMode
+    ): Response<GoogleDirectionsResponse> {
+        val originString = origin.first + "," + origin.second
+        return directionsInstance.getDirectionsArrivalTime(arrivalTime, originString, destination, mode.toString())
     }
 
 }

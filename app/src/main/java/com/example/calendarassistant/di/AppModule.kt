@@ -1,7 +1,8 @@
 package com.example.calendarassistant.di
 
+
 import com.example.calendarassistant.login.Signin
-import com.example.calendarassistant.service.NetworkService
+import com.example.calendarassistant.services.NetworkService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +26,7 @@ object AppModule {
     fun provideSignIn() : Signin {
         return Signin()
     }
+
 
 
 

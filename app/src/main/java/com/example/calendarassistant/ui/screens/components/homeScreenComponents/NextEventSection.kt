@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
+import com.example.calendarassistant.model.mock.calendar.NextEventInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite
@@ -29,7 +30,8 @@ import com.example.calendarassistant.ui.theme.TextWhite
 @Composable
 fun NextEventSection(
     color: Color = Purple40,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    nextEventInformation: NextEventInformation
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +51,7 @@ fun NextEventSection(
             )
             Text(
                 // TODO: Get string from backend with calculated time estimation
-                text = "Walk in 5m / at 10:45",
+                text = "Walk in ${nextEventInformation.departureTimeHHMM} / at ${nextEventInformation.departureTime}",
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite
             )
