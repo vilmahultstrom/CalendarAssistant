@@ -8,12 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
+import com.example.calendarassistant.model.mock.calendar.NextEventInformation
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.NetworkService
 import com.example.calendarassistant.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -27,7 +29,7 @@ class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(UiState(nextEventInformation = NextEventInformation()))
     val uiState: StateFlow<UiState> = _uiState
 
     private var isFetchingLocationData: Boolean = false
@@ -80,8 +82,9 @@ class TestVM @Inject constructor(
     init {
         viewModelScope.launch {
             launch {
-                _startServiceAction.value =
-                    Event(LocationService.ACTION_GET) // sets current location so its not null
+                _startServiceAction.value = Event(LocationService.ACTION_GET) // sets current location so its not null
+                delay(10000) // delay for gps init
+                networkService.getTimeToLeave(_uiState.value.travelMode)
             }
 
             launch {
@@ -92,15 +95,24 @@ class TestVM @Inject constructor(
                             currentLongitude = location.longitude.toString()
                         )
                     }
+                    networkService.getTimeToLeave(_uiState.value.travelMode)
                 }
             }
+
+            launch {
+                MockEvent.getNextEventInformation().collect { next: NextEventInformation ->
+                    Log.d(TAG, "Collecting: $next")
+                    _uiState.update { currentState -> currentState.copy(nextEventInformation = next) }
+                }
+            }
+
         }
-        _uiState.update { _uiState.value.copy(nextEvent = MockEvent.getMockEvents().first()) }
     }
 }
 
 data class UiState(
     val currentLatitude: String = "",
     val currentLongitude: String = "",
-    val nextEvent: MockCalendarEvent? = null
+    val nextEventInformation: NextEventInformation,
+    val travelMode: TravelMode = TravelMode.Transit
 )

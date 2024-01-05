@@ -39,12 +39,16 @@ fun HomeScreen(
     vm: TestVM,
     navController: NavController
 ) {
-    val context = LocalContext.current
     // For starting Gps tracking
+    val context = LocalContext.current
     val startServiceAction by vm.startServiceAction
-    val uiState by vm.uiState.collectAsState()
-
     initGpsTracking(context, startServiceAction)
+
+
+    val uiState by vm.uiState.collectAsState()
+    val destCoords = uiState.nextEventInformation.destinationCoordinates
+
+
 
     Box(
         modifier = Modifier
@@ -53,7 +57,9 @@ fun HomeScreen(
     ) {
         Column {
             InformationSection()
-            NextEventSection(onClick = { openGoogleMaps(context, 59.33, 18.06) }) //TODO: Set coordinates dynamically (Click on arrow icon)
+            NextEventSection(onClick = { openGoogleMaps(context, destCoords.first,
+                destCoords.second
+            ) }, nextEventInformation = uiState.nextEventInformation) //TODO: Set coordinates dynamically (Click on arrow icon)
             DepartureSection()
             ButtonSection()
             Column(
@@ -94,7 +100,8 @@ fun HomeScreen(
         )
     }
 }
-private fun openGoogleMaps(context: Context, latitude: Double, longitude: Double) {
+private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Double?) {
+    if (latitude == null || longitude == null) return
     try {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${latitude},${longitude}")))
     } catch (e: ActivityNotFoundException){

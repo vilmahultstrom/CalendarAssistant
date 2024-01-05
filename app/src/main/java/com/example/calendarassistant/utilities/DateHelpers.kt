@@ -26,5 +26,23 @@ object DateHelpers{
         val systemTimeZone = ZoneId.systemDefault()
         return utcDateTime.withZoneSameInstant(systemTimeZone)
     }
+
+
+    fun formatSecondsToHourMinutes(seconds: Long?) : String {
+        if (seconds == null) return "nullValue"
+        if (seconds < 0) return "Run"
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+
+        return if (hours > 0) {
+            "${hours}h${minutes}m"
+        } else {
+            "${minutes}m"
+        }
+
+
+
+    }
+
 }
 
