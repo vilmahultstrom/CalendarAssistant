@@ -2,6 +2,7 @@ package com.example.calendarassistant.network
 
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
+import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -18,7 +19,6 @@ private interface IDirectionsApi {
         @Query("key") key: String = mapsApiKey
     ): Response<GoogleDirectionsResponse>
 
-
     @GET("/maps/api/directions/json")
     suspend fun getDirectionsArrivalTime(
         @Query("arrival_time") arrivalTime: Long,
@@ -28,6 +28,15 @@ private interface IDirectionsApi {
         @Query("key") key: String = mapsApiKey
     ): Response<GoogleDirectionsResponse>
 
+    @GET("/maps/api/directions/json")
+    suspend fun getDirectionsRouteInformation(
+        @Query("arrival_time") arrivalTime: Long,
+        @Query("departure_time") departureTime: Long,
+        @Query("origin") origin: String,
+        @Query("destination") destination: String,
+        @Query("mode") mode: String,
+        @Query("key") key: String = mapsApiKey
+    ): Response<GoogleDirectionsResponse>
 
 }
 

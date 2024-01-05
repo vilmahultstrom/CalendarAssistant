@@ -1,11 +1,13 @@
 package com.example.calendarassistant.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+
 object Retrofit {
 
     private const val BASE_URL_TRAFIKVERKET = "https://api.trafikinfo.trafikverket.se"
     private const val BASE_URL_GOOGLE_MAPS = "https://maps.googleapis.com";
-    private const val BASE_URL_Sl = "https://api.sl.se/"
+    private const val BASE_URL_Sl = "https://api.sl.se"
 
     val trafikverketInstance: Retrofit by lazy {
         Retrofit.Builder()
