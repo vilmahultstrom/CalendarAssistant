@@ -97,13 +97,17 @@ class TestVM @Inject constructor(
 
             // Coroutine for getting location at start up
             launch {
-
                 _startServiceAction.value =
                     Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
                 networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
-
             }
+
+            /**
+             * TODO (fundering) Vilma: Använda interna acceleratorn och att när den har
+             *  förändrats innom ett visst intervall så ska man anropa current location.
+             *  Men även var 30 minut.
+             */
 
             // Coroutine for collecting location updates when
             launch {

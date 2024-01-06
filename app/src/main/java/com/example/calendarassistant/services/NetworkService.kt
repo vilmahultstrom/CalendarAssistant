@@ -5,7 +5,6 @@ import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
-import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.SlApi
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
 import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
@@ -23,16 +22,20 @@ private const val TAG = "NetworkService"
 
 class NetworkService : INetworkService {
 
-
-
-/*    override suspend fun getTimeToLeave(travelMode: TravelMode) {
+    /**
+     *  Makes api call to Google directions and updates the next event info
+     */
+    override suspend fun getTravelInformation(travelMode: TravelMode) {
         try {
             val lastLocationCoordinates = LocationRepository.getLastLocation()
                 ?: throw INetworkService.NetworkException("Location not found")
+
             // Gets the next event happening from the mock
             val nextEvent = MockEvent.getMockEvents().first()
+
             // Sets arrival time for google directions to the event start-time
             val arrivalTime = ZonedDateTime.parse(nextEvent.start).toEpochSecond()
+
             // Google api-call
             val response = fetchGoogleDirections(
                 arrivalTime,
@@ -40,19 +43,29 @@ class NetworkService : INetworkService {
                 nextEvent.location,
                 travelMode
             )
+
             val legs = response.routes.first().legs.first()
+
+            Log.d(TAG, legs.toString())
+
             // Collects steps where transit
+            // TODO: use this list to make api calls for traffic events (delays)
             val transitSteps = extractTransitSteps(legs.steps)
+
             // Contains time of departure in text and unix time
             val departureInformation = legs.departureTime
 
+            // Contains coordinates for end location (used for opening google maps from ui)
+            val endLocation = legs.endLocation
+
             if (departureInformation != null) {
                 val departureTimeHHMM = calculateDepartureTimeHHMM(departureInformation)
+                val departureTime = departureInformation.text
 
                 updateMockTravelInformation(
                     departureTimeHHMM,
-                    legs.departureTime?.text,
-                    legs.endLocation,
+                    departureTime,
+                    endLocation,
                     transitSteps
                 )
             }
@@ -74,14 +87,14 @@ class NetworkService : INetworkService {
             mode = mode
         )
         if (!response.isSuccessful) {
-            throw INetworkService.NetworkException("Unsuccessful network call to Google")
+            throw INetworkService.NetworkException("Unsuccessful network call to Google Maps api")
         }
         return response.body()!!
     }
 
-    *//**
+    /**
      * Filters and returns a list of steps that involve transit.
-     *//*
+     */
     private fun extractTransitSteps(steps: List<Steps>): List<Steps> =
         steps.filter { it.travelMode == "TRANSIT" }
 
@@ -93,7 +106,12 @@ class NetworkService : INetworkService {
         } ?: ""
     }
 
-    private fun updateMockTravelInformation(departureTimeHHMM: String, departureTimeText: String?, endLocation: EndLocation?, transitSteps: List<Steps>) {
+    private suspend fun updateMockTravelInformation(
+        departureTimeHHMM: String,
+        departureTime: String?,
+        endLocation: EndLocation?,
+        transitSteps: List<Steps>
+    ) {
         // Updates set new info, which updates the ui
         MockTravelInformation.setTravelInformation(
             departureTimeHHMM,
@@ -101,71 +119,6 @@ class NetworkService : INetworkService {
             Pair(endLocation?.lat, endLocation?.lng),
             transitSteps = transitSteps
         )
-    }*/
-
-    /**
-     *  Makes api call to Google directions and updates the next event info
-     */
-    override suspend fun getTimeToLeave(travelMode: TravelMode) {
-    /**
-     *  Makes api call to Google directions and updates the next event info
-     */
-    override suspend fun getTravelInformation(travelMode: TravelMode) {
-        try {
-            val lastLocationCoordinates = LocationRepository.getLastLocation() ?: throw INetworkService.NetworkException("Location not found")
-            // Gets the next event happening from the mock
-            val nextEvent = MockEvent.getMockEvents().first()
-            // Sets arrival time for google directions to the event start-time
-            val arrivalTime = ZonedDateTime.parse(nextEvent.start).toEpochSecond()
-            // Google api-call
-            val response = GoogleApi.getDirectionsByCoordinatesOriginDestinationPlace(
-                arrivalTime = arrivalTime,
-                origin = lastLocationCoordinates,
-                destination = nextEvent.location,
-                mode = travelMode
-            )
-            if (!response.isSuccessful) {
-                throw INetworkService.NetworkException("Unsuccessful network call to Google Maps api")
-            }
-
-            val legs = response.body()!!.routes.first().legs.first()
-
-            Log.d(TAG, legs.toString())
-
-            val steps = legs.steps
-
-            // Collects steps where transit
-            // TODO: use this list to make api calls for traffic events (delays)
-            val transitSteps: MutableList<Steps> = mutableListOf()
-            for (element in steps) {
-                if (element.travelMode == "TRANSIT") {
-                    transitSteps.add(element)
-                }
-            }
-
-            // Contains time of departure in text and unix time
-            val departureInformation = legs.departureTime
-            // Contains coordinates for end location (used for opening google maps from ui)
-            val endLocation = legs.endLocation
-
-            if (departureInformation != null) {
-                val departureTime = departureInformation.text
-
-                // Calculate the time to leave (eg: "1h15m")
-                val currentTime = ZonedDateTime.now().toEpochSecond()
-                val departureTimeHHMM = DateHelpers.formatSecondsToHourMinutes(
-                    departureInformation.value?.minus(
-                        currentTime
-                    )
-                )
-                // Updates set new info, which updates the ui
-                MockTravelInformation.setTravelInformation(
-                    departureTimeHHMM, departureTime, Pair(endLocation?.lat, endLocation?.lng), transitSteps = transitSteps
-                )
-            }
-        } catch (e: Exception) {
-            Log.d(TAG, e.printStackTrace().toString())
-        }
     }
 
 
@@ -219,7 +172,6 @@ class NetworkService : INetworkService {
     }
 */
 
-
     fun hello(): String {
         return "Hello"
     }
@@ -230,5 +182,4 @@ interface INetworkService {
 
     suspend fun getTravelInformation(travelMode: TravelMode)
 
-    //suspend fun getTravelInformation(travelMode: TravelMode): Any?
 }
