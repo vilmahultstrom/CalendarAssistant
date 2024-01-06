@@ -31,6 +31,7 @@ class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
 
+
     private val _uiState = MutableStateFlow(UiState(travelInformation = TravelInformation()))
     val uiState: StateFlow<UiState> = _uiState
 
@@ -38,7 +39,8 @@ class TestVM @Inject constructor(
 
     private val _startServiceAction = mutableStateOf<Event<String>?>(null)
     val startServiceAction: State<Event<String>?> = _startServiceAction
-    private val _mockEvents = MutableStateFlow(MockEvent.getMockEventsFormattedConvertedTime()) //TODO: this data should come from Google Calendar api
+    private val _mockEvents =
+        MutableStateFlow(MockEvent.getMockEventsFormattedConvertedTime()) //TODO: this data should come from Google Calendar api
     val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
     val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
 
@@ -88,9 +90,12 @@ class TestVM @Inject constructor(
 
             // Coroutine for getting location at start up
             launch {
-                _startServiceAction.value = Event(LocationService.ACTION_GET) // Inits and collects location info
+
+                _startServiceAction.value =
+                    Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
                 networkService.getTimeToLeave(_uiState.value.travelMode) // fetches data
+
             }
 
             // Coroutine for collecting location updates when

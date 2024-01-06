@@ -1,7 +1,6 @@
 package com.example.calendarassistant.utilities
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -43,6 +42,12 @@ object DateHelpers{
         } else {
             "${minutes}m"
         }
+
+    }
+
+    fun googleTimeToHoursMinutes(timeString: String): String {
+        val zonedDateTime = ZonedDateTime.parse(timeString)
+        return zonedDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 }
 
