@@ -28,6 +28,10 @@ object DateHelpers{
     }
 
 
+    /**
+     *  Returns a string with the format HHh:MMm from
+     *  a seconds value.
+     */
     fun formatSecondsToHourMinutes(seconds: Long?) : String {
         if (seconds == null) return "nullValue"
         if (seconds < 0) return "Run"
@@ -39,10 +43,6 @@ object DateHelpers{
         } else {
             "${minutes}m"
         }
-
-
-
     }
-
 }
 

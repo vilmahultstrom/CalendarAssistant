@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.calendar.NextEventInformation
+import com.example.calendarassistant.model.mock.calendar.TravelInformation
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
@@ -29,19 +29,20 @@ class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UiState(nextEventInformation = NextEventInformation()))
+    private val _uiState = MutableStateFlow(UiState(travelInformation = TravelInformation()))
     val uiState: StateFlow<UiState> = _uiState
 
     private var isFetchingLocationData: Boolean = false
 
     private val _startServiceAction = mutableStateOf<Event<String>?>(null)
     val startServiceAction: State<Event<String>?> = _startServiceAction
-    private val _mockEvents = MutableStateFlow(MockEvent.getMockEvents())
+    private val _mockEvents = MutableStateFlow(MockEvent.getMockEventsFormattedConvertedTime()) //TODO: this data should come from Google Calendar api
     val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
 
 
     // Start fetching gps data
     fun onStartServiceClicked() {
+        MockEvent.getMockEventsFormattedConvertedTime()
         if (!isFetchingLocationData) {
             _startServiceAction.value = Event(LocationService.ACTION_START)
             viewModelScope.launch {
@@ -84,9 +85,9 @@ class TestVM @Inject constructor(
 
             // Coroutine for getting location at start up
             launch {
-                delay(10000)
-                _startServiceAction.value = Event(LocationService.ACTION_GET)
-                networkService.getTimeToLeave(_uiState.value.travelMode)
+                _startServiceAction.value = Event(LocationService.ACTION_GET) // Inits and collects location info
+                delay(10000)    // Delay for init
+                networkService.getTimeToLeave(_uiState.value.travelMode) // fetches data
             }
 
             // Coroutine for collecting location updates when
@@ -105,9 +106,9 @@ class TestVM @Inject constructor(
 
             // Collecting next mock event for display
             launch {
-                MockEvent.getNextEventInformation().collect { next: NextEventInformation ->
+                MockEvent.getNextEventInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(nextEventInformation = next) }
+                    _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }
             }
 
@@ -118,6 +119,6 @@ class TestVM @Inject constructor(
 data class UiState(
     val currentLatitude: String = "",
     val currentLongitude: String = "",
-    val nextEventInformation: NextEventInformation,
+    val travelInformation: TravelInformation,
     val travelMode: TravelMode = TravelMode.Transit
 )

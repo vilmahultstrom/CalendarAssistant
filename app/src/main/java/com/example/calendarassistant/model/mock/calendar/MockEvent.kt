@@ -1,11 +1,9 @@
 package com.example.calendarassistant.model.mock.calendar
 import android.util.Log
-import kotlinx.coroutines.flow.Flow
+import com.example.calendarassistant.utilities.DateHelpers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.flow
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -25,27 +23,44 @@ object MockEvent {
             location = "T61 Hälsovägen"
         ),
     )
-    private var nextEventInformation = MutableSharedFlow<NextEventInformation>()
-    suspend fun setNextEventInformation(
+    private var travelInformation = MutableSharedFlow<TravelInformation>()
+    suspend fun setTravelInformation(
         departureTimeHHMM: String,
         departureTime: String?,
         endLocation: Pair<Double?, Double?>
     ) {
-        nextEventInformation.emit(NextEventInformation(departureTime = departureTime, departureTimeHHMM = departureTimeHHMM,
+        travelInformation.emit(TravelInformation(departureTime = departureTime, departureTimeHHMM = departureTimeHHMM,
             destinationCoordinates = endLocation))
     }
 
-    fun getNextEventInformation() : SharedFlow<NextEventInformation> = MockEvent.nextEventInformation.asSharedFlow()
+    fun getNextEventInformation() : SharedFlow<TravelInformation> = MockEvent.travelInformation.asSharedFlow()
 
-    fun getMockEvents() = events
+    fun getMockEvents(): List<MockCalendarEvent> {
+        return events
+    }
+
+    fun getMockEventsFormattedConvertedTime(): MutableList<MockCalendarEvent> {
+        val newEvents = mutableListOf<MockCalendarEvent>()
+        for (element in events) {
+            val startTime = DateHelpers.convertToSystemTimeZone(element.start)
+            val customFormatter = DateTimeFormatter.ofPattern("HH:mm")
+            val formatted = startTime?.format(customFormatter) ?: throw NumberFormatException("Start time was null")
+
+            val newEvent = MockCalendarEvent(formatted, element.summary, element.location)
+            newEvents.add(newEvent)
+        }
+        return newEvents
+    }
+
+
 }
 data class MockCalendarEvent(
-    val start: String,
+    var start: String,
     val summary: String,
     val location: String
 )
 
-data class NextEventInformation (
+data class TravelInformation (
     var departureTimeHHMM: String? = "",
     var departureTime: String? = "",
     var destinationCoordinates: Pair<Double?, Double?> = Pair(null, null)

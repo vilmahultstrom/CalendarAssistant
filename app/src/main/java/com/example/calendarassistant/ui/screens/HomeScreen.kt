@@ -42,11 +42,12 @@ fun HomeScreen(
     // For starting Gps tracking
     val context = LocalContext.current
     val startServiceAction by vm.startServiceAction
-    initGpsTracking(context, startServiceAction)
+    gpsTracking(context, startServiceAction)
+    val nextEventInfo by vm.mockEvents.collectAsState()
 
 
     val uiState by vm.uiState.collectAsState()
-    val destCoords = uiState.nextEventInformation.destinationCoordinates
+    val destCoordinates = uiState.travelInformation.destinationCoordinates
 
 
 
@@ -57,9 +58,9 @@ fun HomeScreen(
     ) {
         Column {
             InformationSection()
-            NextEventSection(onClick = { openGoogleMaps(context, destCoords.first,
-                destCoords.second
-            ) }, nextEventInformation = uiState.nextEventInformation) //TODO: Set coordinates dynamically (Click on arrow icon)
+            NextEventSection(onClick = { openGoogleMaps(context, destCoordinates.first,
+                destCoordinates.second
+            ) }, travelInformation = uiState.travelInformation, nextEventInfo = nextEventInfo.first())
             DepartureSection()
             ButtonSection()
             Column(
@@ -112,7 +113,7 @@ private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Doubl
 
 }
 
-private fun initGpsTracking(context: Context, startServiceAction: Event<String>?) {
+private fun gpsTracking(context: Context, startServiceAction: Event<String>?) {
     startServiceAction?.getContentIfNotHandled()?.let { action ->
         Intent(context, LocationService::class.java).apply {
             this.action = action
