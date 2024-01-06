@@ -36,7 +36,6 @@ class LocationClient(
                 throw ILocationClient.LocationException("GPS is disabled")
             }
 
-
             val request = LocationRequest.Builder(interval).build()
 
             val locationCallback = object : LocationCallback() {
@@ -52,15 +51,10 @@ class LocationClient(
                 request, locationCallback, Looper.getMainLooper()
             )
 
-
             awaitClose {
                 client.removeLocationUpdates(locationCallback)
             }
-
-
         }
-
-
     }
 
     @SuppressLint("MissingPermission")

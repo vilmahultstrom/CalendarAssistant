@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
-object DateHelpers{
+object DateHelpers {
     fun getCurrentMonthDates(date: LocalDate): List<String> {
         val yearMonth = YearMonth.of(date.year, date.month)
         val daysInMonth = yearMonth.lengthOfMonth()
