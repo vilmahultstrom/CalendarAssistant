@@ -53,7 +53,7 @@ fun NextEventSection(
             )
             Text(
                 // TODO: Get string from backend with calculated time estimation
-                text = "Walk in ${travelInformation.departureTimeHHMM} / at ${travelInformation.departureTime}",
+                text = "Leave in ${travelInformation.departureTimeHHMM} / at ${travelInformation.departureTime}",
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite
             )

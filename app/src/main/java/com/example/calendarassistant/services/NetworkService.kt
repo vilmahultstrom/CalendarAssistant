@@ -37,6 +37,9 @@ class NetworkService : INetworkService {
             }
 
             val legs = response.body()!!.routes.first().legs.first()
+
+            Log.d(TAG, legs.toString())
+
             val steps = legs.steps
 
             // Collects steps where transit

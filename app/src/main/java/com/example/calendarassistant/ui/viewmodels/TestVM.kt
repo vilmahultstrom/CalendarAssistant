@@ -67,6 +67,13 @@ class TestVM @Inject constructor(
         }
     }
 
+    fun setTravelMode(mode: TravelMode) {
+        _uiState.update { _uiState.value.copy(travelMode = mode) }
+        viewModelScope.launch {
+            networkService.getTravelInformation(mode)
+        }
+    }
+
 
     fun getDirectionsByPlace() {
         viewModelScope.launch {

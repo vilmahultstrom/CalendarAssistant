@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu
@@ -35,6 +36,7 @@ import com.example.calendarassistant.ui.screens.components.homeScreenComponents.
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelModeSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.TestVM
@@ -69,6 +71,10 @@ fun HomeScreen(
                 NextEventSection(onClick = { openGoogleMaps(context, destCoordinates.first,
                     destCoordinates.second
                 ) }, travelInformation = uiState.travelInformation, nextEventInfo = nextEventInfo.first())
+
+                TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)
+
+
                 if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
                     DepartureSection(departureInfo = departureInfo)
                 }
