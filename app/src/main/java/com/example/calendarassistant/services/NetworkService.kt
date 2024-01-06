@@ -3,7 +3,9 @@ package com.example.calendarassistant.services
 import android.util.Log
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockEvent
+import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
+import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.SlApi
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
 import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
@@ -105,9 +107,12 @@ class NetworkService : INetworkService {
      *  Makes api call to Google directions and updates the next event info
      */
     override suspend fun getTimeToLeave(travelMode: TravelMode) {
+    /**
+     *  Makes api call to Google directions and updates the next event info
+     */
+    override suspend fun getTravelInformation(travelMode: TravelMode) {
         try {
-            val lastLocationCoordinates = LocationRepository.getLastLocation()
-                ?: throw INetworkService.NetworkException("Location not found")
+            val lastLocationCoordinates = LocationRepository.getLastLocation() ?: throw INetworkService.NetworkException("Location not found")
             // Gets the next event happening from the mock
             val nextEvent = MockEvent.getMockEvents().first()
             // Sets arrival time for google directions to the event start-time
@@ -120,13 +125,17 @@ class NetworkService : INetworkService {
                 mode = travelMode
             )
             if (!response.isSuccessful) {
-                throw INetworkService.NetworkException("Unsuccessful network call to google")
+                throw INetworkService.NetworkException("Unsuccessful network call to Google Maps api")
             }
 
             val legs = response.body()!!.routes.first().legs.first()
+
+            Log.d(TAG, legs.toString())
+
             val steps = legs.steps
 
             // Collects steps where transit
+            // TODO: use this list to make api calls for traffic events (delays)
             val transitSteps: MutableList<Steps> = mutableListOf()
             for (element in steps) {
                 if (element.travelMode == "TRANSIT") {
@@ -151,13 +160,9 @@ class NetworkService : INetworkService {
                 )
                 // Updates set new info, which updates the ui
                 MockTravelInformation.setTravelInformation(
-                    departureTimeHHMM,
-                    departureTime,
-                    Pair(endLocation?.lat, endLocation?.lng),
-                    transitSteps = transitSteps
+                    departureTimeHHMM, departureTime, Pair(endLocation?.lat, endLocation?.lng), transitSteps = transitSteps
                 )
             }
-
         } catch (e: Exception) {
             Log.d(TAG, e.printStackTrace().toString())
         }
@@ -218,13 +223,12 @@ class NetworkService : INetworkService {
     fun hello(): String {
         return "Hello"
     }
-
 }
 
 interface INetworkService {
     class NetworkException(message: String) : Exception()
 
-    suspend fun getTimeToLeave(travelMode: TravelMode)
+    suspend fun getTravelInformation(travelMode: TravelMode)
 
     //suspend fun getTravelInformation(travelMode: TravelMode): Any?
 }

@@ -22,7 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.mock.calendar.NextEventInformation
+import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
+import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite
@@ -31,7 +32,8 @@ import com.example.calendarassistant.ui.theme.TextWhite
 fun NextEventSection(
     color: Color = Purple40,
     onClick: () -> Unit,
-    nextEventInformation: NextEventInformation
+    travelInformation: TravelInformation,
+    nextEventInfo: MockCalendarEvent
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -43,15 +45,15 @@ fun NextEventSection(
             .padding(horizontal = 15.dp, vertical = 20.dp)
             .fillMaxWidth()
     ) {
-        Column {
+        Column(modifier = Modifier.weight(0.7F)) {
             Text(
-                text = "Next event",
+                text = "Next event: " + nextEventInfo.summary,
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite
             )
             Text(
                 // TODO: Get string from backend with calculated time estimation
-                text = "Walk in ${nextEventInformation.departureTimeHHMM} / at ${nextEventInformation.departureTime}",
+                text = "Leave in ${travelInformation.departureTimeHHMM} / at ${travelInformation.departureTime}",
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite
             )
@@ -59,6 +61,7 @@ fun NextEventSection(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
+                .weight(0.15F) // TODO: Fix broken ui
                 .size(60.dp)
                 .clip(CircleShape)
                 .background(ButtonBlue)
