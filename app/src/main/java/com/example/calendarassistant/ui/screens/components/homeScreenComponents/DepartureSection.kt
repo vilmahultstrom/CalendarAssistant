@@ -24,13 +24,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
+import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.LightGreen2
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun DepartureSection(
-    color: Color = LightGreen2
+    color: Color = LightGreen2,
+    departureInfo: List<Steps>
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -51,24 +53,30 @@ fun DepartureSection(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "10:55",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = TextWhite,
-                    fontWeight = FontWeight.Bold
-                )
+                departureInfo.first().transitDetails?.departureTime?.text?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = TextWhite,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Stockholm",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = TextWhite
-                )
+                departureInfo.first().transitDetails?.departureStop?.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = TextWhite
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "929",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = TextWhite
-                )
+                departureInfo.first().transitDetails?.line?.shortName?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = TextWhite
+                    )
+                }
             }
         }
         Box(

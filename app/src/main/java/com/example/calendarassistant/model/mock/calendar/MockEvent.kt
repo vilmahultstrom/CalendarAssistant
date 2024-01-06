@@ -23,17 +23,7 @@ object MockEvent {
             location = "T61 Hälsovägen"
         ),
     )
-    private var travelInformation = MutableSharedFlow<TravelInformation>()
-    suspend fun setTravelInformation(
-        departureTimeHHMM: String,
-        departureTime: String?,
-        endLocation: Pair<Double?, Double?>
-    ) {
-        travelInformation.emit(TravelInformation(departureTime = departureTime, departureTimeHHMM = departureTimeHHMM,
-            destinationCoordinates = endLocation))
-    }
 
-    fun getNextEventInformation() : SharedFlow<TravelInformation> = MockEvent.travelInformation.asSharedFlow()
 
     fun getMockEvents(): List<MockCalendarEvent> {
         return events
@@ -60,10 +50,6 @@ data class MockCalendarEvent(
     val location: String
 )
 
-data class TravelInformation (
-    var departureTimeHHMM: String? = "",
-    var departureTime: String? = "",
-    var destinationCoordinates: Pair<Double?, Double?> = Pair(null, null)
-)
+
 
 

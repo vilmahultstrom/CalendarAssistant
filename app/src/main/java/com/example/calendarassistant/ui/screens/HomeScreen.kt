@@ -6,10 +6,16 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,39 +50,50 @@ fun HomeScreen(
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
     val nextEventInfo by vm.mockEvents.collectAsState()
+    val departureInfo by vm.transitSteps.collectAsState()
 
 
     val uiState by vm.uiState.collectAsState()
     val destCoordinates = uiState.travelInformation.destinationCoordinates
-
-
-
     Box(
         modifier = Modifier
             .background(DeepBlue)
             .fillMaxSize()
     ) {
+
         Column {
             InformationSection()
-            NextEventSection(onClick = { openGoogleMaps(context, destCoordinates.first,
-                destCoordinates.second
-            ) }, travelInformation = uiState.travelInformation, nextEventInfo = nextEventInfo.first())
-            DepartureSection()
-            ButtonSection()
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                BoxButton(
-                    padding = 8.dp,
-                    color = ButtonBlue,
-                    onClick = vm::onStartServiceClicked,
-                    buttonText = "Start/stop gps-tracking"
-                )
-                Text(text = "Current pos: Lat: ${uiState.currentLatitude}, Lon: ${uiState.currentLongitude}")
+            Column(modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .height(IntrinsicSize.Max)) {
 
+                NextEventSection(onClick = { openGoogleMaps(context, destCoordinates.first,
+                    destCoordinates.second
+                ) }, travelInformation = uiState.travelInformation, nextEventInfo = nextEventInfo.first())
+                if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
+                    DepartureSection(departureInfo = departureInfo)
+                }
+                ButtonSection()
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    BoxButton(
+                        padding = 8.dp,
+                        color = ButtonBlue,
+                        onClick = vm::onStartServiceClicked,
+                        buttonText = "Start/stop gps-tracking"
+                    )
+                    Text(text = "Current pos: Lat: ${uiState.currentLatitude}, Lon: ${uiState.currentLongitude}")
+
+                }
+                Spacer(modifier = Modifier.height(200.dp))
             }
+
+
         }
+
+
         BottomMenu(
             items = listOf(
                 BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),

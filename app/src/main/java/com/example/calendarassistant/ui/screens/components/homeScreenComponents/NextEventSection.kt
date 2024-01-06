@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
-import com.example.calendarassistant.model.mock.calendar.TravelInformation
+import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite

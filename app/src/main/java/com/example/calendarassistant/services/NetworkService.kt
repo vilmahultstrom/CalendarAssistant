@@ -3,7 +3,9 @@ package com.example.calendarassistant.services
 import android.util.Log
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockEvent
+import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
+import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.utilities.DateHelpers
 import java.time.ZonedDateTime
@@ -35,6 +37,15 @@ class NetworkService : INetworkService {
             }
 
             val legs = response.body()!!.routes.first().legs.first()
+            val steps = legs.steps
+
+            // Collects steps where transit
+            val transitSteps: MutableList<Steps> = mutableListOf()
+            for (element in steps) {
+                if (element.travelMode == "TRANSIT") {
+                    transitSteps.add(element)
+                }
+            }
 
             // Contains time of departure in text and unix time
             val departureInformation = legs.departureTime
@@ -52,9 +63,11 @@ class NetworkService : INetworkService {
                     )
                 )
                 // Updates set new info, which updates the ui
-                MockEvent.setTravelInformation(
-                    departureTimeHHMM, departureTime, Pair(endLocation?.lat, endLocation?.lng)
+                MockTravelInformation.setTravelInformation(
+                    departureTimeHHMM, departureTime, Pair(endLocation?.lat, endLocation?.lng), transitSteps = transitSteps
                 )
+
+
             }
         } catch (e: Exception) {
             Log.d(TAG, e.printStackTrace().toString())

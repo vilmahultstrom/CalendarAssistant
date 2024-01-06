@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.calendar.TravelInformation
+import com.example.calendarassistant.model.mock.travel.MockTravelInformation
+import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.network.GoogleApi
+import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.NetworkService
@@ -38,6 +40,7 @@ class TestVM @Inject constructor(
     val startServiceAction: State<Event<String>?> = _startServiceAction
     private val _mockEvents = MutableStateFlow(MockEvent.getMockEventsFormattedConvertedTime()) //TODO: this data should come from Google Calendar api
     val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
+    val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
 
 
     // Start fetching gps data
@@ -106,7 +109,7 @@ class TestVM @Inject constructor(
 
             // Collecting next mock event for display
             launch {
-                MockEvent.getNextEventInformation().collect { next: TravelInformation ->
+                MockTravelInformation.getNextEventInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
                     _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }
