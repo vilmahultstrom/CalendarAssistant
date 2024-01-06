@@ -135,7 +135,7 @@ fun EventItem(event: MockCalendarEvent) {
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
-                        val formattedTime = DateHelpers.googleTimeToHoursMinutes(event.start)
+                        val formattedTime = event.start
                         Text(
                             text = formattedTime,
                             color = TextWhite,
