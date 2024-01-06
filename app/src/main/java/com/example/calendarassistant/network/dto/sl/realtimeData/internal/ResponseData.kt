@@ -11,7 +11,7 @@ data class ResponseData (
   @SerializedName("Buses"               ) var buses               : ArrayList<Buses>               = arrayListOf(),
   @SerializedName("Trains"              ) var trains              : ArrayList<Trains>              = arrayListOf(),
   @SerializedName("Trams"               ) var trams               : ArrayList<Trams>               = arrayListOf(),
-  @SerializedName("Ships"               ) var ships               : ArrayList<String>              = arrayListOf(),
+  @SerializedName("Ships"               ) var ships               : ArrayList<Ships>               = arrayListOf(),
   @SerializedName("StopPointDeviations" ) var stopPointDeviations : ArrayList<StopPointDeviations> = arrayListOf()
 
 )
