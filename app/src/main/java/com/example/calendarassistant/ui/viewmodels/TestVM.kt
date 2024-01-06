@@ -51,7 +51,7 @@ class TestVM @Inject constructor(
         if (!isFetchingLocationData) {
             _startServiceAction.value = Event(LocationService.ACTION_START)
             viewModelScope.launch {
-                networkService.getTimeToLeave(TravelMode.Transit)
+                networkService.getTravelInformation(TravelMode.Transit)
             }
             isFetchingLocationData = true
         } else {
@@ -94,7 +94,7 @@ class TestVM @Inject constructor(
                 _startServiceAction.value =
                     Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
-                networkService.getTimeToLeave(_uiState.value.travelMode) // fetches data
+                networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
 
             }
 
@@ -108,7 +108,7 @@ class TestVM @Inject constructor(
                         )
                     }
                     // This updates the time left, could maybe ge done by internal timer
-                    networkService.getTimeToLeave(_uiState.value.travelMode)
+                    networkService.getTravelInformation(_uiState.value.travelMode)
                 }
             }
 
