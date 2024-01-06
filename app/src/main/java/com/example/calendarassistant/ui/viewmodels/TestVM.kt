@@ -81,12 +81,15 @@ class TestVM @Inject constructor(
 
     init {
         viewModelScope.launch {
+
+            // Coroutine for getting location at start up
             launch {
-                _startServiceAction.value = Event(LocationService.ACTION_GET) // sets current location so its not null
-                delay(10000) // delay for gps init
+                delay(10000)
+                _startServiceAction.value = Event(LocationService.ACTION_GET)
                 networkService.getTimeToLeave(_uiState.value.travelMode)
             }
 
+            // Coroutine for collecting location updates when
             launch {
                 LocationRepository.getLocationUpdates().collect { location ->
                     _uiState.update {
@@ -95,10 +98,12 @@ class TestVM @Inject constructor(
                             currentLongitude = location.longitude.toString()
                         )
                     }
+                    // This updates the time left, could maybe ge done by internal timer
                     networkService.getTimeToLeave(_uiState.value.travelMode)
                 }
             }
 
+            // Collecting next mock event for display
             launch {
                 MockEvent.getNextEventInformation().collect { next: NextEventInformation ->
                     Log.d(TAG, "Collecting: $next")
