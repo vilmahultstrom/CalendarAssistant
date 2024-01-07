@@ -1,7 +1,14 @@
 package com.example.calendarassistant.model.mock.travel
 
 
-data class DelayAndDeviationInfo(
+
+object MockDeviationInformation {
+
+
+
+}
+
+data class DeviationInformation(
     val delayInMinutes: Int,
     val deviations: List<Deviation>? = emptyList()
 )

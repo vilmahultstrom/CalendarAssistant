@@ -3,8 +3,8 @@ package com.example.calendarassistant.services
 import android.util.Log
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.travel.DelayAndDeviationInfo
 import com.example.calendarassistant.model.mock.travel.Deviation
+import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.SlApi
@@ -132,7 +132,10 @@ class NetworkService : INetworkService {
         )
     }
 
-    override suspend fun getDelaysAndDerivationInfo() {
+    /**
+     *  Makes api call to SL api and updates the delay and deviation info in for the next event
+     */
+    override suspend fun getDeviationInformation() {
         try {
             transitSteps.map { step ->
                 val realTimeData = fetchRealTimeDataForStep(step)
@@ -157,9 +160,9 @@ class NetworkService : INetworkService {
     private fun compareStepWithRealTimeData(
         step: Steps,
         realTimeData: SlRealtimeDataResponse
-    ): DelayAndDeviationInfo {
+    ): DeviationInformation {
         val transportMode = step.transitDetails?.line?.vehicle?.type
-            ?: return DelayAndDeviationInfo(0, null)
+            ?: return DeviationInformation(0, null)
         val lineShortName = step.transitDetails?.line?.shortName
         val scheduledDepartureTime = step.transitDetails?.departureTime?.value
 
@@ -199,7 +202,7 @@ class NetworkService : INetworkService {
         }
 
         val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime)
-        return DelayAndDeviationInfo(delayInMinutes, deviations)
+        return DeviationInformation(delayInMinutes, deviations)
     }
 
     private fun convertDeviations(slDeviations: ArrayList<Deviations>?): List<Deviation> {
@@ -273,5 +276,5 @@ interface INetworkService {
 
     suspend fun getTravelInformation(travelMode: TravelMode)
 
-    suspend fun getDelaysAndDerivationInfo()
+    suspend fun getDeviationInformation()
 }
