@@ -18,6 +18,6 @@ data class Buses (
   @SerializedName("ExpectedDateTime"     ) var expectedDateTime     : String? = null,
   @SerializedName("DisplayTime"          ) var displayTime          : String? = null,
   @SerializedName("JourneyNumber"        ) var journeyNumber        : Int?    = null,
-  @SerializedName("Deviations"           ) var deviations           : String? = null
+  @SerializedName("Deviations"           ) var deviations           : ArrayList<Deviations> = arrayListOf()
 
 )

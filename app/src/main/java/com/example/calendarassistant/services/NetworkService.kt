@@ -3,6 +3,8 @@ package com.example.calendarassistant.services
 import android.util.Log
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockEvent
+import com.example.calendarassistant.model.mock.travel.DelayAndDeviationInfo
+import com.example.calendarassistant.model.mock.travel.Deviation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.SlApi
@@ -11,16 +13,24 @@ import com.example.calendarassistant.network.dto.google.directions.internal.Depa
 import com.example.calendarassistant.network.dto.google.directions.internal.EndLocation
 import com.example.calendarassistant.network.dto.google.directions.internal.Legs
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
+import com.example.calendarassistant.network.dto.sl.realtimeData.SlRealtimeDataResponse
+import com.example.calendarassistant.network.dto.sl.realtimeData.internal.Deviations
 import com.example.calendarassistant.network.dto.sl.realtimeData.internal.ResponseData
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.utilities.DateHelpers
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Timer
 import kotlin.concurrent.schedule
 
 private const val TAG = "NetworkService"
 
 class NetworkService : INetworkService {
+
+    private var transitSteps: MutableList<Steps> = mutableListOf()
 
     /**
      *  Makes api call to Google directions and updates the next event info
@@ -50,7 +60,8 @@ class NetworkService : INetworkService {
 
             // Collects steps where transit
             // TODO: use this list to make api calls for traffic events (delays)
-            val transitSteps = extractTransitSteps(legs.steps)
+            transitSteps.clear()
+            transitSteps.addAll(extractTransitSteps(legs.steps))
 
             // Contains time of departure in text and unix time
             val departureInformation = legs.departureTime
@@ -60,11 +71,11 @@ class NetworkService : INetworkService {
 
             if (departureInformation != null) {
                 val departureTimeHHMM = calculateDepartureTimeHHMM(departureInformation)
-                val departureTime = departureInformation.text
+                val departureTimeText = departureInformation.text
 
                 updateMockTravelInformation(
                     departureTimeHHMM,
-                    departureTime,
+                    departureTimeText,
                     endLocation,
                     transitSteps
                 )
@@ -108,23 +119,120 @@ class NetworkService : INetworkService {
 
     private suspend fun updateMockTravelInformation(
         departureTimeHHMM: String,
-        departureTime: String?,
+        departureTimeText: String?,
         endLocation: EndLocation?,
         transitSteps: List<Steps>
     ) {
         // Updates set new info, which updates the ui
         MockTravelInformation.setTravelInformation(
             departureTimeHHMM,
-            departureTime,
+            departureTimeText,
             Pair(endLocation?.lat, endLocation?.lng),
             transitSteps = transitSteps
         )
     }
 
+    override suspend fun getDelaysAndDerivationInfo() {
+        try {
+            transitSteps.map { step ->
+                val realTimeData = fetchRealTimeDataForStep(step)
+                compareStepWithRealTimeData(step, realTimeData)
+            }.toMutableList()
+
+            // TODO: implement information update for ui
+
+        } catch (e: Exception) {
+            Log.d(TAG, "Error fetching real-time transit data: ${e.message}")
+        }
+    }
+
+    private suspend fun fetchRealTimeDataForStep(step: Steps): SlRealtimeDataResponse {
+        // Fetch real-time data from SL API using the step information
+        val stationName = step.transitDetails?.departureStop?.name ?: return SlRealtimeDataResponse()
+        val siteIdResponse = SlApi.getSiteIdByStationName(stationName = stationName)
+        val siteId = siteIdResponse.body()?.responseData?.firstOrNull()?.siteId ?: return SlRealtimeDataResponse()
+        return SlApi.getRealtimeDataBySiteId(siteId = siteId).body() ?: SlRealtimeDataResponse()
+    }
+
+    private fun compareStepWithRealTimeData(
+        step: Steps,
+        realTimeData: SlRealtimeDataResponse
+    ): DelayAndDeviationInfo {
+        val transportMode = step.transitDetails?.line?.vehicle?.type
+            ?: return DelayAndDeviationInfo(0, null)
+        val lineShortName = step.transitDetails?.line?.shortName
+        val scheduledDepartureTime = step.transitDetails?.departureTime?.value
+
+        var realDepartureTime: String? = null
+        var deviations: List<Deviation>? = null
+
+        when (transportMode) {
+            "BUS" -> {
+                val busData = realTimeData.responseData?.buses?.find { it.lineNumber == lineShortName }
+                realDepartureTime = busData?.expectedDateTime
+                deviations = convertDeviations(busData?.deviations)
+            }
+            "SUBWAY" -> {
+                val metroData = realTimeData.responseData?.metros?.find { it.lineNumber == lineShortName }
+                realDepartureTime = metroData?.expectedDateTime
+                deviations = convertDeviations(metroData?.deviations)
+            }
+            "TRAIN" -> {
+                val trainData = realTimeData.responseData?.trains?.find { it.lineNumber == lineShortName }
+                realDepartureTime = trainData?.expectedDateTime
+                deviations = convertDeviations(trainData?.deviations)
+            }
+            "TRAM" -> {
+                val tramData = realTimeData.responseData?.trams?.find { it.lineNumber == lineShortName }
+                realDepartureTime = tramData?.expectedDateTime
+                deviations = convertDeviations(tramData?.deviations)
+            }
+            "SHIP" -> {
+                val shipData = realTimeData.responseData?.ships?.find { it.lineNumber == lineShortName }
+                realDepartureTime = shipData?.expectedDateTime
+                deviations = convertDeviations(shipData?.deviations)
+            }
+            else -> {
+                realDepartureTime = null
+                deviations = emptyList()
+            }
+        }
+
+        val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime)
+        return DelayAndDeviationInfo(delayInMinutes, deviations)
+    }
+
+    private fun convertDeviations(slDeviations: ArrayList<Deviations>?): List<Deviation> {
+        return slDeviations?.map {
+            Deviation(
+                it.text ?: "",it.consequence ?: "",it.importanceLevel ?: 0
+            )
+        } ?: emptyList()
+    }
+
+    private fun calculateDelay(scheduledTime: Int?, actualTime: String?): Int {
+        if (scheduledTime == null || actualTime == null) return 0
+
+        // Parse the actual time (expectedDateTime) to a Unix timestamp
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val actualDateTime = try {
+            LocalDateTime.parse(actualTime, formatter).atZone(ZoneId.systemDefault()).toEpochSecond()
+        } catch (e: DateTimeParseException) {
+            e.printStackTrace()
+            return 0
+        }
+
+        // Calculate the delay in seconds
+        val delayInSeconds = actualDateTime - scheduledTime
+
+        // Convert the delay to minutes
+        return (delayInSeconds / 60).toInt()
+    }
 
 /*
-    override suspend fun getTravelInformation(travelMode: TravelMode): Any? { //TODO: change return value
-        return try {
+
+    override suspend fun getTravelInformationn(travelMode: TravelMode) {
+        try {
             when (travelMode) {
                 TravelMode.Transit -> getTransitTravelInformation()
                 TravelMode.Driving -> getDrivingTravelInformation()
@@ -136,40 +244,23 @@ class NetworkService : INetworkService {
             Log.d(TAG, e.printStackTrace().toString())
         }
     }
-*/
 
-/*
-    private suspend fun getTransitTravelInformation(): Any {
-        TODO("Not yet implemented")
-
-        return try {
-            // todo: hämta info från google anrop
-            // DepartureStop.name, ArrivalStop.name (eller position() -> lon lat, men då måste anrop ändras)
-            // för alla transporter (ej gång emellan dem, alltså inte ""Steps" -> "travel_mode": "WALKING"")
-            val responseSiteId = SlApi.getSiteIdByStationName("T-centralen")
-
-            // DepartureTime.value, ArrivalTime.value
-            // för alla avgångar och ankomster
-            val responseRealtime = SlApi.getRealtimeDataBySiteId("9001")
-
-        } catch (e: Exception) {
-            Log.d(TAG, e.printStackTrace().toString())
-        }
-    }
-*/
-
-/*
-    private fun getDrivingTravelInformation(): Any? {
+    private suspend fun getTransitTravelInformation() {
         TODO("Not yet implemented")
     }
 
-    private fun getBicyclingTravelInformation(): Any? {
+    private fun getDrivingTravelInformation() {
         TODO("Not yet implemented")
     }
 
-    private fun getWalkingTravelInformation(): Any? {
+    private fun getBicyclingTravelInformation() {
         TODO("Not yet implemented")
     }
+
+    private fun getWalkingTravelInformation() {
+        TODO("Not yet implemented")
+    }
+
 */
 
     fun hello(): String {
@@ -182,4 +273,5 @@ interface INetworkService {
 
     suspend fun getTravelInformation(travelMode: TravelMode)
 
+    suspend fun getDelaysAndDerivationInfo()
 }
