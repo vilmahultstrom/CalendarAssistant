@@ -9,7 +9,8 @@ import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
-import com.example.calendarassistant.network.SlApi
+import com.example.calendarassistant.network.SlLookUpApi
+import com.example.calendarassistant.network.SlRealTimeApi
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
 import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
 import com.example.calendarassistant.network.dto.google.directions.internal.EndLocation
@@ -372,13 +373,9 @@ class NetworkService : INetworkService {
     override suspend fun getDeviationInformation() {
         try {
             transitSteps.map { step ->
-                Log.d(TAG, "1")
                 val realTimeData = fetchRealTimeDataForStep(step)
-                Log.d(TAG, "2")
                 transitStepsDeviations.add(compareStepWithRealTimeData(step, realTimeData))
-                Log.d(TAG, "3")
             }
-            Log.d(TAG, "4 **** Sker detta?")
 
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
@@ -390,10 +387,30 @@ class NetworkService : INetworkService {
     }
 
     private suspend fun fetchRealTimeDataForStep(step: Steps): SlRealtimeDataResponse {
+        Log.d(TAG, "--- FetchRealTimeDataForStep(steps) ---")
+
         val stationName = step.transitDetails?.departureStop?.name ?: return SlRealtimeDataResponse()
-        val siteIdResponse = SlApi.getSiteIdByStationName(stationName)
-        val siteId = siteIdResponse.body()?.responseData?.firstOrNull()?.siteId ?: return SlRealtimeDataResponse()
-        return SlApi.getRealtimeDataBySiteId(siteId).body() ?: SlRealtimeDataResponse()
+        Log.d(TAG, "--- stationName = $stationName ---")
+
+        val siteIdResponse = SlLookUpApi.getSiteIdByStationName(stationName)
+        Log.d(TAG, "--- siteIdResponse = $siteIdResponse. ---")
+
+        if (!siteIdResponse.isSuccessful) {
+            throw INetworkService.NetworkException("Unsuccessful network call to SL LookUp api")
+        }
+
+        val siteId = siteIdResponse.body()?.responseData?.firstOrNull()?.siteId
+            ?: return SlRealtimeDataResponse()
+        Log.d(TAG, "--- siteId = $siteId ---")
+
+        val realTimeDataResponse = SlRealTimeApi.getRealtimeDataBySiteId(siteId)
+        Log.d(TAG, "--- RT data response = $realTimeDataResponse. ---")
+
+        if (!realTimeDataResponse.isSuccessful) {
+            throw INetworkService.NetworkException("Unsuccessful network call to SL RealTime api")
+        }
+
+        return realTimeDataResponse.body() ?: SlRealtimeDataResponse()
     }
 
     private fun compareStepWithRealTimeData(
@@ -407,7 +424,13 @@ class NetworkService : INetworkService {
         val headSign = step.transitDetails?.headsign
         val scheduledDepartureTime = step.transitDetails?.departureTime?.value
 
-        return findRealTimeData(transportMode, lineShortName, headSign, scheduledDepartureTime, realTimeData)
+        return findRealTimeData(
+            transportMode,
+            lineShortName,
+            headSign,
+            scheduledDepartureTime,
+            realTimeData
+        )
     }
 
     private fun findRealTimeData(
