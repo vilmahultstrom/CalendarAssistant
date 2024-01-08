@@ -3,20 +3,26 @@ package com.example.calendarassistant.network.location
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
+import android.util.Log
 import com.example.calendarassistant.hasLocationPermission
+import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+
+private const val TAG = "LocationClient"
 
 class LocationClient(
     private val context: Context, private val client: FusedLocationProviderClient
@@ -71,7 +77,29 @@ class LocationClient(
             throw ILocationClient.LocationException("GPS is disabled")
         }
 
+        val locationRequest =
+            CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .setDurationMillis(1000L).build()
+        val cancellationToken = CancellationTokenSource()
+
         return suspendCoroutine { continuation ->
+            client.getCurrentLocation(locationRequest, cancellationToken.token)
+                .addOnSuccessListener { location ->
+                    // If location found success, resume with location
+                    continuation.resume(location)
+                }
+                .addOnFailureListener { exception ->
+                    // else resume with exception
+                    continuation.resumeWithException(exception)
+                }
+            // TODO: You may want to add an OnCanceledListener to handle cancellation.
+        }
+
+        //Log.d(TAG, location2.toString())
+
+        /*
+
+        val location = suspendCoroutine { continuation ->
             val locationListener = object : LocationListener {
                 override fun onLocationChanged(location: Location) {
                     continuation.resume(location)
@@ -86,9 +114,13 @@ class LocationClient(
                     // Implement as needed
                 }
             }
+            Log.d(TAG, "Getting location")
+            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
-        }
+
+         */
     }
-
+    //Log.d(TAG, "Getting location 2")
+    // return location2
 }
