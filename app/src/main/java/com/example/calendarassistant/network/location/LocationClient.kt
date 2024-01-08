@@ -79,7 +79,7 @@ class LocationClient(
 
         val locationRequest =
             CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-                .setDurationMillis(1000L).build()
+                .setDurationMillis(5000L).build()
         val cancellationToken = CancellationTokenSource()
 
         return suspendCoroutine { continuation ->

@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.enums.TravelMode
+import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu
@@ -51,6 +52,10 @@ fun HomeScreen(
     val context = LocalContext.current
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
+
+
+    //val intent = Intent(context, Signin::class.java)
+    //context.startActivity(intent)
 
     val nextEventInfo by vm.mockEvents.collectAsState()
     val departureInfo by vm.transitSteps.collectAsState()
@@ -88,7 +93,7 @@ fun HomeScreen(
                     DepartureSection(
                         departureInfo = departureInfo,
                         deviationInfo = uiState.transitDeviationInformation,
-                        //onClick = { vm.getDeviationInformation() }
+                        onClick = { vm.getDeviationInformation() }
                     )
                 }
 

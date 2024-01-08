@@ -369,11 +369,14 @@ class NetworkService : INetworkService {
      *  Makes api call to SL api and updates the delay and deviation info for the next event
      */
     override suspend fun getDeviationInformation() {
+        Log.d(TAG, "1")
         try {
             transitSteps.map { step ->
                 val realTimeData = fetchRealTimeDataForStep(step)
                 transitStepsDeviations.add(compareStepWithRealTimeData(step, realTimeData))
             }
+
+            Log.d(TAG, "Sker detta?")
 
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
