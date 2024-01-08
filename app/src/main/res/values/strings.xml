@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Calendar Assistant</string>
     <string name="web_client_id">754634872728-rpqqho255imth3nsst6pj60vc9tn9f5k.apps.googleusercontent.com</string>
+    <string name="firebase_client_id">179111803740-ok50t3lgvku7a0arspmkubn6djoraihg.apps.googleusercontent.com</string>
 </resources>

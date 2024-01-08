@@ -125,9 +125,6 @@ class Signin: AppCompatActivity(), SignInInterface {
                         composable(BMRoutes.Calendar.route) {
                             CalendarScreen(vm = testVM, navController)
                         }
-                        composable(BMRoutes.Settings.route) {
-                            SettingsScreen(vm = testVM, navController)
-                        }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)
                         }

@@ -1,5 +1,6 @@
 package com.example.calendarassistant.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,9 +15,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,18 +35,37 @@ import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.GoogleSignInButton
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
 
 @Composable
 fun SettingsScreen(
-    vm: TestVM,
-    navController: NavController
+    vm: SettingsVM,
+    navController: NavController,
+    onSignInClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .background(DeepBlue)
             .fillMaxSize()
     ) {
+
+        val state by vm.signInState.collectAsState()
+
+        val context = LocalContext.current
+        LaunchedEffect(key1 = state.signInError) {
+            state.signInError?.let { error ->
+                Toast.makeText(
+                    context,
+                    error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+
+
+
         Column {
             InformationSection("Settings", "Here you can sync your google account")
             Column (
@@ -52,7 +76,7 @@ fun SettingsScreen(
 
                 // TODO: Get "Sign in with Google" or "Sign out" from VM depending on state
                 val googleButtonText = "Sign in with Google"
-                GoogleSignInButton(googleButtonText) { navController.navigate(BMRoutes.Login.route) }
+                GoogleSignInButton(googleButtonText) { onSignInClick() }
             }
 
             // TODO: Välj vilken kalender som ska importeras / logga in?

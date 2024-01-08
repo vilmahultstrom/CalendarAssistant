@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "179111803740",
+    "project_id": "peaceful-keel-407810",
+    "storage_bucket": "peaceful-keel-407810.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179111803740:android:ed7d862a11efff28199f99",
+        "android_client_info": {
+          "package_name": "com.example.calendarassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179111803740-ok50t3lgvku7a0arspmkubn6djoraihg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzDMhwps3ubyqu5g-4MTIaHue66WsqQR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179111803740-ok50t3lgvku7a0arspmkubn6djoraihg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
