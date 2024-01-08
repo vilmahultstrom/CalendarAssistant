@@ -146,16 +146,13 @@ class TestVM @Inject constructor(
                 _startServiceAction.value =
                     Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
+
                 Log.d(TAG, "2" + _uiState.value.currentLatitude)
+
                 networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
-                Log.d(TAG, "3")
             }
 
             /**
-             * TODO (fundering) Vilma: Använda interna acceleratorn och att när den har
-             *  förändrats innom ett visst intervall så ska man anropa current location.
-             *  Men även var 30 minut.
-             *
              * TODO:
              *  Om vi inte vill anropa GPS hela tiden? Eller vill vi det?
              *  Borde vi ha ett intervall för hur mycket lon och lat ska ändras för att kolla current position igen?
