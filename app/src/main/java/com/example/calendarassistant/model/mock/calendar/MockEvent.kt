@@ -11,7 +11,7 @@ object MockEvent {
 
     private val events: List<MockCalendarEvent> = listOf(
         MockCalendarEvent(
-            start = ZonedDateTime.now(ZoneId.of("Z")).plusMinutes(45)//300)
+            start = ZonedDateTime.now(ZoneId.of("Z")).plusMinutes(50)//300)
                 .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             summary = "Föreläsning - Mjukvarukonstruktion, projektkurs (HI1036)",
             location = "huddinge" //"T67 Hälsovägen"

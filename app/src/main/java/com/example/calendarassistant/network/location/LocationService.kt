@@ -56,7 +56,8 @@ class LocationService : Service() {
 
     private suspend fun getCurrent() {
         val location = locationClient.getCurrentLocation()
-        LocationRepository.setCurrentLocation(location)
+        if (location != null)
+            LocationRepository.setCurrentLocation(location)
     }
 
     private fun stop() {

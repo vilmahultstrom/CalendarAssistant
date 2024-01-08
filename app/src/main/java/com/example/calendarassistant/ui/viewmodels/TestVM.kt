@@ -141,12 +141,11 @@ class TestVM @Inject constructor(
 
     init {
         viewModelScope.launch {
-
             // Coroutine for getting location at start up
             launch {
-//                _startServiceAction.value =
-//                    Event(LocationService.ACTION_GET) // Inits and collects location info
-//                delay(10000)    // Delay for init
+                _startServiceAction.value =
+                    Event(LocationService.ACTION_GET) // Inits and collects location info
+                delay(10000)    // Delay for init
                 networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
                 networkService.getDeviationInformation()
             }
@@ -162,8 +161,8 @@ class TestVM @Inject constructor(
                 LocationRepository.getLocationUpdates().collect { location ->
                     _uiState.update {
                         _uiState.value.copy(
-                            currentLatitude = "59.280183400", //location.latitude.toString(),
-                            currentLongitude = "18.0578712"//location.longitude.toString()
+                            currentLatitude = location.latitude.toString(),
+                            currentLongitude = location.longitude.toString()
                         )
                     }
                     // This updates the time left, could maybe ge done by internal timer
@@ -190,6 +189,17 @@ class TestVM @Inject constructor(
                 }
             }
 
+            launch {
+                MockDeviationInformation.getNextTransitDeviationsInformation()
+                    .collect { next: TransitDeviationInformation ->
+                        Log.d(TAG, "Collecting: $next")
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                transitDeviationInformation = next
+                            )
+                        }
+                    }
+            }
         }
     }
 }
