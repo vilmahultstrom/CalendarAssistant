@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.calendarassistant.R
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.ui.theme.ButtonBlue
+import com.example.calendarassistant.ui.theme.DarkViolet
 import com.example.calendarassistant.ui.theme.LightGreen3
 import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.TextWhite
@@ -73,7 +74,7 @@ fun EventItem(event: MockCalendarEvent) {
             .padding(7.5.dp)
             .aspectRatio(2f)
             .clip(RoundedCornerShape(10.dp))
-            .background(LightGreen3)
+            .background(DarkViolet)
     ) {
         Column(
             modifier = Modifier
