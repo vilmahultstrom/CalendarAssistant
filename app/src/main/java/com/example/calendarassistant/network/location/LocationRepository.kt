@@ -1,10 +1,13 @@
 package com.example.calendarassistant.network.location
 
 import android.location.Location
+import android.util.Log
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
+
+private const val TAG = "LocationRepository"
 object LocationRepository {
     private val locationUpdates = MutableSharedFlow<Location>()
     private var currentLocation: Location? = null

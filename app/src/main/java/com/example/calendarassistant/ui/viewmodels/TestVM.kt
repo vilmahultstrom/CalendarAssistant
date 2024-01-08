@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
+import com.example.calendarassistant.login.SignInInterface
+import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.mock.travel.DeviationInformation
@@ -43,6 +45,13 @@ class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
 
+
+
+    private var signInAttemptListener: SignInInterface? = null
+    fun setSignInAttemptListener(listener: SignInInterface) {
+        signInAttemptListener = listener
+    }
+
     private val _startServiceAction = mutableStateOf<Event<String>?>(null)
     val startServiceAction: State<Event<String>?> = _startServiceAction
 
@@ -65,6 +74,8 @@ class TestVM @Inject constructor(
 
     fun login() {
         viewModelScope.launch {
+            signInAttemptListener?.attemptSignIn()
+            //signin.attemptSignIn()
             Log.d(TAG, "loggin in button pressed")
         }
     }
@@ -91,6 +102,7 @@ class TestVM @Inject constructor(
         isFetchingLocationData = false
     }
 
+
     private fun fetchTravelInformation() {
         viewModelScope.launch {
             networkService.getTravelInformation(TravelMode.Transit) // TODO: ändra till valda TravelMode
@@ -108,7 +120,8 @@ class TestVM @Inject constructor(
         }
     }
 
-    // TODO: För test?
+
+
     fun getDirectionsByPlace() {
         viewModelScope.launch {
             val response =
@@ -117,7 +130,6 @@ class TestVM @Inject constructor(
         }
     }
 
-    // TODO: För test?
     fun getDirectionsByCoordinates() {
         viewModelScope.launch {
             val response = GoogleApi.getDirectionsByCoordinates(
@@ -140,15 +152,11 @@ class TestVM @Inject constructor(
     init {
         viewModelScope.launch {
 
-            Log.d(TAG, "1")
             // Coroutine for getting location at start up
             launch {
                 _startServiceAction.value =
                     Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
-
-                Log.d(TAG, "2" + _uiState.value.currentLatitude)
-
                 networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
             }
 
