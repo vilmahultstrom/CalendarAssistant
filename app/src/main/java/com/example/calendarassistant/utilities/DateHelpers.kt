@@ -1,14 +1,13 @@
 package com.example.calendarassistant.utilities
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
-object DateHelpers{
+object DateHelpers {
     fun getCurrentMonthDates(date: LocalDate): List<String> {
         val yearMonth = YearMonth.of(date.year, date.month)
         val daysInMonth = yearMonth.lengthOfMonth()
@@ -28,6 +27,10 @@ object DateHelpers{
     }
 
 
+    /**
+     *  Returns a string with the format HHh:MMm from
+     *  a seconds value.
+     */
     fun formatSecondsToHourMinutes(seconds: Long?) : String {
         if (seconds == null) return "nullValue"
         if (seconds < 0) return "Run"
@@ -40,9 +43,11 @@ object DateHelpers{
             "${minutes}m"
         }
 
-
-
     }
 
+    fun googleTimeToHoursMinutes(timeString: String): String {
+        val zonedDateTime = ZonedDateTime.parse(timeString)
+        return zonedDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+    }
 }
 

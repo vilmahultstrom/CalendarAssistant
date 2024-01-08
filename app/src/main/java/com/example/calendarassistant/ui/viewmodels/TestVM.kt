@@ -10,8 +10,10 @@ import com.example.calendarassistant.login.SignInInterface
 import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.calendar.NextEventInformation
+import com.example.calendarassistant.model.mock.travel.MockTravelInformation
+import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.network.GoogleApi
+import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.NetworkService
@@ -32,12 +34,14 @@ class TestVM @Inject constructor(
 ) : ViewModel() {
 
 
+
     private var signInAttemptListener: SignInInterface? = null
     fun setSignInAttemptListener(listener: SignInInterface) {
         signInAttemptListener = listener
     }
     
-    private val _uiState = MutableStateFlow(UiState(nextEventInformation = NextEventInformation()))
+
+    private val _uiState = MutableStateFlow(UiState(travelInformation = TravelInformation()))
 
     val uiState: StateFlow<UiState> = _uiState
 
@@ -45,16 +49,19 @@ class TestVM @Inject constructor(
 
     private val _startServiceAction = mutableStateOf<Event<String>?>(null)
     val startServiceAction: State<Event<String>?> = _startServiceAction
-    private val _mockEvents = MutableStateFlow(MockEvent.getMockEvents())
+    private val _mockEvents =
+        MutableStateFlow(MockEvent.getMockEventsFormattedConvertedTime()) //TODO: this data should come from Google Calendar api
     val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
+    val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
 
 
     // Start fetching gps data
     fun onStartServiceClicked() {
+        MockEvent.getMockEventsFormattedConvertedTime()
         if (!isFetchingLocationData) {
             _startServiceAction.value = Event(LocationService.ACTION_START)
             viewModelScope.launch {
-                networkService.getTimeToLeave(TravelMode.Transit)
+                networkService.getTravelInformation(TravelMode.Transit)
             }
             isFetchingLocationData = true
         } else {
@@ -69,6 +76,13 @@ class TestVM @Inject constructor(
             signInAttemptListener?.attemptSignIn()
             //signin.attemptSignIn()
             Log.d(TAG, "loggin in button pressed")
+        }
+    }
+
+    fun setTravelMode(mode: TravelMode) {
+        _uiState.update { _uiState.value.copy(travelMode = mode) }
+        viewModelScope.launch {
+            networkService.getTravelInformation(mode)
         }
     }
 
@@ -93,12 +107,22 @@ class TestVM @Inject constructor(
 
     init {
         viewModelScope.launch {
+
+            // Coroutine for getting location at start up
             launch {
-                _startServiceAction.value = Event(LocationService.ACTION_GET) // sets current location so its not null
-                delay(10000) // delay for gps init
-                networkService.getTimeToLeave(_uiState.value.travelMode)
+                _startServiceAction.value =
+                    Event(LocationService.ACTION_GET) // Inits and collects location info
+                delay(10000)    // Delay for init
+                networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
             }
 
+            /**
+             * TODO (fundering) Vilma: Använda interna acceleratorn och att när den har
+             *  förändrats innom ett visst intervall så ska man anropa current location.
+             *  Men även var 30 minut.
+             */
+
+            // Coroutine for collecting location updates when
             launch {
                 LocationRepository.getLocationUpdates().collect { location ->
                     _uiState.update {
@@ -107,14 +131,16 @@ class TestVM @Inject constructor(
                             currentLongitude = location.longitude.toString()
                         )
                     }
-                    networkService.getTimeToLeave(_uiState.value.travelMode)
+                    // This updates the time left, could maybe ge done by internal timer
+                    networkService.getTravelInformation(_uiState.value.travelMode)
                 }
             }
 
+            // Collecting next mock event for display
             launch {
-                MockEvent.getNextEventInformation().collect { next: NextEventInformation ->
+                MockTravelInformation.getNextEventInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(nextEventInformation = next) }
+                    _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }
             }
 
@@ -125,6 +151,6 @@ class TestVM @Inject constructor(
 data class UiState(
     val currentLatitude: String = "",
     val currentLongitude: String = "",
-    val nextEventInformation: NextEventInformation,
+    val travelInformation: TravelInformation,
     val travelMode: TravelMode = TravelMode.Transit
 )

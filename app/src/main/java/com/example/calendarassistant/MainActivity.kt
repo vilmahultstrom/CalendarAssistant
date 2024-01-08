@@ -24,11 +24,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.login.Signin
-import com.example.calendarassistant.ui.screens.DailyScreen
+import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
-import com.example.calendarassistant.ui.screens.MonthlyScreen
-import com.example.calendarassistant.ui.screens.WeeklyScreen
+import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -47,9 +46,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // To start Signin Activity
-        val intent = Intent(this, Signin::class.java)
-        startActivity(intent)
+        // uncomment To start Signin Activity
+        // val intent = Intent(this, Signin::class.java)
+        // startActivity(intent)
 
         ActivityCompat.requestPermissions(
             this,
@@ -78,14 +77,11 @@ class MainActivity : ComponentActivity() {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(vm = testVM, navController)
                         }
-                        composable(BMRoutes.Daily.route) {
-                            DailyScreen(vm = testVM, navController)
+                        composable(BMRoutes.Calendar.route) {
+                            CalendarScreen(vm = testVM, navController)
                         }
-                        composable(BMRoutes.Weekly.route) {
-                            WeeklyScreen(vm = testVM, navController)
-                        }
-                        composable(BMRoutes.Monthly.route) {
-                            MonthlyScreen(vm = testVM, navController)
+                        composable(BMRoutes.Settings.route) {
+                            SettingsScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)

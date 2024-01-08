@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.DailyScreenComponents
+package com.example.calendarassistant.ui.screens.components.CalendarScreenComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +26,7 @@ import com.example.calendarassistant.ui.theme.DarkerButtonBlue
 import com.example.calendarassistant.ui.theme.TextWhite
 
 
+// TODO: Rework into full scale calendar?
 @Composable
 fun DatePickSection(
     dates: List<String>,

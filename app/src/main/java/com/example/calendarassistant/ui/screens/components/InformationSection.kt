@@ -50,7 +50,7 @@ fun InformationSection(
             )
         }
         Icon(
-            painter = painterResource(id = R.drawable.baseline_settings_24),
+            painter = painterResource(id = R.drawable.baseline_sentiment_satisfied_24),
             contentDescription = "Search",
             tint = Color.White,
             modifier = Modifier.size(48.dp)
