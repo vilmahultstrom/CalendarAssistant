@@ -51,6 +51,7 @@ fun SettingsScreen(
                 Text(text = "Welcome to the Settings Screen", color = TextWhite)
 
                 // TODO: Get "Sign in with Google" or "Sign out" from VM depending on state
+                // TODO: Open Google sign in intent
                 val googleButtonText = "Sign in with Google"
                 GoogleSignInButton(googleButtonText) { navController.navigate(BMRoutes.Login.route) }
             }

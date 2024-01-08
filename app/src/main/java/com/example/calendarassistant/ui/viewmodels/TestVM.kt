@@ -39,13 +39,10 @@ interface CalendarAssistantViewModel {
 }
 */
 
-
 @HiltViewModel
 class TestVM @Inject constructor(
     private val networkService: NetworkService
 ) : ViewModel() {
-
-
 
     private var signInAttemptListener: SignInInterface? = null
     fun setSignInAttemptListener(listener: SignInInterface) {
