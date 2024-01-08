@@ -22,9 +22,10 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
 
     private val credential: GoogleAccountCredential = GoogleAccountCredential.usingOAuth2(
         context, SCOPES
-    ).apply {
-        selectedAccountName = accountName
-    }
+    ).setSelectedAccountName(accountName)
+        //.apply {
+        //selectedAccountName = accountName
+    //}
         //.setSelectedAccountName(accountName)
 
 
