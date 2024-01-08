@@ -84,6 +84,7 @@ fun DepartureSection(
                 }
             }
         }
+        /*
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -96,6 +97,7 @@ fun DepartureSection(
             }
             Spacer(modifier = Modifier.width(8.dp))
         }
+        */
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier

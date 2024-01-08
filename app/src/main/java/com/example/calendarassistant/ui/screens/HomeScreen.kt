@@ -96,16 +96,18 @@ fun HomeScreen(
                     DepartureSection(
                         departureInfo = departureInfo,
                         deviationInfo = uiState.transitDeviationInformation,
-                        onClick = { vm.getDeviationInformation() }
+                        //onClick = { vm.getDeviationInformation() }
                     )
 
-                    uiState.transitDeviationInformation.transitStepsDeviations!!.forEach {deviation ->
-                        Text(
-                            text = "Delay: ${deviation.delayInMinutes} minutes",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextWhite
-                        )
-                        Log.d(TAG, "FUNKAR detta ?!?!?!")
+                    // TODO: Fixa deviation info!
+                    uiState.transitDeviationInformation
+                        .transitStepsDeviations!!.forEach { deviation ->
+                            Text(
+                                text = "Delay: ${deviation.delayInMinutes} minutes",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextWhite
+                            )
+                            Log.d(TAG, "FUNKAR detta ?!?!?!")
                     }
                 }
 
