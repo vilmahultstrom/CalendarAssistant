@@ -83,19 +83,18 @@ fun DepartureSection(
                     )
                 }
             }
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                deviationInfo.transitStepsDeviations?.forEach {deviation ->
-                    Text(
-                        text = "Delay: ${deviation.delayInMinutes} minutes",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextWhite
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            deviationInfo.transitStepsDeviations?.forEach {deviation ->
+                Text(
+                    text = "Delay: ${deviation.delayInMinutes} minutes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextWhite
+                )
             }
+            Spacer(modifier = Modifier.width(8.dp))
         }
         Box(
             contentAlignment = Alignment.Center,
@@ -104,7 +103,7 @@ fun DepartureSection(
                 .clip(CircleShape)
                 .background(ButtonBlue)
                 .padding(10.dp)
-                .clickable { /*onClick()*/ }
+                //.clickable { /*onClick()*/ }
         ) {
             // TODO: Create a button here that shows information about departure
             Icon(

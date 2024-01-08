@@ -285,7 +285,8 @@ class NetworkService : INetworkService {
      */
     override suspend fun getTravelInformation(travelMode: TravelMode) {
         try {
-            val lastLocationCoordinates = getLocationOrThrow()
+            val lastLocationCoordinates = Pair("59.280183400", "18.0578712")
+//            val lastLocationCoordinates = getLocationOrThrow()
             val nextEvent = getNextEvent()
             val arrivalTime = getArrivalTime(nextEvent.start)
             val response = fetchGoogleDirections(arrivalTime, lastLocationCoordinates, nextEvent.location, travelMode)
@@ -371,10 +372,13 @@ class NetworkService : INetworkService {
     override suspend fun getDeviationInformation() {
         try {
             transitSteps.map { step ->
+                Log.d(TAG, "1")
                 val realTimeData = fetchRealTimeDataForStep(step)
+                Log.d(TAG, "2")
                 transitStepsDeviations.add(compareStepWithRealTimeData(step, realTimeData))
+                Log.d(TAG, "3")
             }
-
+            Log.d(TAG, "4 ****")
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
             )

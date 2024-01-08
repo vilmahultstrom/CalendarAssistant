@@ -16,12 +16,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -39,6 +41,7 @@ import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelModeSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
+import com.example.calendarassistant.ui.theme.TextWhite
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.example.calendarassistant.utilities.Event
 private const val TAG = "HomeScreen"
@@ -90,6 +93,15 @@ fun HomeScreen(
                         deviationInfo = uiState.transitDeviationInformation,
                         //onClick = { vm.getDeviationInformation() }
                     )
+
+                    uiState.transitDeviationInformation.transitStepsDeviations!!.forEach {deviation ->
+                        Text(
+                            text = "Delay: ${deviation.delayInMinutes} minutes",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextWhite
+                        )
+                        Log.d(TAG, "FUNKAR detta ?!?!?!")
+                    }
                 }
 
                 ButtonSection()
@@ -104,7 +116,7 @@ fun HomeScreen(
                         onClick = vm::onStartServiceClicked,
                         buttonText = "Start/stop gps-tracking"
                     )
-                    Text(text = "Current pos: Lat: ${uiState.currentLatitude}, Lon: ${uiState.currentLongitude}")
+                    Text(text = "Current pos: Lat: ${uiState.currentLatitude}, Lon: ${uiState.currentLongitude}", color = Color.White)
 
                 }
                 Spacer(modifier = Modifier.height(200.dp))
