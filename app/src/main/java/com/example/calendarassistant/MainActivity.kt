@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // uncomment To start Signin Activity
-        //val intent = Intent(this, Signin::class.java)
-        //startActivity(intent)
+         //val intent = Intent(this, Signin::class.java)
+         //startActivity(intent)
 
         ActivityCompat.requestPermissions(
             this,

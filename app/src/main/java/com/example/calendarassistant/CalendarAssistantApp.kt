@@ -2,13 +2,20 @@ package com.example.calendarassistant
 
 import android.app.Application
 import android.content.Intent
+import android.util.Log
 import com.example.calendarassistant.login.Signin
 import dagger.hilt.android.HiltAndroidApp
+
+private const val TAG = "CalendarAssistantApp"
 
 @HiltAndroidApp
 class CalendarAssistantApp : Application() {
     override fun onCreate() {
         super.onCreate()
+
+
+
+        Log.d(TAG, "In CalendarAssistantApp")
 
 
 

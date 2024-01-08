@@ -1,6 +1,7 @@
 package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
+import com.example.calendarassistant.model.mock.travel.DeviationInformation
+import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.LightGreen2
@@ -32,7 +35,9 @@ import com.example.calendarassistant.ui.theme.TextWhite
 @Composable
 fun DepartureSection(
     color: Color = LightGreen2,
-    departureInfo: List<Steps>
+    departureInfo: List<Steps>,
+    deviationInfo: TransitDeviationInformation,
+    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -78,6 +83,19 @@ fun DepartureSection(
                     )
                 }
             }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                deviationInfo.transitStepsDeviations?.forEach {deviation ->
+                    Text(
+                        text = "Delay: ${deviation.delayInMinutes} minutes",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextWhite
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+            }
         }
         Box(
             contentAlignment = Alignment.Center,
@@ -86,11 +104,12 @@ fun DepartureSection(
                 .clip(CircleShape)
                 .background(ButtonBlue)
                 .padding(10.dp)
+                .clickable { onClick() }
         ) {
             // TODO: Create a button here that shows information about departure
             Icon(
                 painter = painterResource(id = R.drawable.baseline_info_24),
-                contentDescription = "Play",
+                contentDescription = "Info",
                 tint = Color.White,
                 modifier = Modifier.size(48.dp)
             )
