@@ -39,18 +39,19 @@ class GoogleAuthClient(
         val credential = signInClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
-        Log.d(TAG, "Logging in " + googleIdToken.toString())
         return try {
             val user = auth.signInWithCredential(googleCredentials).await().user
             SignInResult(
                 data = user?.run {
                     UserData(
                         userId = uid,
-                        username = displayName.orEmpty()
+                        username = displayName,
+                        email = email
                     )
                 },
                 errorMessage = null
                 )
+
         } catch (e: Exception) {
             e.printStackTrace()
             if (e is CancellationException) throw e
