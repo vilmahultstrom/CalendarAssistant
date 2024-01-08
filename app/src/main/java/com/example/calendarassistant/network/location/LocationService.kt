@@ -27,7 +27,8 @@ class LocationService : Service() {
     override fun onCreate() {
         super.onCreate()
         locationClient = LocationClient(
-            applicationContext, LocationServices.getFusedLocationProviderClient(applicationContext)
+            applicationContext,
+            LocationServices.getFusedLocationProviderClient(applicationContext)
         )
     }
 

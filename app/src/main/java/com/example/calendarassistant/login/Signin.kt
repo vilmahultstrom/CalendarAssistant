@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,6 +29,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
+import com.google.api.services.calendar.model.Event
 import dagger.hilt.android.AndroidEntryPoint
 
 const private val TAG= "GoogleSignIn"
@@ -48,51 +47,8 @@ class Signin: AppCompatActivity(), SignInInterface {
     private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
     private var showOneTapUI = true
     private lateinit var activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>
-
-
-    fun testInit(){
-        Log.d(TAG, "inside testInit")
-        oneTapClient = Identity.getSignInClient(this)
-        signUpRequest = BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(getString(R.string.web_client_id))
-                    // Show all accounts on the device.
-                    .setFilterByAuthorizedAccounts(false)
-                    .build())
-            .build()
-
-        //använder denna istället för
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // Handle the successful result
-                try {
-                    val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
-                    val idToken = credential.googleIdToken
-                    when {
-                        idToken != null -> {
-                            // Got an ID token from Google. Use it to authenticate
-                            // with your backend.
-                            var email: String = credential.id
-                            var googleIdToken = credential.googleIdToken
-                            var displayName = credential.displayName
-                            var publicKeyCredential = credential.publicKeyCredential //vet inte om denna behövs
-                            Log.d(TAG, "Got ID token.")
-                            Log.d(TAG,email + ", " +displayName+ ", "+ googleIdToken +", " + publicKeyCredential)
-                        }
-                        else -> {
-                            // Shouldn't happen.
-                            Log.d(TAG, "No ID token!")
-                        }
-                    }
-                } catch (e: ApiException) {
-                    // ...
-                }
-            }
-        }
-    }
+    private lateinit var calendar: CalendarGoogle
+    private var email:String?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,7 +81,7 @@ class Signin: AppCompatActivity(), SignInInterface {
                         idToken != null -> {
                             // Got an ID token from Google. Use it to authenticate
                             // with your backend.
-                            var email: String = credential.id
+                            email = credential.id
                             var googleIdToken = credential.googleIdToken
                             var displayName = credential.displayName
                             var publicKeyCredential = credential.publicKeyCredential //vet inte om denna behövs. Den returnerar ändå bara null.
@@ -156,6 +112,7 @@ class Signin: AppCompatActivity(), SignInInterface {
                 ) {
                     val testVM = hiltViewModel<TestVM>()
                     testVM.setSignInAttemptListener(this)
+                    testVM.setFetchEventsGoogleListener(this)
 
                     val navController = rememberNavController()
                     NavHost(
@@ -199,7 +156,21 @@ class Signin: AppCompatActivity(), SignInInterface {
                 Log.d(TAG, e.localizedMessage)
             }
         //TODO: if successful return to MainActivity. send data between activities.
+
     }
 
+    override fun fetchEvents() {
+        // Assuming you have the account name (email) after Google Sign-In
+        //val accountEmail = "your-google-account-email@example.com"
+
+        Log.d(TAG, "attempting to fetch events from email: " + email)
+        calendar = CalendarGoogle(this, email!!)
+        calendar.getUpcomingEvents()
+    }
+
+    // Update your UI to display the events
+    private fun displayEvents(events: List<Event>) {
+        // Implementation to display events in your UI
+    }
 
 }

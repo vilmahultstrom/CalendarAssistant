@@ -1,10 +1,6 @@
 package com.example.calendarassistant.model.mock.calendar
 
-import android.util.Log
 import com.example.calendarassistant.utilities.DateHelpers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -15,10 +11,10 @@ object MockEvent {
 
     private val events: List<MockCalendarEvent> = listOf(
         MockCalendarEvent(
-            start = ZonedDateTime.now(ZoneId.of("Z")).plusMinutes(300)
+            start = ZonedDateTime.now(ZoneId.of("Z")).plusMinutes(50)//300)
                 .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             summary = "Föreläsning - Mjukvarukonstruktion, projektkurs (HI1036)",
-            location = "T67 Hälsovägen"
+            location = "Enskede Gård" //"T67 Hälsovägen"
         ),
         MockCalendarEvent(
             start = ZonedDateTime.now(ZoneId.of("Z")).plusHours(6)
@@ -44,9 +40,9 @@ object MockEvent {
         for (element in events) {
             val startTime = DateHelpers.convertToSystemTimeZone(element.start)
             val customFormatter = DateTimeFormatter.ofPattern("HH:mm")
-            val formatted = startTime?.format(customFormatter) ?: throw NumberFormatException("Start time was null")
+            val startTimeFormatted = startTime?.format(customFormatter) ?: throw NumberFormatException("Start time was null")
 
-            val newEvent = MockCalendarEvent(formatted, element.summary, element.location)
+            val newEvent = MockCalendarEvent(startTimeFormatted, element.summary, element.location)
             newEvents.add(newEvent)
         }
         return newEvents
