@@ -27,7 +27,8 @@ class LocationService : Service() {
     override fun onCreate() {
         super.onCreate()
         locationClient = LocationClient(
-            applicationContext, LocationServices.getFusedLocationProviderClient(applicationContext)
+            applicationContext,
+            LocationServices.getFusedLocationProviderClient(applicationContext)
         )
     }
 
@@ -55,8 +56,14 @@ class LocationService : Service() {
 
     private suspend fun getCurrent() {
         val location = locationClient.getCurrentLocation()
-        LocationRepository.setCurrentLocation(location)
+        if (location != null) {
+            LocationRepository.setCurrentLocation(location)
+        } else {
+            Log.d("LocationService", "Location is null")
+        }
     }
+
+
 
     private fun stop() {
         stopForeground(STOP_FOREGROUND_REMOVE)
