@@ -39,6 +39,10 @@ class TestVM @Inject constructor(
     fun setSignInAttemptListener(listener: SignInInterface) {
         signInAttemptListener = listener
     }
+    private var fetchEventsGoogleListener: SignInInterface? = null
+    fun setFetchEventsGoogleListener(listener: SignInInterface) {
+        fetchEventsGoogleListener = listener
+    }
     
 
     private val _uiState = MutableStateFlow(UiState(travelInformation = TravelInformation()))
@@ -74,6 +78,14 @@ class TestVM @Inject constructor(
     fun login() {
         viewModelScope.launch {
             signInAttemptListener?.attemptSignIn()
+            //signin.attemptSignIn()
+            Log.d(TAG, "loggin in button pressed")
+        }
+    }
+
+    fun fetchEvents() {
+        viewModelScope.launch {
+            fetchEventsGoogleListener?.fetchEvents()
             //signin.attemptSignIn()
             Log.d(TAG, "loggin in button pressed")
         }

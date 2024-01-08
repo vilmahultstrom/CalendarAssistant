@@ -6,8 +6,12 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import android.content.Context
+import android.util.Log
 
 import kotlinx.coroutines.*
+
+const private val TAG= "CalendarGoogle"
+
 
 class CalendarGoogle(private val context: Context, private val accountName: String) {
     companion object {
@@ -18,7 +22,11 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
 
     private val credential: GoogleAccountCredential = GoogleAccountCredential.usingOAuth2(
         context, SCOPES
-    ).setSelectedAccountName(accountName)
+    ).apply {
+        selectedAccountName = accountName
+    }
+        //.setSelectedAccountName(accountName)
+
 
 
     private val calendarService: Calendar by lazy {
@@ -41,8 +49,10 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
 
                 withContext(Dispatchers.Main) {
                     if (items.isEmpty()) {
+                        Log.d(TAG, "no events present")
                         // Update UI to show no events
                     } else {
+                        Log.d(TAG, "found events")
                         // Update UI to show events
                         for (event in items) {
                             val start = event.start.dateTime ?: event.start.date
@@ -51,6 +61,7 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
                     }
                 }
             } catch (e: Exception) {
+                Log.d(TAG, "exception occured: " + e)
                 // Handle the exception in the UI thread
                 withContext(Dispatchers.Main) {
                     // Show error message

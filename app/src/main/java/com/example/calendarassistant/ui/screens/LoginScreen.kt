@@ -1,5 +1,6 @@
 package com.example.calendarassistant.ui.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,7 +12,12 @@ fun LoginScreen(
     vm: TestVM,
     navController: NavController
 ) {
-    Button(onClick= {vm.login()}){
-        Text(text="login")
+    Column{
+        Button(onClick= {vm.login()}){
+            Text(text="login")
+        }
+        Button(onClick= {vm.fetchEvents()}){
+            Text(text="fetch events")
+        }
     }
 }
