@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.enums.TravelMode
+import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu
@@ -51,11 +52,17 @@ fun HomeScreen(
     val context = LocalContext.current
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
+
+
+    //val intent = Intent(context, Signin::class.java)
+    //context.startActivity(intent)
+
     val nextEventInfo by vm.mockEvents.collectAsState()
     val departureInfo by vm.transitSteps.collectAsState()
 
     val uiState by vm.uiState.collectAsState()
     val destCoordinates = uiState.travelInformation.destinationCoordinates
+
     Box(
         modifier = Modifier
             .background(DeepBlue)
@@ -63,22 +70,35 @@ fun HomeScreen(
     ) {
 
         Column {
-            InformationSection()
-            Column(modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .height(IntrinsicSize.Max)) {
 
-                NextEventSection(onClick = { openGoogleMaps(context, destCoordinates.first,
-                    destCoordinates.second
-                ) }, travelInformation = uiState.travelInformation, nextEventInfo = nextEventInfo.first())
+            InformationSection()
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .height(IntrinsicSize.Max)
+            ) {
+
+                NextEventSection(
+                    onClick = { openGoogleMaps(
+                            context, destCoordinates.first, destCoordinates.second
+                    ) },
+                    travelInformation = uiState.travelInformation,
+                    nextEventInfo = nextEventInfo.first()
+                )
 
                 TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)
 
-
                 if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
-                    DepartureSection(departureInfo = departureInfo)
+                    DepartureSection(
+                        departureInfo = departureInfo,
+                        deviationInfo = uiState.transitDeviationInformation,
+                        onClick = { vm.getDeviationInformation() }
+                    )
                 }
+
                 ButtonSection()
+
                 Column(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.SpaceEvenly
@@ -94,14 +114,15 @@ fun HomeScreen(
                 }
                 Spacer(modifier = Modifier.height(200.dp))
             }
-
-
         }
-
 
         BottomMenu(
             items = listOf(
-                BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
+                BottomMenuContent(
+                    "Home",
+                    R.drawable.baseline_home_24,
+                    BMRoutes.Home.route
+                ),
                 BottomMenuContent(
                     "Calendar",
                     R.drawable.baseline_calendar_month_24,
@@ -118,16 +139,28 @@ fun HomeScreen(
         )
     }
 }
+
+// TODO: Ska även denna som har logik för att öppna google map vara i HomeSceen,
+//  eller borde den vara i VM?
 private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Double?) {
     if (latitude == null || longitude == null) return
     try {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${latitude},${longitude}")))
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("google.navigation:q=${latitude},${longitude}")
+            )
+        )
     } catch (e: ActivityNotFoundException){
         Log.d(TAG, "Google Maps not installed on device, opening browser.")
         //"http://maps.google.com/maps?saddr=${startLatitude},${startLongitude}&daddr=${latitude},${longitude}"
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude})")))
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude})")
+            )
+        )
     }
-
 }
 
 private fun gpsTracking(context: Context, startServiceAction: Event<String>?) {
