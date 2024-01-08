@@ -55,8 +55,14 @@ class LocationService : Service() {
 
     private suspend fun getCurrent() {
         val location = locationClient.getCurrentLocation()
-        LocationRepository.setCurrentLocation(location)
+        if (location != null) {
+            LocationRepository.setCurrentLocation(location)
+        } else {
+            Log.d("LocationService", "Location is null")
+        }
     }
+
+
 
     private fun stop() {
         stopForeground(STOP_FOREGROUND_REMOVE)

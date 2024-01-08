@@ -16,8 +16,8 @@ import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
-import com.example.calendarassistant.ui.screens.components.CalendarScreenComponents.DatePickSection
-import com.example.calendarassistant.ui.screens.components.CalendarScreenComponents.EventsSection
+import com.example.calendarassistant.ui.screens.components.calendarScreenComponents.DatePickSection
+import com.example.calendarassistant.ui.screens.components.calendarScreenComponents.EventsSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.TestVM

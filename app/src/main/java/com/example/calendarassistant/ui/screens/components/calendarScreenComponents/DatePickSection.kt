@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.CalendarScreenComponents
+package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +27,7 @@ import com.example.calendarassistant.ui.theme.TextWhite
 
 
 // TODO: Rework into full scale calendar?
+//  Need to be able to swap months, year etc
 @Composable
 fun DatePickSection(
     dates: List<String>,
