@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,23 +14,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.ui.screens.DailyScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
-import com.example.calendarassistant.ui.screens.MonthlyScreen
-import com.example.calendarassistant.ui.screens.WeeklyScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
+import com.google.api.services.calendar.model.Event
 import dagger.hilt.android.AndroidEntryPoint
 
 const private val TAG= "GoogleSignIn"
@@ -49,6 +45,7 @@ class Signin: AppCompatActivity(), SignInInterface {
     private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
     private var showOneTapUI = true
     private lateinit var activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private lateinit var calendar: CalendarGoogle
 
 
     fun testInit(){
@@ -166,15 +163,6 @@ class Signin: AppCompatActivity(), SignInInterface {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(vm = testVM, navController)
                         }
-                        composable(BMRoutes.Daily.route) {
-                            DailyScreen(vm = testVM, navController)
-                        }
-                        composable(BMRoutes.Weekly.route) {
-                            WeeklyScreen(vm = testVM, navController)
-                        }
-                        composable(BMRoutes.Monthly.route) {
-                            MonthlyScreen(vm = testVM, navController)
-                        }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)
                         }
@@ -194,6 +182,12 @@ class Signin: AppCompatActivity(), SignInInterface {
                 try {
                     var intentSenderRequest = IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
                     activityResultLauncher.launch(intentSenderRequest)
+
+                    // Assuming you have the account name (email) after Google Sign-In
+                    //val accountEmail = "your-google-account-email@example.com"
+                    //calendar = CalendarGoogle(this, accountEmail)
+                    //fetchEvents()
+
                 } catch (e: IntentSender.SendIntentException) { //catch kanske inte behövs
                     Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
                 }
@@ -205,5 +199,14 @@ class Signin: AppCompatActivity(), SignInInterface {
         //TODO: if successful return to MainActivity. send data between activities.
     }
 
+
+    private fun fetchEvents() {
+        calendar.getUpcomingEvents()
+    }
+
+    // Update your UI to display the events
+    private fun displayEvents(events: List<Event>) {
+        // Implementation to display events in your UI
+    }
 
 }
