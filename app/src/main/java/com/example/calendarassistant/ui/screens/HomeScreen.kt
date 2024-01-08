@@ -88,7 +88,7 @@ fun HomeScreen(
                     DepartureSection(
                         departureInfo = departureInfo,
                         deviationInfo = uiState.transitDeviationInformation,
-                        onInfoClick = { vm.getDeviationInformation() }
+                        //onClick = { vm.getDeviationInformation() }
                     )
                 }
 

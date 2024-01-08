@@ -37,7 +37,7 @@ fun DepartureSection(
     color: Color = LightGreen2,
     departureInfo: List<Steps>,
     deviationInfo: TransitDeviationInformation,
-    onInfoClick: () -> Unit
+//    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -104,7 +104,7 @@ fun DepartureSection(
                 .clip(CircleShape)
                 .background(ButtonBlue)
                 .padding(10.dp)
-                .clickable { onInfoClick() }
+                .clickable { /*onClick()*/ }
         ) {
             // TODO: Create a button here that shows information about departure
             Icon(

@@ -71,6 +71,7 @@ class TestVM @Inject constructor(
 
     // Start fetching gps data
     fun onStartServiceClicked() {
+        MockEvent.getMockEventsFormattedConvertedTime()
         if (!isFetchingLocationData) {
             startLocationService()
         } else {
@@ -126,14 +127,13 @@ class TestVM @Inject constructor(
     }
 
     fun getDeviationInformation() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             MockDeviationInformation.getNextTransitDeviationsInformation().collect { next: TransitDeviationInformation ->
                 Log.d(TAG, "Collecting: $next")
                 _uiState.update { currentState -> currentState.copy(transitDeviationInformation = next) }
             }
-        }
+        }*/
         Log.d(TAG, "hejdå ******************************************")
-
     }
 
 
@@ -147,12 +147,6 @@ class TestVM @Inject constructor(
                     Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
                 Log.d(TAG, "2" + _uiState.value.currentLatitude)
-//                _uiState.update { TODO ÖPPNA
-//                    _uiState.value.copy(
-//                        currentLatitude = "59.2801834",
-//                        currentLongitude = "18.0560025"
-//                    )
-//                }
                 networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
                 Log.d(TAG, "3")
             }
@@ -187,10 +181,8 @@ class TestVM @Inject constructor(
 
             // Coroutine for collecting next mock event for display
             launch {
-                Log.d(TAG, "4")
                 MockTravelInformation.getNextEventInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
-                    Log.d(TAG, "5")
                     _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }
             }
