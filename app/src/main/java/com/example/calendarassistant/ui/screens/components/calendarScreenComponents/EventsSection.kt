@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.CalendarScreenComponents
+package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +37,6 @@ import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.LightGreen3
 import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.TextWhite
-import com.example.calendarassistant.utilities.DateHelpers
 
 @Composable
 fun EventsSection(events: List<MockCalendarEvent>) {

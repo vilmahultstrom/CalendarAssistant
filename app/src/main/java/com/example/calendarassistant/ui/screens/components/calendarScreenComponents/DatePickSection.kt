@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.CalendarScreenComponents
+package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
