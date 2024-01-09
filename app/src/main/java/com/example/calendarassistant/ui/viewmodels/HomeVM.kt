@@ -22,7 +22,6 @@ import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
-import com.google.api.services.calendar.model.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +39,8 @@ class HomeVM @Inject constructor(
     private val networkService: NetworkService
 ): ViewModel()  {
 
-    private val _events = MutableStateFlow<List<CalendarEvent>>(listOf())
-    val events = _events.asStateFlow()
+    private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf())
+    val eventsWithLocation = _eventsWithLocation.asStateFlow()
 
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
     val calendars = _calendars.asStateFlow()
@@ -90,14 +89,21 @@ class HomeVM @Inject constructor(
     }
 
 
-    fun getAllEventsFromCalendars() {
+    /**
+     *  Testar att få in alla events med platsdata
+     */
+
+    private fun getAllEventsWithLocationFromCalendars() {
         val events = mutableListOf<CalendarEvent>()
         for(calendar in calendars.value) {
             for (event in calendar.calendarEvents){
-                events.add(event)
+                if (event.location != null) {
+                    events.add(event)
+                }
             }
         }
-        _events.value = events.sortedByStartTime()
+        Log.d(TAG, "No of events: " + events.size.toString())
+        _eventsWithLocation.value = events.sortedByStartTime()
     }
 
     private fun List<CalendarEvent>.sortedByStartTime(): List<CalendarEvent> {
@@ -198,7 +204,7 @@ class HomeVM @Inject constructor(
             launch {
                 Calendars.calendarList.collect {
                     _calendars.value = it
-                    getAllEventsFromCalendars()
+                    getAllEventsWithLocationFromCalendars()
                 }
             }
 

@@ -58,7 +58,7 @@ fun HomeScreen(
     //val intent = Intent(context, Signin::class.java)
     //context.startActivity(intent)
 
-    val nextEventInfo by vm.events.collectAsState()
+    val nextEventInfo by vm.eventsWithLocation.collectAsState()
     val departureInfo by vm.transitSteps.collectAsState()
 
     val uiState by vm.uiState.collectAsState()
