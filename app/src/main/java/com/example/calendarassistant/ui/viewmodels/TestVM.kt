@@ -173,6 +173,7 @@ class TestVM @Inject constructor(
                     }
                     // This updates the time left, could maybe ge done by internal timer
                     networkService.getTravelInformation(_uiState.value.travelMode)
+                    networkService.getDeviationInformation()
                 }
             }
 

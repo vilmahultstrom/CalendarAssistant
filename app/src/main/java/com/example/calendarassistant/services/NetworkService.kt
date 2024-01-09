@@ -63,7 +63,6 @@ class NetworkService : INetworkService {
 
             // Gets the next event happening from the mock calendar
             val nextEvent = getNextCalendarEvent()
-            Log.d(TAG, "klockan från calender    ${nextEvent.start}")
 
             // Sets arrival time for google directions to the event start-time
             val arrivalTime = getArrivalTime(nextEvent.start)
@@ -94,7 +93,7 @@ class NetworkService : INetworkService {
     }
 
     private fun getArrivalTime(time: String): Long {
-        return ZonedDateTime.parse(time).toEpochSecond()
+        return ZonedDateTime.parse(time).toEpochSecond() // TODO: vad gör denna, när påverkar den tiden?
     }
 
     private suspend fun fetchGoogleDirections(
@@ -155,7 +154,7 @@ class NetworkService : INetworkService {
         } ?: ""
     }
 
-
+// TODO ########################################################################################
     // TODO: Eventuellt dela upp i två klasser?
 
     /**
@@ -178,29 +177,23 @@ class NetworkService : INetworkService {
     }
 
     private suspend fun fetchRealTimeDataForStep(step: Steps): SlRealtimeDataResponse {
-
         // Fetch real-time data from SL API using the step information
 
-        Log.d(TAG, "google dep. tid : ${transitSteps.first().transitDetails?.departureTime?.text}")
-
-        val stationName = step.transitDetails?.departureStop?.name ?: return SlRealtimeDataResponse()
+        val stationName = step.transitDetails?.departureStop?.name
+            ?: return SlRealtimeDataResponse()
 
         val siteIdResponse = SlLookUpApi.getSiteIdByStationName(stationName)
         if (!siteIdResponse.isSuccessful) {
             throw INetworkService.NetworkException("Unsuccessful network call to SL LookUp api")
         }
 
-        val siteId = siteIdResponse.body()?.responseData?.firstOrNull()?.siteId ?: return SlRealtimeDataResponse()
+        val siteId = siteIdResponse.body()?.responseData?.firstOrNull()?.siteId
+            ?: return SlRealtimeDataResponse()
 
         val realTimeDataResponse = SlRealTimeApi.getRealtimeDataBySiteId(siteId)
         if (!realTimeDataResponse.isSuccessful) {
             throw INetworkService.NetworkException("Unsuccessful network call to SL RealTime api")
         }
-
-        Log.d(TAG, "sl siteID : ${siteId}")
-//        Log.d(TAG, "sl exp. tid : ${realTimeDataResponse.body()?.responseData?.buses?.first()?.expectedDateTime}")
-//        Log.d(TAG, "sl time.table. tid : ${realTimeDataResponse.body()?.responseData?.buses?.first()?.timeTabledDateTime}")
-
 
         return realTimeDataResponse.body() ?: SlRealtimeDataResponse()
     }
@@ -233,6 +226,8 @@ class NetworkService : INetworkService {
         realTimeData: SlRealtimeDataResponse
     ): DeviationInformation {
 
+        Log.d(TAG, realTimeData.toString())
+
         val realDepartureTime: String?
         val deviations: List<Deviation>
 
@@ -243,85 +238,46 @@ class NetworkService : INetworkService {
         when (transportMode) {
             "BUS" -> {
                 val busData = realTimeData.responseData?.buses?.find {
-                    val slScheduledDepartureTime/*timeTableRealTimeUnix*/ = formatDateTimeStringToUnix(it.timeTabledDateTime) // TODO: namn? Vilket stämmer egentligen?
                     ((((it.lineNumber == lineShortName) && (it.destination == headSign)
-                            && (slScheduledDepartureTime /*timeTableRealTimeUnix*/ /*(formatTimeStringToUnix(it.timeTabledDateTime)*/ < scheduledDepartureTime!!))
-                            || (slScheduledDepartureTime /*(formatTimeStringToUnix(it.timeTabledDateTime)*/ > scheduledDepartureTime!!)
-                            || (slScheduledDepartureTime /*(formatTimeStringToUnix(it.timeTabledDateTime)*/ > scheduledDepartureTime)))
+                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
                 }
-                val test = realTimeData.responseData?.buses?.find {
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
-                            && ((formatDateTimeStringToUnix(it.timeTabledDateTime) < scheduledDepartureTime!!))
-                            || (formatDateTimeStringToUnix(it.timeTabledDateTime) > scheduledDepartureTime!!)
-                            || (formatDateTimeStringToUnix(it.timeTabledDateTime) > scheduledDepartureTime))))
-                }
-
-//                val test2 = realTimeData.responseData?.buses?.find {
-//                    val slCalculatedDepartureTimeDiff =
-//                        areTimesSimilar(it.timeTabledDateTime.toString(),
-//                            it.expectedDateTime.toString(),
-//                        )
-//                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
-//                            && ((formatDateTimeStringToUnix(it.timeTabledDateTime) < scheduledDepartureTime!!))
-//                            || (formatDateTimeStringToUnix(it.timeTabledDateTime) > scheduledDepartureTime!!)
-//                            || (formatDateTimeStringToUnix(it.timeTabledDateTime) > scheduledDepartureTime))))
-//                }
-
-                Log.d(TAG, "*|1|* är det samma? ${busData?.timeTabledDateTime}  &  ${test?.timeTabledDateTime}")
-                Log.d(TAG, "*|2|* är det samma? ${busData?.expectedDateTime}  &  ${test?.expectedDateTime}")
-                Log.d(TAG, "*|3|* är det samma? ${busData?.destination}  &  ${test?.destination}")
-                Log.d(TAG, "*|4|* är det samma?!! ${busData?.journeyNumber}  &  ${test?.journeyNumber}")
-
                 realDepartureTime = busData?.expectedDateTime
                 deviations = convertDeviations(busData?.deviations)
             }
             "SUBWAY" -> {
                 val metroData = realTimeData.responseData?.metros?.find {
-                    val slScheduledDepartureTime = formatDateTimeStringToUnix(it.timeTabledDateTime)
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
-                            && (slScheduledDepartureTime < scheduledDepartureTime!!))
-                            || (slScheduledDepartureTime > scheduledDepartureTime!!)
-                            || (slScheduledDepartureTime > scheduledDepartureTime)))
-                }
-                val test2 = realTimeData.responseData?.metros?.find {
                     ((((it.lineNumber == lineShortName) && (it.destination == headSign)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
                                 formatSecondsToDateTimeString(scheduledDepartureTime))))))
                 }
-
-                Log.d(TAG, "*|G|* är det samma? scheduledDepTime ${formatSecondsToDateTimeString(scheduledDepartureTime)} + MOT ${headSign}")
-                Log.d(TAG, "*|1|* är det samma? ${metroData?.timeTabledDateTime}  &  ${test2?.timeTabledDateTime}")
-                Log.d(TAG, "*|2|* är det samma? ${metroData?.expectedDateTime}  &  ${test2?.expectedDateTime}")
-                Log.d(TAG, "*|3|* är det samma? ${metroData?.destination}  &  ${test2?.destination}")
-                Log.d(TAG, "*|4|* är det samma?!! ${metroData?.journeyNumber}  &  ${test2?.journeyNumber}")
-//                val metroData =
-//                    realTimeData.responseData?.metros?.find {
-//                        it.lineNumber == lineShortName && it.destination == headSign
-//                    }
                 realDepartureTime = metroData?.expectedDateTime
                 deviations = convertDeviations(metroData?.deviations)
             }
             "TRAIN" -> {
-                val trainData =
-                    realTimeData.responseData?.trains?.find {
-                        it.lineNumber == lineShortName && it.destination == headSign
-                    }
+                val trainData = realTimeData.responseData?.trains?.find {
+                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                }
                 realDepartureTime = trainData?.expectedDateTime
                 deviations = convertDeviations(trainData?.deviations)
             }
             "TRAM" -> {
-                val tramData =
-                    realTimeData.responseData?.trams?.find {
-                        it.lineNumber == lineShortName && it.destination == headSign
-                    }
+                val tramData = realTimeData.responseData?.trams?.find {
+                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                }
                 realDepartureTime = tramData?.expectedDateTime
                 deviations = convertDeviations(tramData?.deviations)
             }
             "SHIP" -> {
-                val shipData =
-                    realTimeData.responseData?.ships?.find {
-                        it.lineNumber == lineShortName && it.destination == headSign
-                    }
+                val shipData = realTimeData.responseData?.ships?.find {
+                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                }
                 realDepartureTime = shipData?.expectedDateTime
                 deviations = convertDeviations(shipData?.deviations)
             }
@@ -331,12 +287,11 @@ class NetworkService : INetworkService {
             }
         }
 
-        val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime)
+        val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime) //TODO: eller 'slScheduledDepartureTime = shipData?.timeTabledDateTime'
         return DeviationInformation(delayInMinutes, deviations)
     }
 
-    fun areTimesSimilar(time1: String, time2: String): Boolean { // TODO: använda eller ej?? Jämför test. Är Googles och SLs planerade tider lika även fast vi hämtar ny data från google (som då är uppdaterad)?
-        Log.d(TAG, "areSimalarTime:  $time1  +  $time2") // TODO: ta bort
+    fun areTimesSimilar(time1: String, time2: String): Boolean { // TODO: Är Googles och SLs planerade tider lika även fast vi hämtar ny data från google (som då är uppdaterad)?
         // Example using java.time API (requires API level 26 or using a backport library like ThreeTenABP)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val dateTime1 = LocalDateTime.parse(time1, formatter)
@@ -348,21 +303,23 @@ class NetworkService : INetworkService {
     private fun convertDeviations(slDeviations: ArrayList<Deviations>?): List<Deviation> {
         return slDeviations?.map {
             Deviation(
-                it.text ?: "",it.consequence ?: "",it.importanceLevel ?: 0
+                it.text ?: "",
+                it.consequence ?: "",
+                it.importanceLevel ?: 0
             )
         } ?: emptyList()
     }
 
-    private fun calculateDelay(scheduledTime: Int?, actualTime: String?): Int { //TODO: lik areTimesSimilar(), kan man kombinera användning på något sätt?
+    private fun calculateDelay(scheduledTime: Int?, actualTime: String?): Int {
         if (scheduledTime == null || actualTime == null) return 0
 
         // Parse the actual time (expectedDateTime) to a Unix timestamp
         val actualDateTime = formatDateTimeStringToUnix(actualTime)
 
         // Calculate the delay in seconds
-        val delayInSeconds = actualDateTime - scheduledTime
+        val delayInSeconds = (actualDateTime) - scheduledTime
         // Convert the delay to minutes
-        return (delayInSeconds / 60).toInt()
+        return (delayInSeconds / 60).toInt() + 2 //TODO: TA BORT MOCK DELAY !!!!!
     }
 
     private fun formatSecondsToDateTimeString(seconds: Int?): String { //TODO: flytta till utilities
@@ -373,6 +330,7 @@ class NetworkService : INetworkService {
     }
 
     private fun formatDateTimeStringToUnix(timestamp: String?): Long { //TODO: flytta till utilities
+        Log.d(TAG, "formatDateTimeStringToUnix:  $timestamp")
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         return try {
             LocalDateTime.parse(timestamp, formatter).atZone(ZoneId.systemDefault()).toEpochSecond()
