@@ -20,6 +20,7 @@ import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
 import com.example.calendarassistant.services.CalendarService
+import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ private const val TAG = "SettingsVm"
 class SettingsVM @Inject constructor(
     private val googleAuthClient: GoogleAuthClient,
     private val calendarService: CalendarService,
-    private val application: Application
+    private val notificationHelper: NotificationHelper
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
@@ -45,19 +46,8 @@ class SettingsVM @Inject constructor(
     private val _signInIntentSender = MutableSharedFlow<IntentSender?>(replay = 1)
     val signInIntentSender: SharedFlow<IntentSender?> = _signInIntentSender.asSharedFlow()
 
-    private val notificationManager: NotificationManager =
-        application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    fun showNotification(
-        title: String,
-        contentText: String
-    ) {
-        val notification = NotificationCompat.Builder(application, "channel_id")
-            .setSmallIcon(R.drawable.directions_walk_24px)
-            .setContentTitle(title)
-            .setContentText(contentText)
-            .build()
-        notificationManager.notify(1, notification)
+    fun showNotification(title: String, contentText: String) {
+        notificationHelper.showNotification(title, contentText)
     }
 
     fun signIn() {
