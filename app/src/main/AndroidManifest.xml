@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".login.Signin"
+            android:name=".login.SignIn"
             android:exported="true"
             android:label="test"
             android:theme="@style/Theme.CalendarAssistant">

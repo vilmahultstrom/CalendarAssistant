@@ -1,6 +1,5 @@
 package com.example.calendarassistant.ui.viewmodels
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,10 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.login.SignInInterface
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
@@ -26,7 +23,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -148,15 +144,6 @@ class TestVM @Inject constructor(
         }
     }
 
-    fun getDeviationInformation() {
-        viewModelScope.launch {
-            MockDeviationInformation.getNextTransitDeviationsInformation().collect { next: TransitDeviationInformation ->
-                Log.d(TAG, "Collecting: $next")
-                _uiState.update { currentState -> currentState.copy(transitDeviationInformation = next) }
-            }
-        }
-    }
-
 
     init {
         viewModelScope.launch {
@@ -186,10 +173,6 @@ class TestVM @Inject constructor(
                     }
                     // This updates the time left, could maybe ge done by internal timer
                     networkService.getTravelInformation(_uiState.value.travelMode)
-                    // TODO: om deviation ska uppdateras automatiskt, anropas det här om
-                    //  det är mindre än en timme till avresa.
-                    //  Annars anropas det triggat av knapptryck.
-
                 }
             }
 

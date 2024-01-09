@@ -1,9 +1,6 @@
 package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,21 +25,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkAmber
-import com.example.calendarassistant.ui.theme.LightGreen2
-import com.example.calendarassistant.ui.theme.OrangeYellow3
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun DepartureSection(
     color: Color = DarkAmber,
     departureInfo: List<Steps>,
-    deviationInfo: TransitDeviationInformation,
-    onClick: () -> Unit
+//    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -90,19 +81,6 @@ fun DepartureSection(
                     )
                 }
             }
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                deviationInfo.transitStepsDeviations?.forEach {deviation ->
-                    Text(
-                        text = "Delay: ${deviation.delayInMinutes} minutes",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextWhite
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-            }
         }
         Box(
             contentAlignment = Alignment.Center,
@@ -111,7 +89,7 @@ fun DepartureSection(
                 .clip(CircleShape)
                 .shadow(8.dp, CircleShape)
                 .background(ButtonBlue)
-                .clickable { onClick() }
+                .padding(10.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_info_24),
@@ -122,5 +100,3 @@ fun DepartureSection(
         }
     }
 }
-
-

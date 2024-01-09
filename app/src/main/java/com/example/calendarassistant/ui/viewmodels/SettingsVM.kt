@@ -4,7 +4,11 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
+import androidx.activity.result.IntentSenderRequest
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
@@ -71,6 +75,9 @@ class SettingsVM @Inject constructor(
     fun resetState() {
         _signInState.update { SignInState() }
     }
+
+
+
 
 
 

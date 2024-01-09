@@ -1,14 +1,8 @@
 package com.example.calendarassistant
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -17,17 +11,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.login.GoogleAuthClient
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
@@ -35,11 +30,6 @@ import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -81,6 +71,8 @@ class MainActivity : ComponentActivity() {
             0
         )
 
+
+
         setContent {
             CalendarAssistantTheme {
                 Surface(
@@ -101,7 +93,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(BMRoutes.Settings.route) {
                             settingsVM = hiltViewModel<SettingsVM>()
-                            lifecycleScope.launchWhenStarted {
+                            LaunchedEffect(settingsVM.signInIntentSender) { // or a specific key if needed
                                 settingsVM.signInIntentSender.collect { intentSender ->
                                     intentSender?.let {
                                         signInLauncher.launch(
@@ -110,39 +102,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                            /*
-                            val launcher = rememberLauncherForActivityResult(
-                                contract = ActivityResultContracts.StartIntentSenderForResult(),
-                                onResult = { result ->
-                                    if (result.resultCode == RESULT_OK) {
-                                        lifecycleScope.launch {
-                                            val signInResult =
-                                                googleAuthClient.getSignInResultFromIntent(
-                                                    intent = result.data ?: return@launch
-                                                )
-                                            settingsVM.onSignInResult(signInResult)
-                                        }
-                                    }
-                                    else {
-                                        Log.d(TAG, result.toString())
-                                    }
-                                }
-                            )
-
-                             */
-
-                            /* SettingsScreen(vm = settingsVM, navController, onSignInClick = {
-                                 lifecycleScope.launch { val signInIntentSender = googleAuthClient.signIn()
-                                 launcher.launch(IntentSenderRequest.Builder(
-                                     signInIntentSender ?: return@launch
-                                 ).build())}
-                             })*/
-
 
                             SettingsScreen(vm = settingsVM, navController, onSignInClick = {
                                 settingsVM.signIn() // Trigger sign-in from the ViewModel
                             })
-
 
                         }
                         composable(BMRoutes.Login.route) {
