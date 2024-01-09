@@ -29,7 +29,7 @@ fun CalendarScreen(
     vm: TestVM, navController: NavController
 ) {
     // TODO: Get date logic from backend
-    val specificDate = LocalDate.of(2024, 1, 5)
+    val specificDate = LocalDate.of(2024, 1, 8)
     val daysInMonth = DateHelpers.getCurrentMonthDates(specificDate)
     // TODO: Replace with real events imported from Google Calendar?
     val events = vm.mockEvents.collectAsState().value
@@ -43,7 +43,6 @@ fun CalendarScreen(
             DatePickSection(
                 dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString()
             )
-            Spacer(modifier = Modifier.height(100.dp))
             EventsSection(events)
         }
         BottomMenu(

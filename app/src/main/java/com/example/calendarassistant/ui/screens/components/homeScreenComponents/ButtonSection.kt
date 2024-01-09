@@ -20,11 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.Pink40
+import com.example.calendarassistant.ui.theme.Sienna
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun ButtonSection(
-    color: Color = Pink40
+    color: Color = Sienna
 ) {
     Row (
         horizontalArrangement = Arrangement.SpaceEvenly,

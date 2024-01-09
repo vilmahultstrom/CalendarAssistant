@@ -1,11 +1,7 @@
 package com.example.calendarassistant
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -19,36 +15,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
 import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
+import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
 
-const private val TAG= "MainActivity"
+private const val TAG = "MainActivity"
 
 // TODO: Remove rotation
-// TODO: Implement dependency injection
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
+    private lateinit var signInLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private lateinit var settingsVM: SettingsVM
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        signInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            settingsVM.handleSignInResult(result.resultCode, result.data)
+        }
+
         super.onCreate(savedInstanceState)
-        // uncomment To start Signin Activity
-//         val intent = Intent(this, Signin::class.java)
-//         startActivity(intent)
+
+       /* val googleAuthClient by lazy {
+            GoogleAuthClient(
+                context = applicationContext,
+                signInClient = Identity.getSignInClient(applicationContext)
+            )
+        }*/
 
         ActivityCompat.requestPermissions(
             this,
@@ -60,7 +67,6 @@ class MainActivity : ComponentActivity() {
             0
         )
 
-
         setContent {
             CalendarAssistantTheme {
                 Surface(
@@ -68,7 +74,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val testVM = hiltViewModel<TestVM>()
-
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
@@ -81,7 +86,50 @@ class MainActivity : ComponentActivity() {
                             CalendarScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Settings.route) {
-                            SettingsScreen(vm = testVM, navController)
+                            settingsVM = hiltViewModel<SettingsVM>()
+                            lifecycleScope.launchWhenStarted {
+                                settingsVM.signInIntentSender.collect { intentSender ->
+                                    intentSender?.let {
+                                        signInLauncher.launch(
+                                            IntentSenderRequest.Builder(it).build()
+                                        )
+                                    }
+                                }
+                            }
+                            /*
+                            val launcher = rememberLauncherForActivityResult(
+                                contract = ActivityResultContracts.StartIntentSenderForResult(),
+                                onResult = { result ->
+                                    if (result.resultCode == RESULT_OK) {
+                                        lifecycleScope.launch {
+                                            val signInResult =
+                                                googleAuthClient.getSignInResultFromIntent(
+                                                    intent = result.data ?: return@launch
+                                                )
+                                            settingsVM.onSignInResult(signInResult)
+                                        }
+                                    }
+                                    else {
+                                        Log.d(TAG, result.toString())
+                                    }
+                                }
+                            )
+
+                             */
+
+                            /* SettingsScreen(vm = settingsVM, navController, onSignInClick = {
+                                 lifecycleScope.launch { val signInIntentSender = googleAuthClient.signIn()
+                                 launcher.launch(IntentSenderRequest.Builder(
+                                     signInIntentSender ?: return@launch
+                                 ).build())}
+                             })*/
+
+
+                            SettingsScreen(vm = settingsVM, navController, onSignInClick = {
+                                settingsVM.signIn() // Trigger sign-in from the ViewModel
+                            })
+
+
                         }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)
@@ -92,7 +140,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

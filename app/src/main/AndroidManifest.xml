@@ -36,7 +36,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.CalendarAssistant">
+            android:theme="@style/Theme.CalendarAssistant"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".login.Signin"
+            android:name=".login.SignIn"
             android:exported="true"
             android:label="test"
             android:theme="@style/Theme.CalendarAssistant">

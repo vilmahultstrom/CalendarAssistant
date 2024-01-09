@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id ("kotlin-kapt")
     id ("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -53,9 +54,25 @@ android {
 
 dependencies {
 
+    //google calendar
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    //implementation("com.android.support:appcompat-v7:25.0.1")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("pub.devrel:easypermissions:3.0.0")
+    implementation("com.google.api-client:google-api-client-android:1.23.0") {
+        exclude(mapOf("group" to "org.apache.httpcomponents"))
+    }
+    //    implementation("com.google.apis:google-api-services-<API>-<VERSION>") {
+    implementation("com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0"){
+        exclude(mapOf("group" to "org.apache.httpcomponents"))
+    }
+
 
     //sign in Google
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
 
     implementation("androidx.core:core-ktx:1.12.0")

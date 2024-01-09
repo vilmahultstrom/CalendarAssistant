@@ -7,7 +7,6 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.VectorConverter
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +36,6 @@ import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.enums.TravelMode
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.model.mock.travel.Deviation
 import com.example.calendarassistant.model.mock.travel.DeviationInformation
@@ -97,7 +95,7 @@ fun HomeScreen(
 
                 NextEventSection(
                     onClick = { openGoogleMaps(
-                            context, destCoordinates.first, destCoordinates.second
+                            context, destCoordinates.first, destCoordinates.second, uiState.travelMode
                     ) },
                     travelInformation = uiState.travelInformation,
                     nextEventInfo = nextEventInfo.first()
@@ -162,13 +160,16 @@ fun HomeScreen(
 
 // TODO: Ska även denna som har logik för att öppna google map vara i HomeSceen,
 //  eller borde den vara i VM?
-private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Double?) {
+private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Double?, travelMode: TravelMode) {
     if (latitude == null || longitude == null) return
+    val mode = travelMode.toString()
+    Log.d(TAG, mode)
     try {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("google.navigation:q=${latitude},${longitude}")
+                Uri.parse("google.navigation:q=${latitude},${longitude}&mode=${mode}")
+
             )
         )
     } catch (e: ActivityNotFoundException){
@@ -177,12 +178,13 @@ private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Doubl
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude})")
+                Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude}&mode=${mode})")
             )
         )
     }
 }
 
+// TODO: Man kan skicka context in i VM och göra samma sak tror jag
 private fun gpsTracking(context: Context, startServiceAction: Event<String>?) {
     startServiceAction?.getContentIfNotHandled()?.let { action ->
         Intent(context, LocationService::class.java).apply {
