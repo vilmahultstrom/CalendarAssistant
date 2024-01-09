@@ -81,7 +81,7 @@ fun HomeScreen(
 
                 NextEventSection(
                     onClick = { openGoogleMaps(
-                            context, destCoordinates.first, destCoordinates.second
+                            context, destCoordinates.first, destCoordinates.second, uiState.travelMode
                     ) },
                     travelInformation = uiState.travelInformation,
                     nextEventInfo = nextEventInfo.first()
@@ -142,13 +142,16 @@ fun HomeScreen(
 
 // TODO: Ska även denna som har logik för att öppna google map vara i HomeSceen,
 //  eller borde den vara i VM?
-private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Double?) {
+private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Double?, travelMode: TravelMode) {
     if (latitude == null || longitude == null) return
+    val mode = travelMode.toString()
+    Log.d(TAG, mode)
     try {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("google.navigation:q=${latitude},${longitude}")
+                Uri.parse("google.navigation:q=${latitude},${longitude}&mode=${mode}")
+
             )
         )
     } catch (e: ActivityNotFoundException){
@@ -157,7 +160,7 @@ private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Doubl
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude})")
+                Uri.parse("http://maps.google.com/maps?daddr=${latitude},${longitude}&mode=${mode})")
             )
         )
     }
