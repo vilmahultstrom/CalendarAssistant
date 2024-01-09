@@ -6,8 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
-import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.SignInInterface
+import com.example.calendarassistant.model.calendar.Calendar
+import com.example.calendarassistant.model.calendar.CalendarEvent
+import com.example.calendarassistant.model.calendar.Calendars
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
@@ -20,11 +22,11 @@ import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
-import com.google.api.services.calendar.model.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,8 +39,11 @@ class HomeVM @Inject constructor(
     private val networkService: NetworkService
 ): ViewModel()  {
 
-    private val _events = calendarService.events
-    val events: StateFlow<List<Event>> = _events
+    private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf())
+    val eventsWithLocation = _eventsWithLocation.asStateFlow()
+
+    private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
+    val calendars = _calendars.asStateFlow()
 
     private var fetchEventsGoogleListener: SignInInterface? = null
     fun setFetchEventsGoogleListener(listener: SignInInterface) {
@@ -69,7 +74,6 @@ class HomeVM @Inject constructor(
     fun fetchEvents() {
         viewModelScope.launch {
             fetchEventsGoogleListener?.fetchEvents()
-            //signin.attemptSignIn()
             Log.d(TAG, "loggin in button pressed")
         }
     }
@@ -83,6 +87,29 @@ class HomeVM @Inject constructor(
             stopLocationService()
         }
     }
+
+
+    /**
+     *  Testar att få in alla events med platsdata
+     */
+
+    private fun getAllEventsWithLocationFromCalendars() {
+        val events = mutableListOf<CalendarEvent>()
+        for(calendar in calendars.value) {
+            for (event in calendar.calendarEvents){
+                if (event.location != null) {
+                    events.add(event)
+                }
+            }
+        }
+        Log.d(TAG, "No of events: " + events.size.toString())
+        _eventsWithLocation.value = events.sortedByStartTime()
+    }
+
+    private fun List<CalendarEvent>.sortedByStartTime(): List<CalendarEvent> {
+        return this.sortedWith(compareBy { it.startDateTime ?: it.startDate })
+    }
+
 
     private fun startLocationService() {
         _startServiceAction.value =
@@ -171,6 +198,13 @@ class HomeVM @Inject constructor(
                 MockTravelInformation.getNextEventInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
                     _uiState.update { currentState -> currentState.copy(travelInformation = next) }
+                }
+            }
+
+            launch {
+                Calendars.calendarList.collect {
+                    _calendars.value = it
+                    getAllEventsWithLocationFromCalendars()
                 }
             }
 

@@ -58,7 +58,7 @@ fun HomeScreen(
     //val intent = Intent(context, Signin::class.java)
     //context.startActivity(intent)
 
-    val nextEventInfo by vm.events.collectAsState()
+    val nextEventInfo by vm.eventsWithLocation.collectAsState()
     val departureInfo by vm.transitSteps.collectAsState()
 
     val uiState by vm.uiState.collectAsState()
@@ -91,7 +91,7 @@ fun HomeScreen(
 
                 TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)
 
-                if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
+                if (departureInfo.isNotEmpty() && uiState.travelMode == TravelMode.Transit){ // TODO: Kanske ändra detta
                     DepartureSection(
                         departureInfo = departureInfo,
                         //onClick = {}
