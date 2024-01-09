@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "179111803740",
-    "project_id": "peaceful-keel-407810",
-    "storage_bucket": "peaceful-keel-407810.appspot.com"
+    "project_number": "754634872728",
+    "project_id": "calenderassistant-410109",
+    "storage_bucket": "calenderassistant-410109.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:179111803740:android:ed7d862a11efff28199f99",
+        "mobilesdk_app_id": "1:754634872728:android:00ec5dd048b00c72fabded",
         "android_client_info": {
           "package_name": "com.example.calendarassistant"
         }
       },
       "oauth_client": [
         {
-          "client_id": "179111803740-pegs9329lj7osfuhemvebfl28ajj29ss.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.calendarassistant",
-            "certificate_hash": "93750ce66ea5dc3f60dcad4f27ff2501be2b45b6"
-          }
-        },
-        {
-          "client_id": "179111803740-ok50t3lgvku7a0arspmkubn6djoraihg.apps.googleusercontent.com",
+          "client_id": "754634872728-qinh0rsf8pl2d0tbbruvr22cseslot9k.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCzDMhwps3ubyqu5g-4MTIaHue66WsqQR0"
+          "current_key": "AIzaSyDQEPTCCy165HpxByX4ZlH8yJJh7wEToYg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "179111803740-ok50t3lgvku7a0arspmkubn6djoraihg.apps.googleusercontent.com",
+              "client_id": "754634872728-qinh0rsf8pl2d0tbbruvr22cseslot9k.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

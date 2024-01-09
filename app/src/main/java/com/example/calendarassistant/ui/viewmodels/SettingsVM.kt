@@ -50,7 +50,7 @@ class SettingsVM @Inject constructor(
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 Log.d(TAG, signInResult.data.toString())
             } else {
-                Log.d(TAG, "Error signing in" + resultCode.toString() + " " + data.toString())
+                Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
             }
         }
     }
