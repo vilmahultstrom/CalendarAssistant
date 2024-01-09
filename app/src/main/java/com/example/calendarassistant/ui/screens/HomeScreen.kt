@@ -1,15 +1,5 @@
 package com.example.calendarassistant.ui.screens
 
-<<<<<<< HEAD
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-=======
-<<<<<<< Updated upstream
-class HomeScreen {
-}
-=======
 import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -17,7 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
->>>>>>> parent of 3f20bdc (Revert "Notifications Hello World")
+
 import android.util.Log
 import androidx.compose.animation.VectorConverter
 import androidx.compose.foundation.background
@@ -40,22 +30,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-<<<<<<< HEAD
-=======
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
->>>>>>> parent of 3f20bdc (Revert "Notifications Hello World")
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-<<<<<<< HEAD
-=======
+
 import androidx.core.content.ContextCompat
->>>>>>> parent of 3f20bdc (Revert "Notifications Hello World")
+
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
@@ -90,8 +78,6 @@ fun HomeScreen(
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
 
-<<<<<<< HEAD
-=======
     // For notifications
     var hasNotificationPermission by remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -103,8 +89,6 @@ fun HomeScreen(
             )
         } else mutableStateOf(true)
     }
-
->>>>>>> parent of 3f20bdc (Revert "Notifications Hello World")
 
     //val intent = Intent(context, Signin::class.java)
     //context.startActivity(intent)
@@ -234,7 +218,3 @@ private fun gpsTracking(context: Context, startServiceAction: Event<String>?) {
         }
     }
 }
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> parent of 3f20bdc (Revert "Notifications Hello World")
