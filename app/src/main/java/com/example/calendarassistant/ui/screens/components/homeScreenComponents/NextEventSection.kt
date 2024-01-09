@@ -23,19 +23,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkViolet
-import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.google.api.services.calendar.model.Event
 
 @Composable
 fun NextEventSection(
     color: Color = DarkViolet,
     onClick: () -> Unit,
     travelInformation: TravelInformation,
-    nextEventInfo: MockCalendarEvent
+    nextEventInfo: Event?
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +48,7 @@ fun NextEventSection(
     ) {
         Column(modifier = Modifier.weight(0.7F)) {
             Text(
-                text = "Next event: " + nextEventInfo.summary,
+                text = "Next event: " + nextEventInfo?.summary,
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite
             )
