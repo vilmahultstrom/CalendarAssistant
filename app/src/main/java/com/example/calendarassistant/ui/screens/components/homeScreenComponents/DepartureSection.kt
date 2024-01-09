@@ -36,8 +36,6 @@ import com.example.calendarassistant.ui.theme.TextWhite
 fun DepartureSection(
     color: Color = LightGreen2,
     departureInfo: List<Steps>,
-    deviationInfo: TransitDeviationInformation,
-//    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -84,20 +82,7 @@ fun DepartureSection(
                 }
             }
         }
-        /*
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            deviationInfo.transitStepsDeviations?.forEach {deviation ->
-                Text(
-                    text = "Delay: ${deviation.delayInMinutes} minutes",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextWhite
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-        }
-        */
+
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -105,7 +90,6 @@ fun DepartureSection(
                 .clip(CircleShape)
                 .background(ButtonBlue)
                 .padding(10.dp)
-                //.clickable { /*onClick()*/ }
         ) {
             // TODO: Create a button here that shows information about departure
             Icon(
