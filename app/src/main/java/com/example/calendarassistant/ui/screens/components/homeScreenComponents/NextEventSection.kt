@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -25,12 +26,13 @@ import com.example.calendarassistant.R
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
+import com.example.calendarassistant.ui.theme.DarkViolet
 import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun NextEventSection(
-    color: Color = Purple40,
+    color: Color = DarkViolet,
     onClick: () -> Unit,
     travelInformation: TravelInformation,
     nextEventInfo: MockCalendarEvent
@@ -61,11 +63,13 @@ fun NextEventSection(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .weight(0.15F) // TODO: Fix broken ui
                 .size(60.dp)
                 .clip(CircleShape)
+                .shadow(8.dp, CircleShape)
                 .background(ButtonBlue)
-                .padding(10.dp).clickable {onClick()}
+                .clickable { onClick() }
+                .padding(10.dp)
+
         ) {
 
             Icon(

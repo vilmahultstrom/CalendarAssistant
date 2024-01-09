@@ -163,6 +163,7 @@ private fun openGoogleMaps(context: Context, latitude: Double?, longitude: Doubl
     }
 }
 
+// TODO: Man kan skicka context in i VM och göra samma sak tror jag
 private fun gpsTracking(context: Context, startServiceAction: Event<String>?) {
     startServiceAction?.getContentIfNotHandled()?.let { action ->
         Intent(context, LocationService::class.java).apply {

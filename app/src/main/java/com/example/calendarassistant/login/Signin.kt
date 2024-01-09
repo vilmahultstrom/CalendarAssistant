@@ -19,8 +19,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
+import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -56,7 +58,7 @@ class Signin: AppCompatActivity(), SignInInterface {
 
         oneTapClient = Identity.getSignInClient(this)
         Log.d(TAG, "oneTapClient is not null: " + (oneTapClient!=null).toString())
-        Log.d(TAG, "onetapClient string: "+oneTapClient.toString())
+        Log.d(TAG, "onetapClient string: "+ oneTapClient.toString())
         signUpRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -119,6 +121,12 @@ class Signin: AppCompatActivity(), SignInInterface {
                     ) {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(vm = testVM, navController)
+                        }
+                        composable(BMRoutes.Calendar.route) {
+                            CalendarScreen(vm = testVM, navController)
+                        }
+                        composable(BMRoutes.Settings.route) {
+                            SettingsScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)
