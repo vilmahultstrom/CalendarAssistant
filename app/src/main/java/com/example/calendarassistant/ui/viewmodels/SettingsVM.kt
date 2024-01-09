@@ -10,6 +10,7 @@ import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
+import com.example.calendarassistant.services.CalendarService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,7 @@ private const val TAG = "SettingsVm"
 @HiltViewModel
 class SettingsVM @Inject constructor(
     private val googleAuthClient: GoogleAuthClient,
-    private val googleCalendar: GoogleCalendar
+    private val calendarService: CalendarService
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
@@ -49,7 +50,7 @@ class SettingsVM @Inject constructor(
             if (resultCode == RESULT_OK && data != null) {
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 Log.d(TAG, signInResult.data.toString())
-                googleCalendar.getUpcomingEvents(signInResult.data!!.email!!)
+                calendarService.getUpcomingEvents(signInResult.data!!.email!!)
             } else {
                 Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
             }
