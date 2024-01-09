@@ -46,7 +46,6 @@ import kotlinx.coroutines.launch
 private const val TAG = "MainActivity"
 
 // TODO: Remove rotation
-// TODO: Implement dependency injection
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -62,7 +61,6 @@ class MainActivity : ComponentActivity() {
         ) { result ->
             settingsVM.handleSignInResult(result.resultCode, result.data)
         }
-
 
         super.onCreate(savedInstanceState)
 
@@ -112,8 +110,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-
-
                             /*
                             val launcher = rememberLauncherForActivityResult(
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),
