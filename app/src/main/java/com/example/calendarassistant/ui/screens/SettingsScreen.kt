@@ -119,6 +119,9 @@ fun AlarmTestSection(
     var secondsText by remember {
         mutableStateOf("")
     }
+    var title by remember {
+        mutableStateOf("")
+    }
     var message by remember {
         mutableStateOf("")
     }
@@ -135,6 +138,12 @@ fun AlarmTestSection(
             placeholder = { Text(text = "Trigger alarm in seconds") }
         )
         OutlinedTextField(
+            value = title,
+            onValueChange = { title = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(text = "Title") }
+        )
+        OutlinedTextField(
             value = message,
             onValueChange = { message = it },
             modifier = Modifier.fillMaxWidth(),
@@ -146,8 +155,8 @@ fun AlarmTestSection(
         ) {
             Button(onClick = {
                 alarmItem = AlarmItem(
-                    time = LocalDateTime.now().plusSeconds(secondsText.toLong()),
-                    title = "Hello world Alarm",
+                    time = LocalDateTime.now().plusSeconds(secondsText.toLong()), // TODO: Move to VM and calculate depending on next event?
+                    title = title,
                     message = message
                 )
                 alarmItem?.let(scheduler::schedule)
