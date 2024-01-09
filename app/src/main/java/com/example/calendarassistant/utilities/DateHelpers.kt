@@ -53,10 +53,6 @@ object DateHelpers {
         if (hours >= 0 && minutes >= 0) {
             onTime = true
         }
-
-        Log.d(TAG, hours.toInt().toString())
-        Log.d(TAG, minutes.toString())
-
         return if (hours.toInt() != 0) {
             TimeToLeaveDisplay("${hours.absoluteValue}h${minutes.absoluteValue}m", onTime)
         } else {
