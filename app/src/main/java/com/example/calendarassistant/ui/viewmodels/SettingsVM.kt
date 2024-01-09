@@ -1,15 +1,20 @@
 package com.example.calendarassistant.ui.viewmodels
 
 import android.app.Activity.RESULT_OK
+import android.app.Application
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
 import androidx.activity.result.IntentSenderRequest
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.R
 import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
@@ -30,16 +35,30 @@ private const val TAG = "SettingsVm"
 @HiltViewModel
 class SettingsVM @Inject constructor(
     private val googleAuthClient: GoogleAuthClient,
-    private val calendarService: CalendarService
+    private val calendarService: CalendarService,
+    private val application: Application
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
     val signInState = _signInState.asStateFlow()
 
-
-
     private val _signInIntentSender = MutableSharedFlow<IntentSender?>(replay = 1)
     val signInIntentSender: SharedFlow<IntentSender?> = _signInIntentSender.asSharedFlow()
+
+    private val notificationManager: NotificationManager =
+        application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    fun showNotification(
+        title: String,
+        contentText: String
+    ) {
+        val notification = NotificationCompat.Builder(application, "channel_id")
+            .setSmallIcon(R.drawable.directions_walk_24px)
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .build()
+        notificationManager.notify(1, notification)
+    }
 
     fun signIn() {
         viewModelScope.launch {
