@@ -11,17 +11,18 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.example.calendarassistant.R
+import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 private const val TAG = "CalendarGoogle"
 
 
 class GoogleCalendar @Inject constructor(private val context: Context) {
-
-
     companion object {
         private const val APPLICATION_NAME = "Google Calendar API Kotlin Android Quickstart"
         private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()
@@ -31,6 +32,8 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
         private var calendar: Calendar? = null
         private var currentEmail: String? = null
     }
+    private var _events = MutableStateFlow<List<com.google.api.services.calendar.model.Event>>(listOf())
+    var events: StateFlow<List<com.google.api.services.calendar.model.Event>> = _events
 
     private fun getCalendarService(email: String): Calendar {
         synchronized(this) {
@@ -51,7 +54,7 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
         }
     }
 
-    fun getUpcomingEvents(email: String) {
+    fun getUpcomingEvents(email: String){
         val calendarService = getCalendarService(email)
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -70,11 +73,18 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                         // Update UI to show no events
                     } else {
                         Log.d(TAG, "found events")
+                        _events.value=items
+                        for(e in events){
+                        }
+
                         Log.d(TAG, items.toString())
                         Log.d(TAG, "good")
                         var itemList = ""
                         for (i in items) {
                             itemList += i.toString() + "\n";
+                            //i.summary
+                            //i.start
+                            //i.location
                         }
                         Log.d(TAG, itemList)
                         // Update UI to show events
