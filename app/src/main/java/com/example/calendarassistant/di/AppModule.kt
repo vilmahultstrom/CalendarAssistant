@@ -6,7 +6,6 @@ import android.content.Context
 import com.example.calendarassistant.di.AuthModule.provideGoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.GoogleCalendar
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
 import dagger.Module
