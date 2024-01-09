@@ -94,15 +94,18 @@ class HomeVM @Inject constructor(
      */
 
     private fun getAllEventsWithLocationFromCalendars() {
+        var totalEvents = 0
         val events = mutableListOf<CalendarEvent>()
         for(calendar in calendars.value) {
             for (event in calendar.calendarEvents){
+                totalEvents++
                 if (event.location != null) {
                     events.add(event)
                 }
             }
         }
-        Log.d(TAG, "No of events: " + events.size.toString())
+        Log.d(TAG, "No of events with location: " + events.size.toString())
+        Log.d(TAG, "Total no of events: $totalEvents")
         _eventsWithLocation.value = events.sortedByStartTime()
     }
 
