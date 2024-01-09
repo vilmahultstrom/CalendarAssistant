@@ -51,6 +51,7 @@ import com.example.calendarassistant.ui.screens.components.homeScreenComponents.
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.HomeVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.example.calendarassistant.utilities.Event
 
@@ -58,7 +59,7 @@ private const val TAG = "HomeScreen"
 
 @Composable
 fun HomeScreen(
-    vm: TestVM,
+    vm: HomeVM,
     navController: NavController
 ) {
     // For starting Gps tracking

@@ -117,12 +117,6 @@ class SignIn: AppCompatActivity(), SignInInterface {
                         navController = navController,
                         startDestination = BMRoutes.Login.route
                     ) {
-                        composable(BMRoutes.Home.route) {
-                            HomeScreen(vm = testVM, navController)
-                        }
-                        composable(BMRoutes.Calendar.route) {
-                            CalendarScreen(vm = testVM, navController)
-                        }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)
                         }

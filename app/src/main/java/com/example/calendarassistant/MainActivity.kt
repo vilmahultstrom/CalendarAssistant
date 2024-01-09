@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = BMRoutes.Home.route
                     ) {
                         composable(BMRoutes.Home.route) {
-                            HomeScreen(vm = testVM, navController)
+                            HomeScreen(vm = homeVM, navController)
                         }
                         composable(BMRoutes.Calendar.route) {
                             CalendarScreen(vm = testVM, navController)
