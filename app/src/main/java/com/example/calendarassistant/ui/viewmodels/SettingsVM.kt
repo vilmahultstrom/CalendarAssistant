@@ -1,15 +1,13 @@
 package com.example.calendarassistant.ui.viewmodels
 
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.calendarassistant.login.CalendarGoogle
+import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
-import com.example.calendarassistant.login.GoogleAuthClientFactory
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +25,7 @@ private const val TAG = "SettingsVm"
 @HiltViewModel
 class SettingsVM @Inject constructor(
     private val googleAuthClient: GoogleAuthClient,
-    private val calendarGoogle: CalendarGoogle
+    private val googleCalendar: GoogleCalendar
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
@@ -51,7 +49,7 @@ class SettingsVM @Inject constructor(
             if (resultCode == RESULT_OK && data != null) {
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 Log.d(TAG, signInResult.data.toString())
-                calendarGoogle.getUpcomingEvents(signInResult.data!!.email!!)
+                googleCalendar.getUpcomingEvents(signInResult.data!!.email!!)
             } else {
                 Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
             }

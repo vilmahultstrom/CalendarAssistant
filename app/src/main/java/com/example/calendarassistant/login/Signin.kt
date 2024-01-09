@@ -28,7 +28,6 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.api.services.calendar.model.Event
 import dagger.hilt.android.AndroidEntryPoint
 
 const private val TAG= "GoogleSignIn"
@@ -46,7 +45,7 @@ class Signin: AppCompatActivity(), SignInInterface {
     private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
     private var showOneTapUI = true
     private lateinit var activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>
-    private lateinit var calendar: CalendarGoogle
+    private lateinit var calendar: GoogleCalendar
     private var email:String?=null
 
 

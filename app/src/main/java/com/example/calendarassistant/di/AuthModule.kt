@@ -1,18 +1,15 @@
 package com.example.calendarassistant.di
 
 import android.content.Context
-import com.example.calendarassistant.login.CalendarGoogle
+import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ActivityRetainedComponent
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityScoped
 
 
 @Module
@@ -38,7 +35,7 @@ object AuthModule {
     @Provides
     fun provideGoogleCalendar(
         @ApplicationContext context: Context
-    ): CalendarGoogle {
-        return CalendarGoogle(context)
+    ): GoogleCalendar {
+        return GoogleCalendar(context)
     }
 }
