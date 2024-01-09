@@ -54,7 +54,7 @@ class SettingsVM @Inject constructor(
             if (resultCode == RESULT_OK && data != null) {
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 Log.d(TAG, signInResult.data.toString())
-                calendarService.getUpcomingEvents(signInResult.data!!.email!!)
+                calendarService.getUpcomingEvents()
             } else {
                 Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
             }
