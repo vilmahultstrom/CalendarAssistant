@@ -35,8 +35,7 @@ import com.example.calendarassistant.ui.theme.TextWhite
 fun DepartureSection(
     color: Color = DarkAmber,
     departureInfo: List<Steps>,
-    deviationInfo: TransitDeviationInformation,
-    onClick: () -> Unit
+//    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

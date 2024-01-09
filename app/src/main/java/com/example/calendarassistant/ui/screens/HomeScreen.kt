@@ -106,7 +106,9 @@ fun HomeScreen(
                 if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
                     DepartureSection(
                         departureInfo = departureInfo,
+                        //onClick = {}
                     )
+
                     //TravelInformationSection(travelInfo = uiState) // TODO: Fixa denna för lite info om resa!!
                 }
 
