@@ -1,14 +1,8 @@
 package com.example.calendarassistant
 
 import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -26,8 +20,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.login.GoogleAuthClient
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
@@ -35,13 +27,7 @@ import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
 

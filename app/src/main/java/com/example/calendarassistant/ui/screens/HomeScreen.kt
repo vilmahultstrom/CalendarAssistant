@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.enums.TravelMode
-import com.example.calendarassistant.login.Signin
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.ui.screens.components.BottomMenu

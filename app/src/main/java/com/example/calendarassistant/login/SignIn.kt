@@ -39,7 +39,7 @@ const private val TAG= "GoogleSignIn"
  * https://developers.google.com/identity/one-tap/android/create-new-accounts#kotlin_1
  */
 @AndroidEntryPoint
-class Signin: AppCompatActivity(), SignInInterface {
+class SignIn: AppCompatActivity(), SignInInterface {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signUpRequest: BeginSignInRequest
     private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
