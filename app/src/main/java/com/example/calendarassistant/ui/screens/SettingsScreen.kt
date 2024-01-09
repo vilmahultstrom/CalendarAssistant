@@ -78,9 +78,6 @@ fun SettingsScreen(
             }
         }
 
-
-
-
         Column {
             InformationSection("Settings", "Here you can sync your google account")
             Column (
@@ -93,7 +90,7 @@ fun SettingsScreen(
                 // TODO: Open Google sign in intent
                 val googleButtonText = "Sign in with Google"
                 GoogleSignInButton(googleButtonText) { onSignInClick() }
-                NotificationSettingsSection()
+                NotificationSettingsSection(vm)
             }
 
             // TODO: Välj vilken kalender som ska importeras / logga in?
