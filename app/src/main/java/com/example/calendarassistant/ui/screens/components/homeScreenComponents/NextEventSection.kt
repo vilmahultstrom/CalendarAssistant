@@ -37,6 +37,13 @@ fun NextEventSection(
     travelInformation: TravelInformation,
     nextEventInfo: MockCalendarEvent
 ) {
+
+    val departureTimeHHMM = travelInformation.departureTimeHHMM.hhmmDisplay
+    val isOnTime = travelInformation.departureTimeHHMM.onTime
+
+
+
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -54,8 +61,12 @@ fun NextEventSection(
                 color = TextWhite
             )
             Text(
-                // TODO: Get string from backend with calculated time estimation
-                text = "Leave in ${travelInformation.departureTimeHHMM} / at ${travelInformation.departureTime}",
+
+                text = when (isOnTime) {
+                    true -> "Leave in $departureTimeHHMM\nat ${travelInformation.departureTime}" //
+                    false -> "You are $departureTimeHHMM late"
+                    else -> "" // isontime is null
+                },
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite
             )

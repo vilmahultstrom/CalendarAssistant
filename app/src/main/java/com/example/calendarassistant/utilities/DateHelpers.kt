@@ -1,5 +1,6 @@
 package com.example.calendarassistant.utilities
 
+import android.util.Log
 import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
@@ -8,6 +9,14 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import kotlin.math.absoluteValue
+
+private const val TAG = "DateHelpers"
+
+data class TimeToLeaveDisplay (
+    val hhmmDisplay: String? = null,
+    val onTime: Boolean? = null
+)
 
 
 object DateHelpers {
@@ -34,16 +43,24 @@ object DateHelpers {
      *  Returns a string with the format HHh:MMm from
      *  a seconds value.
      */
-    fun formatSecondsToHourMinutes(seconds: Long?) : String {
-        if (seconds == null) return "nullValue"
-        if (seconds < 0) return "Run"
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
+    fun getTimeToLeaveDisplay(seconds: Long?) : TimeToLeaveDisplay {
+        if (seconds == null) return TimeToLeaveDisplay("nullValue", null)
+        var onTime = false
 
-        return if (hours > 0) {
-            "${hours}h${minutes}m"
+        val hours = seconds / 3600
+        val minutes = ((seconds % 3600) / 60)
+
+        if (hours >= 0 && minutes >= 0) {
+            onTime = true
+        }
+
+        Log.d(TAG, hours.toInt().toString())
+        Log.d(TAG, minutes.toString())
+
+        return if (hours.toInt() != 0) {
+            TimeToLeaveDisplay("${hours.absoluteValue}h${minutes.absoluteValue}m", onTime)
         } else {
-            "${minutes}m"
+            TimeToLeaveDisplay("${minutes.absoluteValue}m", onTime)
         }
 
     }

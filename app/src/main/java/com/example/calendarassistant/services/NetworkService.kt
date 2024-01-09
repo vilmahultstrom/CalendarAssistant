@@ -19,6 +19,7 @@ import com.example.calendarassistant.network.dto.sl.realtimeData.SlRealtimeDataR
 import com.example.calendarassistant.network.dto.sl.realtimeData.internal.Deviations
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.utilities.DateHelpers
+import com.example.calendarassistant.utilities.TimeToLeaveDisplay
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -188,12 +189,16 @@ class NetworkService : INetworkService {
         )
     }
 
-    private fun calculateDepartureTimeHHMM(departureTime: DepartureTime?): String {
+    private fun calculateDepartureTimeHHMM(departureTime: DepartureTime?): TimeToLeaveDisplay {
         // Calculate the time to leave (eg: "1h15m")
         val currentTime = ZonedDateTime.now().toEpochSecond()
-        return departureTime?.value?.let {
-            DateHelpers.formatSecondsToHourMinutes(it - currentTime)
-        } ?: ""
+        return DateHelpers.getTimeToLeaveDisplay(
+            departureTime?.value?.minus(
+                currentTime
+            )
+        )
+
+
     }
 
 
