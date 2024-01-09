@@ -103,7 +103,7 @@ fun HomeScreen(
 
                 TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)
 
-                if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
+                if (departureInfo.isNotEmpty() && uiState.travelMode == TravelMode.Transit){ // TODO: Kanske ändra detta
                     DepartureSection(
                         departureInfo = departureInfo,
                         //onClick = {}

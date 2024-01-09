@@ -1,10 +1,13 @@
 package com.example.calendarassistant.utilities
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 
 
 object DateHelpers {
@@ -43,6 +46,21 @@ object DateHelpers {
             "${minutes}m"
         }
 
+    }
+
+    fun getLocalTimeInUnixTime(): Long {
+        return ZonedDateTime.now().toEpochSecond()
+    }
+
+    fun unixTimeToLocalZonedDateTime(unixTime: Long): ZonedDateTime {
+        val instant = Instant.ofEpochSecond(unixTime)
+        return ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+    }
+
+    fun zonedDateTimeToShortFormat(zonedDateTime: ZonedDateTime) : String{
+        val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+            .withLocale(Locale.ENGLISH)
+        return formatter.format(zonedDateTime)
     }
 
     fun googleTimeToHoursMinutes(timeString: String): String {
