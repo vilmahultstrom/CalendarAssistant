@@ -13,9 +13,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 private const val TAG = "GoogleAuthClient"
-class GoogleAuthClient(
+class GoogleAuthClient @Inject constructor(
     private val context: Context,
     private val signInClient: SignInClient
 ) {
@@ -75,7 +76,8 @@ class GoogleAuthClient(
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
-            username = displayName.orEmpty()
+            username = displayName.orEmpty(),
+            email = email
         )
     }
 

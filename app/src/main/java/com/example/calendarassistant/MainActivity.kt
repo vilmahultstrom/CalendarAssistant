@@ -43,7 +43,7 @@ import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-const private val TAG = "MainActivity"
+private const val TAG = "MainActivity"
 
 // TODO: Remove rotation
 // TODO: Implement dependency injection
@@ -51,16 +51,27 @@ const private val TAG = "MainActivity"
 class MainActivity : ComponentActivity() {
 
 
+    private lateinit var signInLauncher: ActivityResultLauncher<IntentSenderRequest>
+    private lateinit var settingsVM: SettingsVM
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        signInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            settingsVM.handleSignInResult(result.resultCode, result.data)
+        }
+
+
         super.onCreate(savedInstanceState)
-        val googleAuthClient by lazy {
+
+       /* val googleAuthClient by lazy {
             GoogleAuthClient(
                 context = applicationContext,
                 signInClient = Identity.getSignInClient(applicationContext)
             )
-        }
-
-
+        }*/
 
         ActivityCompat.requestPermissions(
             this,
@@ -79,8 +90,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val testVM = hiltViewModel<TestVM>()
-
-
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
@@ -93,12 +102,22 @@ class MainActivity : ComponentActivity() {
                             CalendarScreen(vm = testVM, navController)
                         }
                         composable(BMRoutes.Settings.route) {
-                            val settingsVM = hiltViewModel<SettingsVM>()
+                            settingsVM = hiltViewModel<SettingsVM>()
+                            lifecycleScope.launchWhenStarted {
+                                settingsVM.signInIntentSender.collect { intentSender ->
+                                    intentSender?.let {
+                                        signInLauncher.launch(
+                                            IntentSenderRequest.Builder(it).build()
+                                        )
+                                    }
+                                }
+                            }
 
+
+                            /*
                             val launcher = rememberLauncherForActivityResult(
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                                 onResult = { result ->
-                                    Log.d(TAG, "Hej")
                                     if (result.resultCode == RESULT_OK) {
                                         lifecycleScope.launch {
                                             val signInResult =
@@ -114,12 +133,21 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
 
+                             */
+
+                            /* SettingsScreen(vm = settingsVM, navController, onSignInClick = {
+                                 lifecycleScope.launch { val signInIntentSender = googleAuthClient.signIn()
+                                 launcher.launch(IntentSenderRequest.Builder(
+                                     signInIntentSender ?: return@launch
+                                 ).build())}
+                             })*/
+
+
                             SettingsScreen(vm = settingsVM, navController, onSignInClick = {
-                                lifecycleScope.launch { val signInIntentSender = googleAuthClient.signIn()
-                                launcher.launch(IntentSenderRequest.Builder(
-                                    signInIntentSender ?: return@launch
-                                ).build())}
+                                settingsVM.signIn() // Trigger sign-in from the ViewModel
                             })
+
+
                         }
                         composable(BMRoutes.Login.route) {
                             LoginScreen(testVM, navController)
