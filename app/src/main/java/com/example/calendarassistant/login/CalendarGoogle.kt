@@ -51,6 +51,13 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
                         // Update UI to show no events
                     } else {
                         Log.d(TAG, "found events")
+                        Log.d(TAG, items.toString())
+                        Log.d(TAG, "good")
+                        var itemList=""
+                        for(i in items){
+                            itemList+=i.toString() + "\n";
+                        }
+                        Log.d(TAG, itemList)
                         // Update UI to show events
                         for (event in items) {
                             val start = event.start.dateTime ?: event.start.date
