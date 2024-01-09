@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -28,6 +31,7 @@ import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
 
@@ -67,6 +71,8 @@ class MainActivity : ComponentActivity() {
             0
         )
 
+
+
         setContent {
             CalendarAssistantTheme {
                 Surface(
@@ -87,48 +93,22 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(BMRoutes.Settings.route) {
                             settingsVM = hiltViewModel<SettingsVM>()
-                            lifecycleScope.launchWhenStarted {
-                                settingsVM.signInIntentSender.collect { intentSender ->
-                                    intentSender?.let {
-                                        signInLauncher.launch(
-                                            IntentSenderRequest.Builder(it).build()
-                                        )
-                                    }
-                                }
-                            }
-                            /*
-                            val launcher = rememberLauncherForActivityResult(
-                                contract = ActivityResultContracts.StartIntentSenderForResult(),
-                                onResult = { result ->
-                                    if (result.resultCode == RESULT_OK) {
-                                        lifecycleScope.launch {
-                                            val signInResult =
-                                                googleAuthClient.getSignInResultFromIntent(
-                                                    intent = result.data ?: return@launch
-                                                )
-                                            settingsVM.onSignInResult(signInResult)
+                            LaunchedEffect(settingsVM.signInIntentSender){
+                                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                    settingsVM.signInIntentSender.collect { intentSender ->
+                                        intentSender?.let {
+                                            signInLauncher.launch(
+                                                IntentSenderRequest.Builder(it).build()
+                                            )
                                         }
                                     }
-                                    else {
-                                        Log.d(TAG, result.toString())
-                                    }
                                 }
-                            )
 
-                             */
-
-                            /* SettingsScreen(vm = settingsVM, navController, onSignInClick = {
-                                 lifecycleScope.launch { val signInIntentSender = googleAuthClient.signIn()
-                                 launcher.launch(IntentSenderRequest.Builder(
-                                     signInIntentSender ?: return@launch
-                                 ).build())}
-                             })*/
-
+                            }
 
                             SettingsScreen(vm = settingsVM, navController, onSignInClick = {
                                 settingsVM.signIn() // Trigger sign-in from the ViewModel
                             })
-
 
                         }
                         composable(BMRoutes.Login.route) {
