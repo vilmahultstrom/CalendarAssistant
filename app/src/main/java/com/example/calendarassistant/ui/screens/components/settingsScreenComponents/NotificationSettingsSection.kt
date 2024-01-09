@@ -47,7 +47,7 @@ fun NotificationSettingsSection(
             hasNotificationPermission = isGranted
         }
     )
-    if (hasNotificationPermission) {
+    if (!hasNotificationPermission) {
         SettingButton(
             text = "Allow notifications",
             onClick = {
