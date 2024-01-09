@@ -47,18 +47,24 @@ fun NotificationSettingsSection(
             hasNotificationPermission = isGranted
         }
     )
-    Button(onClick = {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
-    }) {
-        Text(text = "Allow notifications")
+    if (hasNotificationPermission) {
+        SettingButton(
+            text = "Allow notifications",
+            onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            },
+            painterId = R.drawable.baseline_no_adult_content_24
+        )
     }
-    Button(onClick = {
-        if (hasNotificationPermission) {
-            vm.showNotification("Hello World", "this is a test")
-        }
-    }) {
-        Text(text = "Show test notification")
-    }
+    SettingButton(
+        text = "Show test notification",
+        onClick = {
+            if (hasNotificationPermission) {
+                vm.showNotification("Hello World", "this is a test")
+            }
+        },
+        painterId = R.drawable.baseline_notifications_24
+    )
 }

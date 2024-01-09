@@ -16,10 +16,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.calendarassistant.R
 
 @Composable
-fun GoogleSignInButton(text: String, onClick: () -> Unit) {
+fun SettingButton(text: String, onClick: () -> Unit, painterId: Int) {
     Button(
         onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(Color.White),
@@ -27,7 +26,7 @@ fun GoogleSignInButton(text: String, onClick: () -> Unit) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(id = R.drawable.google_g_logo),
+                painter = painterResource(id = painterId),
                 contentDescription = "Google logo",
                 modifier = Modifier.size(24.dp)
             )
