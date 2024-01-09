@@ -21,7 +21,6 @@ import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
-import com.example.calendarassistant.ui.screens.LoginScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -122,9 +121,6 @@ class SignIn: AppCompatActivity(), SignInInterface {
                         }
                         composable(BMRoutes.Calendar.route) {
                             CalendarScreen(vm = testVM, navController)
-                        }
-                        composable(BMRoutes.Login.route) {
-                            LoginScreen(testVM, navController)
                         }
                     }
                 }

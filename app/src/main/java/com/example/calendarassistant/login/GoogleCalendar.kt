@@ -21,7 +21,6 @@ private const val TAG = "CalendarGoogle"
 
 class GoogleCalendar @Inject constructor(private val context: Context) {
 
-
     companion object {
         private const val APPLICATION_NAME = "Google Calendar API Kotlin Android Quickstart"
         private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()

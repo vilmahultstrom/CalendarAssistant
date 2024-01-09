@@ -78,6 +78,7 @@ fun SettingsScreen(
                 // TODO: Open Google sign in intent
                 val googleButtonText = "Sign in with Google"
                 GoogleSignInButton(googleButtonText) { onSignInClick() }
+                NotificationSection()
             }
 
             // TODO: Välj vilken kalender som ska importeras / logga in?
@@ -101,4 +102,58 @@ fun SettingsScreen(
             navController = navController
         )
     }
+}
+
+@Composable
+fun NotificationSection() {
+    // For notifications
+    val context = LocalContext.current
+    var hasNotificationPermission by remember {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mutableStateOf(
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            )
+        } else mutableStateOf(true)
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            hasNotificationPermission = isGranted
+        }
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }) {
+            Text(text = "Request permission")
+        }
+        Button(onClick = {
+            if(hasNotificationPermission) {
+                showNotification(context)
+            }
+        }) {
+            Text(text = "Test notification")
+        }
+    }
+}
+
+private fun showNotification(applicationContext: Context) {
+    val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val notification = NotificationCompat.Builder(applicationContext, "channel_id")
+        .setContentText("This is some content text")
+        .setContentTitle("Hello World")
+        .setSmallIcon(R.drawable.ic_launcher_foreground)
+        .build()
+    notificationManager.notify(1, notification)
 }
