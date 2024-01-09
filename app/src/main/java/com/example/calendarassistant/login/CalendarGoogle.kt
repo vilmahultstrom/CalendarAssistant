@@ -1,4 +1,5 @@
 package com.example.calendarassistant.login
+import android.accounts.Account
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.json.JsonFactory
@@ -7,6 +8,7 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import android.content.Context
 import android.util.Log
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 
 import kotlinx.coroutines.*
 
@@ -22,13 +24,7 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
 
     private val credential: GoogleAccountCredential = GoogleAccountCredential.usingOAuth2(
         context, SCOPES
-    ).setSelectedAccountName(accountName)
-        //.apply {
-        //selectedAccountName = accountName
-    //}
-        //.setSelectedAccountName(accountName)
-
-
+    ).setSelectedAccount(Account(accountName, "com.example.calendarassistant"))  //note that .setSelectedAccountName(accountName) will NOT work. We need to use setSelectedAccount instead. The "type" is set to package-name.
 
     private val calendarService: Calendar by lazy {
         Calendar.Builder(
@@ -36,6 +32,7 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
         ).setApplicationName(APPLICATION_NAME)
             .build()
     }
+
     fun getUpcomingEvents() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -61,7 +58,12 @@ class CalendarGoogle(private val context: Context, private val accountName: Stri
                         }
                     }
                 }
-            } catch (e: Exception) {
+            }catch (e: UserRecoverableAuthIOException) { //user needs to accept that the app will have access to users calendar. This exception-handling is absolutely necessary for retreiving events in the app.
+                Log.d(TAG, "exception occured: " + e)
+                // Handle the exception by starting an activity with the provided intent
+                context.startActivity(e.intent) //
+            }
+            catch (e: Exception) {
                 Log.d(TAG, "exception occured: " + e)
                 // Handle the exception in the UI thread
                 withContext(Dispatchers.Main) {
