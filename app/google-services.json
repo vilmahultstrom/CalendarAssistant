@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "179111803740-pegs9329lj7osfuhemvebfl28ajj29ss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.calendarassistant",
+            "certificate_hash": "93750ce66ea5dc3f60dcad4f27ff2501be2b45b6"
+          }
+        },
+        {
           "client_id": "179111803740-ok50t3lgvku7a0arspmkubn6djoraihg.apps.googleusercontent.com",
           "client_type": 3
         }
