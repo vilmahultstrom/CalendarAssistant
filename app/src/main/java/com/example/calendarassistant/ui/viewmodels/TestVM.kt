@@ -144,15 +144,6 @@ class TestVM @Inject constructor(
         }
     }
 
-    fun getDeviationInformation() {
-        viewModelScope.launch {
-            MockDeviationInformation.getNextTransitDeviationsInformation().collect { next: TransitDeviationInformation ->
-                Log.d(TAG, "Collecting: $next")
-                _uiState.update { currentState -> currentState.copy(transitDeviationInformation = next) }
-            }
-        }
-    }
-
 
     init {
         viewModelScope.launch {
@@ -182,10 +173,6 @@ class TestVM @Inject constructor(
                     }
                     // This updates the time left, could maybe ge done by internal timer
                     networkService.getTravelInformation(_uiState.value.travelMode)
-                    // TODO: om deviation ska uppdateras automatiskt, anropas det här om
-                    //  det är mindre än en timme till avresa.
-                    //  Annars anropas det triggat av knapptryck.
-
                 }
             }
 
