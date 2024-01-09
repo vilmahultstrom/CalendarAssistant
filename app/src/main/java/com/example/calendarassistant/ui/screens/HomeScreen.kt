@@ -108,12 +108,8 @@ fun HomeScreen(
                 if (departureInfo.isNotEmpty()){ // TODO: Kanske ändra detta
                     DepartureSection(
                         departureInfo = departureInfo,
-                        //deviationInfo = uiState.transitDeviationInformation, TODO: Ta bort !
-                        //onClick = { vm.getDeviationInformation() }
                     )
-                    Log.d(TAG, "INNAN *******")
-                    TravelInformationSection(travelInfo = uiState)
-                    Log.d(TAG, "EFTER *******")
+                    //TravelInformationSection(travelInfo = uiState) // TODO: Fixa denna för lite info om resa!!
                 }
 
                 ButtonSection()
