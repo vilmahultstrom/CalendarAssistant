@@ -1,4 +1,5 @@
 package com.example.calendarassistant.login
+
 import android.accounts.Account
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.extensions.android.http.AndroidHttp
@@ -7,13 +8,14 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-const private val TAG= "CalendarGoogle"
+private const val TAG = "CalendarGoogle"
 
 
 class GoogleCalendar @Inject constructor(private val context: Context) {
@@ -22,26 +24,20 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
         private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()
         private val SCOPES = listOf(CalendarScopes.CALENDAR_READONLY)
     }
-
-    private lateinit var accountName: String
-    private lateinit var credential: GoogleAccountCredential
-    private lateinit var calendarService: Calendar
-
-    private fun initialize(email:String){
-        accountName=email
-
-        credential=  GoogleAccountCredential.usingOAuth2(
+    
+    private fun getCalendarService(email: String): Calendar {
+        val credential = GoogleAccountCredential.usingOAuth2(
             context, SCOPES
-        ).setSelectedAccount(Account(accountName, "com.example.calendarassistant"))  //note that .setSelectedAccountName(accountName) will NOT work. We need to use setSelectedAccount instead. The "type" is set to package-name.
+        ).setSelectedAccount(Account(email, "com.example.calendarassistant"))
 
-        calendarService=Calendar.Builder(
+        return Calendar.Builder(
             AndroidHttp.newCompatibleTransport(), GsonFactory.getDefaultInstance(), credential
         ).setApplicationName(APPLICATION_NAME)
             .build()
     }
 
-    fun getUpcomingEvents(email:String) {
-        initialize(email)
+    fun getUpcomingEvents(email: String) {
+        val calendarService = getCalendarService(email)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val now = com.google.api.client.util.DateTime(System.currentTimeMillis())
@@ -61,9 +57,9 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                         Log.d(TAG, "found events")
                         Log.d(TAG, items.toString())
                         Log.d(TAG, "good")
-                        var itemList=""
-                        for(i in items){
-                            itemList+=i.toString() + "\n";
+                        var itemList = ""
+                        for (i in items) {
+                            itemList += i.toString() + "\n";
                         }
                         Log.d(TAG, itemList)
                         // Update UI to show events
@@ -73,16 +69,14 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                         }
                     }
                 }
-            }catch (e: UserRecoverableAuthIOException) { //user needs to accept that the app will have access to users calendar. This exception-handling is absolutely necessary for retreiving events in the app.
-                Log.d(TAG, "exception occured: " + e)
-                // Handle the exception by starting an activity with the provided intent
-                context.startActivity(e.intent) //
-            }
-            catch (e: Exception) {
-                Log.d(TAG, "exception occured: " + e)
-                // Handle the exception in the UI thread
+            } catch (e: UserRecoverableAuthIOException) { //user needs to accept that the app will have access to users calendar. This exception-handling is absolutely necessary for retreiving events in the app.
+                val intent = e.intent
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Add this line
+                context.startActivity(intent)
+                e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    // Show error message
                 }
             }
         }
