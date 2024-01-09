@@ -93,17 +93,14 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(BMRoutes.Settings.route) {
                             settingsVM = hiltViewModel<SettingsVM>()
-                            LaunchedEffect(settingsVM.signInIntentSender){
-                                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                    settingsVM.signInIntentSender.collect { intentSender ->
-                                        intentSender?.let {
-                                            signInLauncher.launch(
-                                                IntentSenderRequest.Builder(it).build()
-                                            )
-                                        }
+                            LaunchedEffect(settingsVM.signInIntentSender) { // or a specific key if needed
+                                settingsVM.signInIntentSender.collect { intentSender ->
+                                    intentSender?.let {
+                                        signInLauncher.launch(
+                                            IntentSenderRequest.Builder(it).build()
+                                        )
                                     }
                                 }
-
                             }
 
                             SettingsScreen(vm = settingsVM, navController, onSignInClick = {
