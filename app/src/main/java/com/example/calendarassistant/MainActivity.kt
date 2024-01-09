@@ -53,7 +53,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //FirebaseApp.initializeApp(applicationContext)
         val googleAuthClient by lazy {
             GoogleAuthClient(
                 context = applicationContext,
@@ -61,9 +60,7 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-        // uncomment To start Signin Activity
-        //val intent = Intent(this, Signin::class.java)
-        //startActivity(intent)
+
 
         ActivityCompat.requestPermissions(
             this,
@@ -74,8 +71,6 @@ class MainActivity : ComponentActivity() {
             ),
             0
         )
-
-
 
         setContent {
             CalendarAssistantTheme {

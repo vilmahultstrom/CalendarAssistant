@@ -43,7 +43,6 @@ fun CalendarScreen(
             DatePickSection(
                 dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString()
             )
-            Spacer(modifier = Modifier.height(100.dp))
             EventsSection(events)
         }
         BottomMenu(
