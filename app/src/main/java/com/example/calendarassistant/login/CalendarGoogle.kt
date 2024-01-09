@@ -11,29 +11,37 @@ import android.util.Log
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
 const private val TAG= "CalendarGoogle"
 
 
-class CalendarGoogle(private val context: Context, private val accountName: String) {
+class CalendarGoogle @Inject constructor(private val context: Context) {
     companion object {
         private const val APPLICATION_NAME = "Google Calendar API Kotlin Android Quickstart"
         private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()
         private val SCOPES = listOf(CalendarScopes.CALENDAR_READONLY)
     }
 
-    private val credential: GoogleAccountCredential = GoogleAccountCredential.usingOAuth2(
-        context, SCOPES
-    ).setSelectedAccount(Account(accountName, "com.example.calendarassistant"))  //note that .setSelectedAccountName(accountName) will NOT work. We need to use setSelectedAccount instead. The "type" is set to package-name.
+    private lateinit var accountName: String
+    private lateinit var credential: GoogleAccountCredential
+    private lateinit var calendarService: Calendar
 
-    private val calendarService: Calendar by lazy {
-        Calendar.Builder(
+    private fun initialize(email:String){
+        accountName=email
+
+        credential=  GoogleAccountCredential.usingOAuth2(
+            context, SCOPES
+        ).setSelectedAccount(Account(accountName, "com.example.calendarassistant"))  //note that .setSelectedAccountName(accountName) will NOT work. We need to use setSelectedAccount instead. The "type" is set to package-name.
+
+        calendarService=Calendar.Builder(
             AndroidHttp.newCompatibleTransport(), GsonFactory.getDefaultInstance(), credential
         ).setApplicationName(APPLICATION_NAME)
             .build()
     }
 
-    fun getUpcomingEvents() {
+    fun getUpcomingEvents(email:String) {
+        initialize(email)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val now = com.google.api.client.util.DateTime(System.currentTimeMillis())

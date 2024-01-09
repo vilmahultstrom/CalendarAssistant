@@ -155,6 +155,10 @@ class Signin: AppCompatActivity(), SignInInterface {
 
     }
 
+    override fun fetchEvents(){//TODO: remove this
+    }
+
+    /*
     override fun fetchEvents() {
         // Assuming you have the account name (email) after Google Sign-In
         //val accountEmail = "your-google-account-email@example.com"
@@ -168,5 +172,7 @@ class Signin: AppCompatActivity(), SignInInterface {
     private fun displayEvents(events: List<Event>) {
         // Implementation to display events in your UI
     }
+
+     */
 
 }

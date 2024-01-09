@@ -1,6 +1,7 @@
 package com.example.calendarassistant.di
 
 import android.content.Context
+import com.example.calendarassistant.login.CalendarGoogle
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -32,5 +33,12 @@ object AuthModule {
         client: SignInClient
     ): GoogleAuthClient {
         return GoogleAuthClient(context, client)
+    }
+
+    @Provides
+    fun provideGoogleCalendar(
+        @ApplicationContext context: Context
+    ): CalendarGoogle {
+        return CalendarGoogle(context)
     }
 }
