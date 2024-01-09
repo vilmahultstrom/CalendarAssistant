@@ -10,6 +10,7 @@ import com.google.api.services.calendar.CalendarScopes
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.example.calendarassistant.R
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 
 import kotlinx.coroutines.*
@@ -19,21 +20,35 @@ private const val TAG = "CalendarGoogle"
 
 
 class GoogleCalendar @Inject constructor(private val context: Context) {
+
+
     companion object {
         private const val APPLICATION_NAME = "Google Calendar API Kotlin Android Quickstart"
         private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()
         private val SCOPES = listOf(CalendarScopes.CALENDAR_READONLY)
-    }
-    
-    private fun getCalendarService(email: String): Calendar {
-        val credential = GoogleAccountCredential.usingOAuth2(
-            context, SCOPES
-        ).setSelectedAccount(Account(email, "com.example.calendarassistant"))
 
-        return Calendar.Builder(
-            AndroidHttp.newCompatibleTransport(), GsonFactory.getDefaultInstance(), credential
-        ).setApplicationName(APPLICATION_NAME)
-            .build()
+        @Volatile
+        private var calendar: Calendar? = null
+        private var currentEmail: String? = null
+    }
+
+    private fun getCalendarService(email: String): Calendar {
+        synchronized(this) {
+            if (calendar != null && currentEmail == email) {
+                return calendar!!
+            }
+            val credential = GoogleAccountCredential.usingOAuth2(
+                context, SCOPES
+            ).setSelectedAccount(Account(email, context.getString(R.string.package_name)))
+
+            calendar = Calendar.Builder(
+                AndroidHttp.newCompatibleTransport(), GsonFactory.getDefaultInstance(), credential
+            ).setApplicationName(APPLICATION_NAME)
+                .build()
+
+            currentEmail = email
+            return calendar!!
+        }
     }
 
     fun getUpcomingEvents(email: String) {
@@ -71,7 +86,7 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                 }
             } catch (e: UserRecoverableAuthIOException) { //user needs to accept that the app will have access to users calendar. This exception-handling is absolutely necessary for retreiving events in the app.
                 val intent = e.intent
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Add this line
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) //:TODO Bättre lösning?
                 context.startActivity(intent)
                 e.printStackTrace()
             } catch (e: Exception) {
