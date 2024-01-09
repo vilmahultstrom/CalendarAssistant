@@ -14,7 +14,7 @@ class NotificationHelper @Inject constructor(private val application: Applicatio
 
     fun showNotification(title: String, contentText: String) {
         val notification = NotificationCompat.Builder(application, "channel_id")
-            .setSmallIcon(R.drawable.baseline_navigation_24)
+            .setSmallIcon(R.drawable.baseline_hourglass_bottom_24)
             .setContentTitle(title)
             .setContentText(contentText)
             .build()
