@@ -1,7 +1,6 @@
 package com.example.calendarassistant.services
 
 import android.util.Log
-import androidx.compose.material.icons.materialIcon
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
@@ -9,8 +8,6 @@ import com.example.calendarassistant.model.mock.travel.Deviation
 import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
-import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
-import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.SlLookUpApi
 import com.example.calendarassistant.network.SlRealTimeApi
@@ -21,11 +18,8 @@ import com.example.calendarassistant.network.dto.google.directions.internal.Step
 import com.example.calendarassistant.network.dto.sl.realtimeData.SlRealtimeDataResponse
 import com.example.calendarassistant.network.dto.sl.realtimeData.internal.Deviations
 import com.example.calendarassistant.network.location.LocationRepository
-import com.example.calendarassistant.ui.viewmodels.UiState
 import com.example.calendarassistant.utilities.DateHelpers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.example.calendarassistant.utilities.TimeToLeaveDisplay
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -75,7 +69,12 @@ class NetworkService : INetworkService {
                 travelMode
             )
 
-            processGoogleDirectionsResponse(response)
+            Log.d(TAG, response.routes.first().legs.first().arrivalTime.toString())
+            if (travelMode == TravelMode.Transit) {
+                processGoogleDirectionsResponse(response)
+            } else {
+                processNonTransitResponse(response)
+            }
 
         } catch (e: Exception) {
             Log.d(TAG, e.printStackTrace().toString())
@@ -114,6 +113,39 @@ class NetworkService : INetworkService {
         return response.body()!!
     }
 
+    private suspend fun processNonTransitResponse(response: GoogleDirectionsResponse) {
+        val legs = response.routes.first().legs.first()
+        val travelDuration = legs.duration
+
+        val firstEvent = MockEvent.getMockEvents().first()      // TODO: real event
+
+        val firstEventStartLocalTime =
+            DateHelpers.convertToSystemTimeZone(firstEvent.start)!!.toEpochSecond()
+        val travelTime = travelDuration!!.value!!
+        val leaveAtUnixTime = firstEventStartLocalTime.minus(travelTime)
+        val leaveAtZonedDateTime = DateHelpers.unixTimeToLocalZonedDateTime(leaveAtUnixTime)
+        //val firstEventStartLocalTimeZone = DateHelpers.unixTimeToLocalZonedDateTime(firstEventStartLocalTime)
+
+
+        // Log.d(TAG, "Next event starts: $firstEventStartLocalTimeZone")
+        // Log.d(TAG, "Leave in: " + DateHelpers.formatSecondsToHourMinutes(leaveAtUnixTime - DateHelpers.getLocalTimeInUnixTime()))
+        // Log.d(TAG, "Leave at (Local Time): ${DateHelpers.zonedDateTimeToShortFormat(leaveAtZonedDateTime)}")
+
+
+        val endLocation = legs.endLocation
+        val departureTime = DepartureTime(
+            text = DateHelpers.zonedDateTimeToShortFormat(leaveAtZonedDateTime),
+            timeZone = ZoneId.systemDefault().id,
+            value = leaveAtUnixTime.toInt()
+        )
+
+
+        Log.d(TAG, departureTime.toString())
+
+
+        updateTravelInformation(departureTime = departureTime, endLocation = endLocation)
+    }
+
     private suspend fun processGoogleDirectionsResponse(response: GoogleDirectionsResponse) {
         val legs = response.routes.first().legs.first()
 
@@ -126,6 +158,9 @@ class NetworkService : INetworkService {
 
         val departureInformation = legs.departureTime
         val endLocation = legs.endLocation
+
+        Log.d(TAG, departureInformation.toString())
+
         updateTravelInformation(departureInformation, endLocation)
     }
 
@@ -133,7 +168,10 @@ class NetworkService : INetworkService {
     private fun extractTransitSteps(steps: List<Steps>): List<Steps> =
         steps.filter { it.travelMode == "TRANSIT" }
 
-    private suspend fun updateTravelInformation(departureTime: DepartureTime?, endLocation: EndLocation?) {
+    private suspend fun updateTravelInformation(
+        departureTime: DepartureTime?,
+        endLocation: EndLocation?
+    ) {
         val departureTimeHHMM = calculateDepartureTimeHHMM(departureTime)
         val departureTimeText = departureTime?.text
 
@@ -146,12 +184,14 @@ class NetworkService : INetworkService {
         )
     }
 
-    private fun calculateDepartureTimeHHMM(departureTime: DepartureTime?): String {
+    private fun calculateDepartureTimeHHMM(departureTime: DepartureTime?): TimeToLeaveDisplay {
         // Calculate the time to leave (eg: "1h15m")
         val currentTime = ZonedDateTime.now().toEpochSecond()
-        return departureTime?.value?.let {
-            DateHelpers.formatSecondsToHourMinutes(it - currentTime)
-        } ?: ""
+        return DateHelpers.getTimeToLeaveDisplay(
+            departureTime?.value?.minus(
+                currentTime
+            )
+        )
     }
 
 // TODO ########################################################################################
@@ -287,17 +327,21 @@ class NetworkService : INetworkService {
             }
         }
 
-        val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime) //TODO: eller 'slScheduledDepartureTime = shipData?.timeTabledDateTime'
+        val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime)
         return DeviationInformation(delayInMinutes, deviations)
     }
 
-    fun areTimesSimilar(time1: String, time2: String): Boolean { // TODO: Är Googles och SLs planerade tider lika även fast vi hämtar ny data från google (som då är uppdaterad)?
+    fun areTimesSimilar(
+        time1: String,
+        time2: String
+    ): Boolean { // TODO: använda eller ej?? Jämför test. Är Googles och SLs planerade tider lika även fast vi hämtar ny data från google (som då är uppdaterad)?
         // Example using java.time API (requires API level 26 or using a backport library like ThreeTenABP)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val dateTime1 = LocalDateTime.parse(time1, formatter)
         val dateTime2 = LocalDateTime.parse(time2, formatter)
 
-        return Duration.between(dateTime1, dateTime2).abs().toMinutes() <= 1 // for a 1-minute threshold
+        return Duration.between(dateTime1, dateTime2).abs()
+            .toMinutes() <= 1 // for a 1-minute threshold
     }
 
     private fun convertDeviations(slDeviations: ArrayList<Deviations>?): List<Deviation> {
@@ -317,9 +361,9 @@ class NetworkService : INetworkService {
         val actualDateTime = formatDateTimeStringToUnix(actualTime)
 
         // Calculate the delay in seconds
-        val delayInSeconds = (actualDateTime) - scheduledTime
+        val delayInSeconds = actualDateTime - scheduledTime
         // Convert the delay to minutes
-        return (delayInSeconds / 60).toInt() + 2 //TODO: TA BORT MOCK DELAY !!!!!
+        return (delayInSeconds / 60).toInt() + 2 //TODO: TA BORT "+ 2", MOCK DELAY !!!!!
     }
 
     private fun formatSecondsToDateTimeString(seconds: Int?): String { //TODO: flytta till utilities
@@ -330,7 +374,6 @@ class NetworkService : INetworkService {
     }
 
     private fun formatDateTimeStringToUnix(timestamp: String?): Long { //TODO: flytta till utilities
-        Log.d(TAG, "formatDateTimeStringToUnix:  $timestamp")
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         return try {
             LocalDateTime.parse(timestamp, formatter).atZone(ZoneId.systemDefault()).toEpochSecond()

@@ -23,20 +23,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
+import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkViolet
-import com.example.calendarassistant.ui.theme.Purple40
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.google.api.services.calendar.model.Event
 
 @Composable
 fun NextEventSection(
     color: Color = DarkViolet,
     onClick: () -> Unit,
     travelInformation: TravelInformation,
-    nextEventInfo: MockCalendarEvent
+    nextEventInfo: CalendarEvent?
 ) {
+
+    val departureTimeHHMM = travelInformation.departureTimeHHMM.hhmmDisplay
+    val isOnTime = travelInformation.departureTimeHHMM.onTime
+
+
+
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -49,13 +56,17 @@ fun NextEventSection(
     ) {
         Column(modifier = Modifier.weight(0.7F)) {
             Text(
-                text = "Next event: " + nextEventInfo.summary,
+                text = "Next event: " + nextEventInfo?.summary,
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite
             )
             Text(
-                // TODO: Get string from backend with calculated time estimation
-                text = "Leave in ${travelInformation.departureTimeHHMM} / at ${travelInformation.departureTime}",
+
+                text = when (isOnTime) {
+                    true -> "Leave in $departureTimeHHMM\nat ${travelInformation.departureTime}" //
+                    false -> "You are $departureTimeHHMM late"
+                    else -> "" // isontime is null
+                },
                 style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite
             )
