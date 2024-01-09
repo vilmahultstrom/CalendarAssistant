@@ -28,6 +28,7 @@ import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
 import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
+import com.example.calendarassistant.ui.viewmodels.HomeVM
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,13 +81,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val testVM = hiltViewModel<TestVM>()
+                    val homeVM = hiltViewModel<HomeVM>()
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
                         startDestination = BMRoutes.Home.route
                     ) {
                         composable(BMRoutes.Home.route) {
-                            HomeScreen(vm = testVM, navController)
+                            HomeScreen(vm = homeVM, navController)
                         }
                         composable(BMRoutes.Calendar.route) {
                             CalendarScreen(vm = testVM, navController)
