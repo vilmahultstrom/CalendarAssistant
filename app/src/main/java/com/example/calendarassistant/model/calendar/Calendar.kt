@@ -38,10 +38,30 @@ object Calendars {
     private val _calendarList = MutableStateFlow<List<Calendar>>(listOf())
     val calendarList = _calendarList.asStateFlow()
 
+    private val _firstEventWithLocation = MutableStateFlow<CalendarEvent?>(null)
+    val firstEventWithLocation = _firstEventWithLocation.asStateFlow()
+
 
 
     fun setCalendarList(calendarList: List<Calendar>){
         _calendarList.value = calendarList
+    }
+
+
+    fun getFirstEventWithLocation() {
+        val events = mutableListOf<CalendarEvent>()
+        for (calendar in _calendarList.value) {
+            for (event in calendar.calendarEvents) {
+                if (event.location != null) {
+                    events.add(event)
+                }
+            }
+        }
+
+
+
+
+
     }
 
 

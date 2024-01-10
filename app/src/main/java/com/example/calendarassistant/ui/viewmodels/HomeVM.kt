@@ -219,6 +219,11 @@ class HomeVM @Inject constructor(
                         }
                     }
             }
+
+            launch {
+                calendarService.getUpcomingEvents()
+            }
+
         }
     }
 }
