@@ -144,13 +144,15 @@ fun EventItem(event: CalendarEvent, modifier: Modifier) {
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
-                        val formattedTime = event.startDateTime.toString()
-                        Text(
-                            text = formattedTime,
-                            color = TextWhite,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        val formattedTime = event.startDateTime?.let { DateConverter(it) }
+                        if (formattedTime != null) {
+                            Text(
+                                text = formattedTime,
+                                color = TextWhite,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }
