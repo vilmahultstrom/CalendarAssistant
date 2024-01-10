@@ -1,8 +1,8 @@
 package com.example.calendarassistant.utilities
 
-import android.util.Log
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -58,6 +58,18 @@ object DateHelpers {
         } else {
             TimeToLeaveDisplay("${minutes.absoluteValue}m", onTime)
         }
+    }
+
+
+    /**
+     * converts from seconds since Unix epoch (January 1, 1970, 00:00:00 GMT) to format of pattern "HH:mm yyyy-MM-dd"
+     */
+    fun unixTimeToDateTimeString(unixTime: Long?): String {
+        if (unixTime == null) return ""
+        val instant = Instant.ofEpochSecond(unixTime)
+        val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val formatter = DateTimeFormatter.ofPattern("HH:mm yyyy-MM-dd")
+        return localDateTime.format(formatter)
 
     }
 

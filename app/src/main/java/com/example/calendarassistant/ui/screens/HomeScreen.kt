@@ -34,9 +34,9 @@ import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.BoxButton
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.ButtonSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
-import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.GoogleMapsSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelInformationExpandableSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelModeSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
@@ -84,12 +84,12 @@ fun HomeScreen(
                     .height(IntrinsicSize.Max)
             ) {
 
-                NextEventSection(
+                NextEventSection(nextEventInfo = nextEventInfo.firstOrNull())
+                GoogleMapsSection(
                     onClick = { openGoogleMaps(
                             context, destCoordinates.first, destCoordinates.second, uiState.travelMode
                     ) },
-                    travelInformation = uiState.travelInformation,
-                    nextEventInfo = nextEventInfo.firstOrNull()
+                    travelInformation = uiState.travelInformation
                 )
 
                 TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)

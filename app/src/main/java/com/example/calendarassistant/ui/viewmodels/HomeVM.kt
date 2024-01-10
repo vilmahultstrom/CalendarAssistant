@@ -144,6 +144,7 @@ class HomeVM @Inject constructor(
             _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
             _uiState.update { it.copy(isFetchingLocationData = true) }
 
+
             launch {
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
