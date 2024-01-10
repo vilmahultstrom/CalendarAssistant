@@ -27,7 +27,7 @@ class CalendarService(
     fun getUpcomingEventsForOneDay() {
         val email = googleAuthClient.getSignedInUser()!!.email
         if (email != null) {
-            googleCalendar.getUpcomingEventsOneDayFromStartDate(email, LocalDate.now())
+            googleCalendar.getUpcomingEventsOneDayFromToday(email)
         }
     }
 
