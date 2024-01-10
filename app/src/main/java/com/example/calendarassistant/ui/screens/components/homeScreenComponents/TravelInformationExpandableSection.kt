@@ -37,6 +37,7 @@ import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.DarkAmber
+import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.OrangeYellow1
 import com.example.calendarassistant.ui.theme.RoyalPurple40
 import com.example.calendarassistant.ui.theme.RoyalPurple80
@@ -231,7 +232,7 @@ fun DeviationText(
             text = "${deviation.importanceLevel}",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
-            color = Color.Red
+            color = LightRed
         )
         Text(
             text = "${deviation.text}",

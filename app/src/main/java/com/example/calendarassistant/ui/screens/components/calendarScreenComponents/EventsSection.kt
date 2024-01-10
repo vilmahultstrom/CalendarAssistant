@@ -37,6 +37,7 @@ import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkViolet
 import com.example.calendarassistant.ui.theme.LightGreen3
 import com.example.calendarassistant.ui.theme.LightRed
+import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
@@ -75,7 +76,7 @@ fun EventItem(event: MockCalendarEvent) {
             .padding(7.5.dp)
             .aspectRatio(2f)
             .clip(RoundedCornerShape(10.dp))
-            .background(DarkViolet)
+            .background(RoyalPurple80)
     ) {
         Column(
             modifier = Modifier
