@@ -47,6 +47,9 @@ class HomeVM @Inject constructor(
     private val _startServiceAction = mutableStateOf<com.example.calendarassistant.utilities.Event<String>?>(null)
     val startServiceAction: State<com.example.calendarassistant.utilities.Event<String>?> = _startServiceAction
 
+    private val _firstEventWithLocation = MutableStateFlow<CalendarEvent?>(null)
+    val firstEventWithLocation = _firstEventWithLocation.asStateFlow()
+
     private val _uiState = MutableStateFlow(
         UiState(
             travelInformationData = TravelInformationData(),
@@ -144,18 +147,27 @@ class HomeVM @Inject constructor(
         }
     }
 
+    fun updateCalendar() {
+        Log.d(TAG, "Updating Events")
+       calendarService.getUpcomingEventsForOneWeek()
+    }
+
+
     init {
         viewModelScope.launch {
             // Coroutine for getting location at start up
+            Log.d(TAG, "Init")
 
-            calendarService.getUpcomingEventsForOneDay()
             _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
             _uiState.update { it.copy(isFetchingLocationData = true) }
+            calendarService.getUpcomingEventsForOneWeek()
+
 
 
             launch {
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
+                    _firstEventWithLocation.value = it
                     networkService.getTravelInformation(_uiState.value.travelMode, it) // fetches data
                     networkService.getDeviationInformation()
                 }
