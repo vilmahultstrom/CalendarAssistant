@@ -32,6 +32,10 @@ fun CalendarScreen(
     // TODO: Get date logic from backend
     val state by vm.uiState.collectAsState()
 
+    LaunchedEffect(key1 = Unit){
+        vm.updateCalendar()
+    }
+
 
 
     val daysInMonth = DateHelpers.getCurrentMonthDates(state.dateOfToday)
@@ -46,7 +50,7 @@ fun CalendarScreen(
             .fillMaxSize()
         ) {
             InformationSection("Daily overview", state.dateOfToday.toString(), modifier = Modifier.weight(.1f))
-            DatePickSection(dates = daysInMonth, startIndex = (state.dateOfToday.dayOfMonth - 1).toString(), vm= vm, modifier = Modifier.weight(.3f))
+            DatePickSection(dates = daysInMonth, startIndex = (state.dateOfToday.dayOfMonth - 1).toString(), vm = vm, modifier = Modifier.weight(.3f))
             EventsSection(events, modifier = Modifier.weight(.6f))
         }
         BottomMenu(
