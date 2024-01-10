@@ -1,5 +1,6 @@
 package com.example.calendarassistant.data
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -16,6 +17,8 @@ class AndroidAlarmScheduler(
 ): AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
+    
+    @SuppressLint("MissingPermission")
     override fun schedule(item: AlarmItem) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
