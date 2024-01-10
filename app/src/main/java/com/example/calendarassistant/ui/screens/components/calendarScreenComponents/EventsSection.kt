@@ -32,16 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
+import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkViolet
-import com.example.calendarassistant.ui.theme.LightGreen3
 import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
-fun EventsSection(events: List<MockCalendarEvent>) {
+fun EventsSection(events: List<CalendarEvent>) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row {
             Text(
@@ -70,7 +69,7 @@ fun EventsSection(events: List<MockCalendarEvent>) {
 }
 
 @Composable
-fun EventItem(event: MockCalendarEvent) {
+fun EventItem(event: CalendarEvent) {
     BoxWithConstraints(
         modifier = Modifier
             .padding(7.5.dp)
@@ -83,13 +82,15 @@ fun EventItem(event: MockCalendarEvent) {
                 .fillMaxSize()
                 .padding(15.dp)
         ) {
-            Text(
-                text = event.summary,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                lineHeight = 20.sp
-            )
+            event.summary?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    lineHeight = 20.sp
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -113,12 +114,14 @@ fun EventItem(event: MockCalendarEvent) {
                             .clickable { /* TODO: Öppna google maps till location? */ },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = event.location,
-                            color = TextWhite,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        event.location?.let {
+                            Text(
+                                text = it,
+                                color = TextWhite,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
@@ -137,7 +140,7 @@ fun EventItem(event: MockCalendarEvent) {
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
-                        val formattedTime = event.start
+                        val formattedTime = event.startDateTime.toString()
                         Text(
                             text = formattedTime,
                             color = TextWhite,
