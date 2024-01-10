@@ -57,6 +57,7 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
      */
     private fun fetchEventsForSelectedDay(){
         val date: LocalDate = LocalDate.of(_selectedYearIndex.value, _selectedMonthIndex.value, _selectedDayIndex.value)
+        Log.d(TAG, date.toString())
         calendarService.getUpcomingEventsForOneDay(date)
     }
 

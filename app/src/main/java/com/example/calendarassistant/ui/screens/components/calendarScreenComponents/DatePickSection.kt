@@ -145,7 +145,16 @@ fun ClickableScroller(
                         selectedDateIndex,
                         onSelect = { newIndex ->
                             selectedDateIndex = newIndex
-                            // TODO: Call VM to update UI based on the new index
+                            val item = items.get(newIndex.toInt())
+                            val intValue = item.toIntOrNull()
+                            if (intValue != null) {
+                                //year, 2023 2024 etc
+                                onSelectionChanged(items.get(newIndex.toInt()).toInt()) // Call the ViewModel method to update UI based on the new index
+                            }else{
+                                //months, mars, february etc
+                                onSelectionChanged(newIndex.toInt()) // Call the ViewModel method to update UI based on the new index
+                            }
+                            //Call VM to update UI based on the new index
                         },
                         horizontal = false,
                         modifier=Modifier
