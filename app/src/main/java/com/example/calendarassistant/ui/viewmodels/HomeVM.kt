@@ -47,18 +47,12 @@ class HomeVM @Inject constructor(
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
     val calendars = _calendars.asStateFlow()
 
-    private var fetchEventsGoogleListener: SignInInterface? = null
-    fun setFetchEventsGoogleListener(listener: SignInInterface) {
-        fetchEventsGoogleListener = listener
-    }
+
     private var isFetchingLocationData: Boolean = false
 
 
     private val _startServiceAction = mutableStateOf<com.example.calendarassistant.utilities.Event<String>?>(null)
     val startServiceAction: State<com.example.calendarassistant.utilities.Event<String>?> = _startServiceAction
-
-    private val _mockEvents = MutableStateFlow(MockEvent.getMockEventsFormattedConvertedTime()) //TODO: this data should come from Google Calendar api
-    val mockEvents: StateFlow<List<MockCalendarEvent>> = _mockEvents
 
     private val _uiState = MutableStateFlow(
         UiState(
@@ -78,13 +72,6 @@ class HomeVM @Inject constructor(
             user.username
         else
             "User"
-    }
-
-    fun fetchEvents() {
-        viewModelScope.launch {
-            fetchEventsGoogleListener?.fetchEvents()
-            Log.d(TAG, "loggin in button pressed")
-        }
     }
 
     // Start fetching gps data
@@ -211,7 +198,6 @@ class HomeVM @Inject constructor(
                     _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }
             }
-
             launch {
                 Calendars.calendarList.collect {
                     _calendars.value = it
