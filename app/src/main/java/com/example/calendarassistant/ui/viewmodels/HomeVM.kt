@@ -164,7 +164,9 @@ class HomeVM @Inject constructor(
             Log.d(TAG, "Init")
 
             _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
-            _uiState.update { it.copy(isFetchingLocationData = true) }
+            _uiState.update {
+                it.copy(isFetchingLocationData = true)
+            }
             calendarService.getUpcomingEventsForOneWeek()
 
 
@@ -247,6 +249,7 @@ class HomeVM @Inject constructor(
 
 data class UiState(
     val isFetchingLocationData: Boolean = false,
+    val isLoggedIn: Boolean = false,
     val currentLatitude: String = "",
     val currentLongitude: String = "",
     val travelInformationData: TravelInformationData,

@@ -57,8 +57,18 @@ fun SettingsScreen(
     ) {
 
         val state by vm.signInState.collectAsState()
-
         val context = LocalContext.current
+
+        LaunchedEffect(state) {
+            Log.d("SettingsScreen", "LaunchedEffect triggered with state: $state")
+
+            if (state.isSignInSuccessful) {
+                Log.d("SettingsScreen", "Sign-in successful, navigating to Home route")
+                navController.navigate(BMRoutes.Home.route)
+            } else {
+                Log.d("SettingsScreen", "Sign-in not successful yet")
+            }
+        }
         LaunchedEffect(key1 = state.signInError) {
             state.signInError?.let { error ->
                 Toast.makeText(
@@ -70,11 +80,18 @@ fun SettingsScreen(
         }
 
         Column {
-            InformationSection("Settings", "Here you can sync your google account")
+            if (vm.isUserSignedIn()) {
+                InformationSection("Settings", "Here you can manage your google account")
+            } else {
+                InformationSection("Calender Assistant", "Please sign in below")
+            }
             Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(30.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                    .fillMaxWidth()
+                    .padding(30.dp)
+                ,
             ) {
                 // TODO: Get "Sign in with Google" or "Sign out" from VM depending on state
                 // TODO: Open Google sign in intent
@@ -85,7 +102,7 @@ fun SettingsScreen(
                         text = googleButtonText2,
                         onClick = {
                             onSignOutClick()
-                            navController.navigate(BMRoutes.Home.route)
+                            navController.navigate(BMRoutes.Settings.route)
                         },
                         painterId = R.drawable.google_g_logo
                     )
@@ -95,7 +112,9 @@ fun SettingsScreen(
                         text = googleButtonText,
                         onClick = {
                             onSignInClick()
-                            navController.navigate(BMRoutes.Home.route)
+                            //UPDATE UI?
+                            // await??
+                            //navController.navigate(BMRoutes.Settings.route)
                         },
                         painterId = R.drawable.google_g_logo
                     )
@@ -107,23 +126,25 @@ fun SettingsScreen(
             // TODO: Välj vilken kalender som ska importeras / logga in?
             // TODO: Andra inställningar
         }
-        BottomMenu(
-            items = listOf(
-                BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
-                BottomMenuContent(
-                    "Calendar",
-                    R.drawable.baseline_calendar_month_24,
-                    BMRoutes.Calendar.route
+        if(vm.isUserSignedIn()) {
+            BottomMenu(
+                items = listOf(
+                    BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
+                    BottomMenuContent(
+                        "Calendar",
+                        R.drawable.baseline_calendar_month_24,
+                        BMRoutes.Calendar.route
+                    ),
+                    BottomMenuContent(
+                        "Settings",
+                        R.drawable.baseline_settings_24,
+                        BMRoutes.Settings.route
+                    ),
                 ),
-                BottomMenuContent(
-                    "Settings",
-                    R.drawable.baseline_settings_24,
-                    BMRoutes.Settings.route
-                ),
-            ),
-            modifier = Modifier.align(Alignment.BottomCenter),
-            navController = navController
-        )
+                modifier = Modifier.align(Alignment.BottomCenter),
+                navController = navController
+            )
+        }
     }
 }
 

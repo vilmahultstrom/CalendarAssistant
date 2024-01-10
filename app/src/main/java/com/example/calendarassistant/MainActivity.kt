@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
@@ -32,6 +33,7 @@ import com.example.calendarassistant.ui.viewmodels.CalendarVM
 import com.example.calendarassistant.ui.viewmodels.HomeVM
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,12 +57,11 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-       /* val googleAuthClient by lazy {
-            GoogleAuthClient(
-                context = applicationContext,
-                signInClient = Identity.getSignInClient(applicationContext)
-            )
-        }*/
+//        val googleAuthClient by lazy {
+//            GoogleAuthClient(
+//                context = applicationContext,
+//                signInClient = Identity.getSignInClient(applicationContext)
+//            )
 
         ActivityCompat.requestPermissions(
             this,
@@ -86,7 +87,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = BMRoutes.Home.route
+                        startDestination = BMRoutes.Settings.route
                     ) {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(vm = homeVM, navController)

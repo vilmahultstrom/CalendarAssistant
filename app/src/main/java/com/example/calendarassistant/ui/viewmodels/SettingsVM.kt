@@ -4,6 +4,8 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.login.GoogleAuthClient
@@ -65,18 +67,10 @@ class SettingsVM @Inject constructor(
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 Log.d(TAG, signInResult.data.toString())
                 calendarService.getUpcomingEventsForOneWeek()
+                _signInState.value = SignInState(isSignInSuccessful = true, signInError = "Successfully signed in")
             } else {
                 Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
             }
-        }
-    }
-
-    fun onSignInResult(result: SignInResult) {
-        _signInState.update {
-            it.copy(
-                isSignInSuccessful = result.data != null,
-                signInError = result.errorMessage
-            )
         }
     }
 
