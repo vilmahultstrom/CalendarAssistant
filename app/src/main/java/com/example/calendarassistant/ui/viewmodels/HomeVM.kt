@@ -43,10 +43,6 @@ class HomeVM @Inject constructor(
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
     val calendars = _calendars.asStateFlow()
 
-
-    private var isFetchingLocationData: Boolean = false
-
-
     private val _startServiceAction = mutableStateOf<com.example.calendarassistant.utilities.Event<String>?>(null)
     val startServiceAction: State<com.example.calendarassistant.utilities.Event<String>?> = _startServiceAction
 
@@ -73,7 +69,7 @@ class HomeVM @Inject constructor(
     // Start fetching gps data
     fun onStartServiceClicked() {
         calendarService.getUpcomingEvents()
-        if (!isFetchingLocationData) {
+        if (!_uiState.value.isFetchingLocationData) {
             startLocationService()
         } else {
             stopLocationService()
@@ -110,14 +106,14 @@ class HomeVM @Inject constructor(
         _startServiceAction.value =
             com.example.calendarassistant.utilities.Event(LocationService.ACTION_START)
         //fetchTravelInformation()
-        isFetchingLocationData = true
+        _uiState.update { it.copy(isFetchingLocationData = true) }
     }
 
     private fun stopLocationService() {
         _startServiceAction.value =
             com.example.calendarassistant.utilities.Event(LocationService.ACTION_STOP)
         clearLocationData()
-        isFetchingLocationData = false
+        _uiState.update { it.copy(isFetchingLocationData = false) }
     }
 
 
@@ -144,13 +140,14 @@ class HomeVM @Inject constructor(
             // Coroutine for getting location at start up
 
             calendarService.getUpcomingEvents()
+            _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
+            _uiState.update { it.copy(isFetchingLocationData = true) }
+
+
 
 
 
             launch {
-                _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_GET) // Inits and collects location info
-                delay(10000)    // Delay for init
-
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
                     networkService.getTravelInformation(_uiState.value.travelMode, it) // fetches data
@@ -210,3 +207,12 @@ class HomeVM @Inject constructor(
         }
     }
 }
+
+data class UiState(
+    val isFetchingLocationData: Boolean = false,
+    val currentLatitude: String = "",
+    val currentLongitude: String = "",
+    val travelInformation: TravelInformation,
+    val transitDeviationInformation: TransitDeviationInformation,
+    val travelMode: TravelMode = TravelMode.Transit
+)

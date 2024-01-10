@@ -204,10 +204,3 @@ class TestVM @Inject constructor(
 // TODO:
 //  Behöver vi ha lon & lat i ui (förutom för de gps funktionerna som ligger i HomeScreen) eller
 //  är det för att trigga uppdatering av ui?
-data class UiState(
-    val currentLatitude: String = "",
-    val currentLongitude: String = "",
-    val travelInformation: TravelInformation,
-    val transitDeviationInformation: TransitDeviationInformation,
-    val travelMode: TravelMode = TravelMode.Transit
-)
