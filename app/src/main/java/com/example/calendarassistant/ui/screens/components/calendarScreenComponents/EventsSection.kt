@@ -38,11 +38,13 @@ import com.example.calendarassistant.ui.theme.DarkViolet
 import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.CalendarVM
 
 @Composable
 fun EventsSection(
     events: List<CalendarEvent>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    vm: CalendarVM
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row {
@@ -65,14 +67,14 @@ fun EventsSection(
         ) {
             items(events.size) { index ->
                 val event = events[index]
-                EventItem(event, Modifier)
+                EventItem(event, Modifier,vm)
             }
         }
     }
 }
 
 @Composable
-fun EventItem(event: CalendarEvent, modifier: Modifier) {
+fun EventItem(event: CalendarEvent, modifier: Modifier, vm:CalendarVM) {
     BoxWithConstraints(
         modifier = Modifier
             .padding(7.5.dp)
@@ -136,8 +138,9 @@ fun EventItem(event: CalendarEvent, modifier: Modifier) {
                             .clip(RoundedCornerShape(10.dp))
                             .background(ButtonBlue)
                             .padding(10.dp)
-                            .clickable { /* TODO: Ställ ett larm för den tiden? */ },
-                    ) {
+                            .clickable { vm.setAlarm(event) },
+                    )
+                    {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_access_time_24),
                             contentDescription = event.summary,

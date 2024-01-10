@@ -67,7 +67,7 @@ fun CalendarScreen(
         ) {
             InformationSection("Daily overview", state.dateOfToday.toString(), modifier = Modifier.weight(.1f))
             DatePickSection(dates = daysInMonth, startIndex = (state.startIndex), vm = vm, modifier = Modifier.weight(.3f))
-            EventsSection(events, modifier = Modifier.weight(.6f))
+            EventsSection(events, modifier = Modifier.weight(.6f), vm=vm)
         }
         BottomMenu(
             items = listOf(
