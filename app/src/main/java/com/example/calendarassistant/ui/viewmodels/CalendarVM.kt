@@ -43,7 +43,7 @@ class CalendarVM @Inject constructor(
         var timeConverted = DateHelpers.convertUnixTimeToLocalDateTime(event.startDateTime!!)
         var alarmItem= AlarmItem(
             time=timeConverted,
-            title=event.summary!!,
+            title="Timer set!",
             message=event.summary!!
         )
         androidAlarmScheduler.schedule(alarmItem)
