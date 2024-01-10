@@ -12,6 +12,9 @@ import com.example.calendarassistant.model.AlarmItem
 import java.time.ZoneId
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.getSystemService
+import com.example.calendarassistant.model.AlarmOffset
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import java.time.Instant
 import java.time.LocalDateTime
@@ -19,10 +22,10 @@ import java.util.regex.Pattern
 
 class AndroidAlarmScheduler(
     private val context: Context
-): AlarmScheduler {
+) : AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
-    
+
     @SuppressLint("MissingPermission")
     override fun schedule(item: AlarmItem) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -37,10 +40,17 @@ class AndroidAlarmScheduler(
             putExtra("EXTRA_TITLE", item.title)
             putExtra("EXTRA_MESSAGE", item.message)
         }
-        Log.d("AlarmScheduler", "Scheduling alarm for: ${item.time}")
+
+        Toast.makeText(
+            context,
+            "Alarm set for ${item.time.minusMinutes(AlarmOffset.alarmOffsetInMinutes)}",
+            Toast.LENGTH_SHORT
+        ).show()
+
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+            item.time.minusMinutes(AlarmOffset.alarmOffsetInMinutes).atZone(ZoneId.systemDefault())
+                .toEpochSecond() * 1000,
             PendingIntent.getBroadcast(
                 context,
                 item.hashCode(),

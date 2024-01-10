@@ -21,6 +21,7 @@ import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -171,10 +172,6 @@ class HomeVM @Inject constructor(
 
 
             launch {
-                _startServiceAction.value = com.example.calendarassistant.utilities.Event(
-                    LocationService.ACTION_GET
-                ) // Inits and collects location info
-
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
                     _firstEventWithLocation.value = it

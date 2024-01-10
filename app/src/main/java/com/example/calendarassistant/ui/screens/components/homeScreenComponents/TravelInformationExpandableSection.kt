@@ -69,7 +69,7 @@ fun TravelInformationExpandableSection(
                     .fillMaxWidth()
             ) {
                 TextButton(onClick = { expanded = !expanded }) {
-                    Text(text = if (expanded) "Dölj information" else "Visa information") //TODO: sätt dessa som "variabler"
+                    Text(text = if (expanded) "Dölj information" else "Visa information")
                 }
 
                 AnimatedVisibility(visible = expanded) {
