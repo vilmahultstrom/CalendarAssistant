@@ -1,5 +1,6 @@
 package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +41,8 @@ import com.example.calendarassistant.ui.theme.TextWhite
 import com.example.calendarassistant.ui.viewmodels.CalendarVM
 import java.time.LocalDate
 
+
+private const val TAG = "DatePickSection"
 @Composable
 fun DatePickSection(
     dates: List<String>,
@@ -46,8 +50,11 @@ fun DatePickSection(
     vm: CalendarVM,
     modifier: Modifier = Modifier
 ) {
+
+    val uiState by vm.uiState.collectAsState()
+
     // TODO: Replace year logic with LocalDate.now() logic in backend to calculate last year, current year + 5 years onwards or something
-    val years = listOf("2023", "2024", "2025", "2026", "2027", "2028")
+    val years = listOf("2024", "2025", "2026", "2027", "2028")
     // TODO: Don't know if I should put this somewhere else
     val months =
         listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec")
@@ -57,7 +64,7 @@ fun DatePickSection(
             // Month picker
             ClickableScroller(
                 items = months,
-                startIndex = "0", // TODO: Change with logic from backend
+                startIndex = (uiState.selectedMonthIndex - 1).toString(), // TODO: Change with logic from backend
                 verticalScroll = true,
                 onSelectionChanged = vm::updateSelectedMonthIndex,
                 modifier = Modifier
@@ -66,7 +73,7 @@ fun DatePickSection(
             // Year picker
             ClickableScroller(
                 items = years,
-                startIndex = "0", // TODO: Change with logic from backend
+                startIndex = (uiState.selectedYearIndex - LocalDate.now().year).toString(),
                 verticalScroll = true,
                 onSelectionChanged = vm::updateSelectedYearIndex,
                 modifier = Modifier

@@ -10,6 +10,7 @@ import com.example.calendarassistant.services.CalendarService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -29,26 +30,22 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf()) //calendars
     val calendars = _calendars.asStateFlow()
 
-    // which day, month, year was selected on screen:
-    private val _selectedMonthIndex = MutableStateFlow(LocalDate.now().monthValue)
-    private val _selectedDayIndex = MutableStateFlow(LocalDate.now().dayOfMonth) // Note: monthValue is 1-12 for January-December
-    private val _selectedYearIndex = MutableStateFlow(LocalDate.now().year)
-
     // Methods to update the selected values
     fun updateSelectedMonthIndex(newIndex: Int) {
-        _selectedMonthIndex.value = newIndex
+
+        _uiState.update { it.copy(selectedMonthIndex = newIndex) }
         fetchEventsForSelectedDay()
         Log.d(TAG, newIndex.toString())
     }
 
     fun updateSelectedDayIndex(newIndex: Int) {
-        _selectedDayIndex.value = newIndex +1
+        _uiState.update { it.copy(selectedDayIndex = newIndex + 1) }
         fetchEventsForSelectedDay()
         Log.d(TAG, (newIndex + 1).toString())
     }
 
     fun updateSelectedYearIndex(newIndex: Int) {
-        _selectedYearIndex.value = newIndex
+        _uiState.update { it.copy(selectedYearIndex = newIndex) }
         fetchEventsForSelectedDay()
         Log.d(TAG, newIndex.toString())
     }
@@ -58,7 +55,8 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
      * hämtar alla events för den dagen som har blivit vald på skärmen
      */
     private fun fetchEventsForSelectedDay(){
-        val date: LocalDate = LocalDate.of(_selectedYearIndex.value, _selectedMonthIndex.value, _selectedDayIndex.value)
+        //val date: LocalDate = LocalDate.of(_selectedYearIndex.value, _selectedMonthIndex.value, _selectedDayIndex.value)
+        val date: LocalDate = LocalDate.of(_uiState.value.selectedYearIndex, uiState.value.selectedMonthIndex, uiState.value.selectedDayIndex)
         Log.d(TAG, date.toString())
         calendarService.getUpcomingEventsForOneDay(date)
     }
@@ -89,12 +87,20 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
         return this.sortedWith(compareBy { it.startDateTime ?: it.startDate })
     }
 
+    fun updateCalendar() {
+        Calendars.setCalendarList(listOf())
+        calendarService.getUpcomingEventsForOneDay(startDate = LocalDate.of(_uiState.value.selectedYearIndex, uiState.value.selectedMonthIndex, uiState.value.selectedDayIndex))
+    }
+
+    fun setStartIndex() {
+        Log.d(TAG, "Updating startindex: " + (uiState.value.selectedDayIndex -1).toString())
+        _uiState.update { it.copy(startIndex = (it.selectedDayIndex -1).toString()) }
+    }
+
+
     init {
         viewModelScope.launch {
             // Coroutine for getting location at start up
-            launch {
-                calendarService.getUpcomingEventsForOneDay(startDate = LocalDate.now())
-            }
             launch {
                 Calendars.calendarList.collect {
                     _calendars.value = it
@@ -105,8 +111,13 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
 
     }
 
+
 }
 
 data class CalendarUiState(
-    val dateOfToday: LocalDate = LocalDate.now()
+    val selectedDayIndex: Int = LocalDate.now().dayOfMonth,
+    val dateOfToday: LocalDate = LocalDate.now(),
+    val startIndex: String = (dateOfToday.dayOfMonth - 1).toString(),
+    val selectedMonthIndex: Int = LocalDate.now().monthValue, // Note: monthValue is 1-12 for January-December
+    val selectedYearIndex: Int = LocalDate.now().year
 )
