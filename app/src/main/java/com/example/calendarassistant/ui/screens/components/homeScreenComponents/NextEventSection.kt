@@ -1,15 +1,18 @@
 package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
+import com.example.calendarassistant.utilities.DateHelpers
+
+
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,32 +21,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
 import com.example.calendarassistant.model.calendar.CalendarEvent
-import com.example.calendarassistant.model.mock.travel.TravelInformation
-import com.example.calendarassistant.ui.theme.ButtonBlue
-import com.example.calendarassistant.ui.theme.DarkViolet
+import com.example.calendarassistant.ui.theme.CharcoalGrey
 import com.example.calendarassistant.ui.theme.DeepPink
+import com.example.calendarassistant.ui.theme.LightRed
+import com.example.calendarassistant.ui.theme.Plum
 import com.example.calendarassistant.ui.theme.TextWhite
-import com.google.api.services.calendar.model.Event
 
 @Composable
 fun NextEventSection(
     color: Color = DeepPink,
-    onClick: () -> Unit,
-    travelInformation: TravelInformation,
     nextEventInfo: CalendarEvent?
 ) {
 
-    val departureTimeHHMM = travelInformation.departureTimeHHMM.hhmmDisplay
-    val isOnTime = travelInformation.departureTimeHHMM.onTime
-
-
-
+    val summary = nextEventInfo?.summary ?: ""
+    val dateTime = DateHelpers.unixTimeToDateTimeString(nextEventInfo?.startDateTime)
+    val location = nextEventInfo?.location ?: ""
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -55,41 +52,57 @@ fun NextEventSection(
             .padding(horizontal = 15.dp, vertical = 20.dp)
             .fillMaxWidth()
     ) {
-        Column(modifier = Modifier.weight(0.7F)) {
-            Text(
-                text = "Next event: " + nextEventInfo?.summary,
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextWhite
-            )
-            Text(
-
-                text = when (isOnTime) {
-                    true -> "Leave in $departureTimeHHMM\nat ${travelInformation.departureTime}" //
-                    false -> "You are $departureTimeHHMM late"
-                    else -> "" // isontime is null
-                },
-                style = MaterialTheme.typography.headlineSmall,
-                color = TextWhite
-            )
-        }
-        Box(
-            contentAlignment = Alignment.Center,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .size(60.dp)
-                .clip(CircleShape)
-                .shadow(8.dp, CircleShape)
-                .background(ButtonBlue)
-                .clickable { onClick() }
-                .padding(10.dp)
-
+                .weight(0.7F)
         ) {
+            Text(text = "Next event", style = MaterialTheme.typography.headlineSmall, color = LightRed)
+            Row {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_description_24),
+                    contentDescription = "icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = summary,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = TextWhite
+                )
+            }
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_location_on_24),
+                    contentDescription = "icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = location,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = TextWhite
+                )
+                Spacer(modifier = Modifier.width(20.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_calendar_today_24),
+                    contentDescription = "icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = dateTime,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = TextWhite
+                )
+            }
 
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_navigation_24),
-                contentDescription = "Play",
-                tint = Color.White,
-                modifier = Modifier.size(36.dp),
-            )
         }
     }
 }

@@ -11,6 +11,11 @@ import com.example.calendarassistant.interfaces.AlarmScheduler
 import com.example.calendarassistant.model.AlarmItem
 import java.time.ZoneId
 import android.provider.Settings
+import android.util.Log
+import com.example.calendarassistant.model.calendar.CalendarEvent
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.regex.Pattern
 
 class AndroidAlarmScheduler(
     private val context: Context
@@ -32,6 +37,7 @@ class AndroidAlarmScheduler(
             putExtra("EXTRA_TITLE", item.title)
             putExtra("EXTRA_MESSAGE", item.message)
         }
+        Log.d("AlarmScheduler", "Scheduling alarm for: ${item.time}")
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
@@ -42,6 +48,62 @@ class AndroidAlarmScheduler(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
+    }
+
+    // Example: Event starts at 14:00, sets alarm for 12:00
+    fun scheduleAlarmForEvent(calendarEvent: CalendarEvent) {
+        Log.d("AlarmScheduler", "startDateTime: ${calendarEvent.startDateTime}")
+        val alarmTime = calendarEvent.startDateTime?.let {
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(it * 1000), ZoneId.systemDefault())
+        }?.minusHours(2)
+
+        alarmTime?.let {
+            val alarmTitle = "2 hours until your event: ${calendarEvent.summary ?: "Event"}"
+            val alarmItem = AlarmItem(
+                time = it,
+                title = alarmTitle,
+                message = ""
+            )
+            schedule(alarmItem)
+        }
+    }
+
+    // Example: 6:34 AM sets alarm for 6:29 AM
+    fun scheduleAlarmForEvent(timeString: String) {
+        Log.d("AlarmScheduler", "Time string: $timeString")
+
+        // Parse the time string
+        val pattern = Pattern.compile("(\\d+)h(\\d+)m")
+        val matcher = pattern.matcher(timeString)
+        if (!matcher.matches()) {
+            Log.e("AlarmScheduler", "Invalid time format")
+            return
+        }
+
+        val hours = matcher.group(1)?.toInt()
+        val minutes = matcher.group(2)?.toInt()
+
+        // Calculate the alarm time
+        val alarmTime = hours?.let {
+            minutes?.let { it1 ->
+                LocalDateTime.now(ZoneId.systemDefault())
+                    .plusHours(it.toLong())
+                    .plusMinutes(it1.toLong())
+                    .minusMinutes(5)
+            }
+        }
+
+        val alarmTitle = "Leave in 5 minutes for your next event"
+        val alarmItem = alarmTime?.let {
+            AlarmItem(
+                time = it,
+                title = alarmTitle,
+                message = ""
+            )
+        }
+        if (alarmItem != null) {
+            schedule(alarmItem)
+        }
     }
 
     override fun cancel(item: AlarmItem) {

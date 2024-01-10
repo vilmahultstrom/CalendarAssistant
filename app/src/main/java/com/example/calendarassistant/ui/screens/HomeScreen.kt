@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,9 +35,9 @@ import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.BoxButton
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.ButtonSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
-import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.GoogleMapsSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelInformationExpandableSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelModeSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
@@ -56,14 +57,16 @@ fun HomeScreen(
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
 
-    //val intent = Intent(context, Signin::class.java)
-    //context.startActivity(intent)
+    LaunchedEffect(key1 = vm.firstEventWithLocation){
+        vm.updateCalendar()
+    }
 
-    val nextEventInfo by vm.eventsWithLocation.collectAsState()
+
+    val nextEventInfo by vm.firstEventWithLocation.collectAsState()
     val departureInfo by vm.transitSteps.collectAsState()
 
     val uiState by vm.uiState.collectAsState()
-    val destCoordinates = uiState.travelInformation.destinationCoordinates
+    val destCoordinates = uiState.travelInformationData.destinationCoordinates
 //    val stepsDeviationInfo = uiState.transitDeviationInformation.transitStepsDeviations
 
     Box(
@@ -84,12 +87,12 @@ fun HomeScreen(
                     .height(IntrinsicSize.Max)
             ) {
 
-                NextEventSection(
+                NextEventSection(nextEventInfo = nextEventInfo)
+                GoogleMapsSection(
                     onClick = { openGoogleMaps(
                             context, destCoordinates.first, destCoordinates.second, uiState.travelMode
                     ) },
-                    travelInformation = uiState.travelInformation,
-                    nextEventInfo = nextEventInfo.firstOrNull()
+                    travelInformationData = uiState.travelInformationData
                 )
 
                 TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)

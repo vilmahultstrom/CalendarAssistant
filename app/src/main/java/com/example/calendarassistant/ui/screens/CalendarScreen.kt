@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -28,8 +30,11 @@ fun CalendarScreen(
     vm: CalendarVM, navController: NavController
 ) {
     // TODO: Get date logic from backend
-    val specificDate = LocalDate.of(2024, 1, 8)
-    val daysInMonth = DateHelpers.getCurrentMonthDates(specificDate)
+    val state by vm.uiState.collectAsState()
+
+
+
+    val daysInMonth = DateHelpers.getCurrentMonthDates(state.dateOfToday)
     // TODO: Replace with real events imported from Google Calendar?
     val events = vm.eventsWithLocation.collectAsState().value
     Box(
@@ -40,8 +45,8 @@ fun CalendarScreen(
         Column( modifier = Modifier
             .fillMaxSize()
         ) {
-            InformationSection("Daily overview", specificDate.toString(), modifier = Modifier.weight(.1f))
-            DatePickSection(dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString(), modifier = Modifier.weight(.3f))
+            InformationSection("Daily overview", state.dateOfToday.toString(), modifier = Modifier.weight(.1f))
+            DatePickSection(dates = daysInMonth, startIndex = (state.dateOfToday.dayOfMonth - 1).toString(), vm= vm, modifier = Modifier.weight(.3f))
             EventsSection(events, modifier = Modifier.weight(.6f))
         }
         BottomMenu(

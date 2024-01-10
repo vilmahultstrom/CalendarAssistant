@@ -28,12 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.model.mock.travel.Deviation
 import com.example.calendarassistant.model.mock.travel.DeviationInformation
+import com.example.calendarassistant.model.travel.Deviation
+import com.example.calendarassistant.model.travel.DeviationData
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.DeepPurple100
 import com.example.calendarassistant.ui.theme.DeepPurple50
 import com.example.calendarassistant.ui.theme.DeepPurple500
 import com.example.calendarassistant.ui.theme.Red700
 import com.example.calendarassistant.ui.theme.Red900
+import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.RoyalPurple40
 import com.example.calendarassistant.ui.viewmodels.UiState
 
@@ -90,8 +93,9 @@ fun TravelInformationExpandableSection(
 
 
     var expanded by remember { mutableStateOf(false) }
-    val stepsDeviationInfo =
-        travelInfo.transitDeviationInformation.transitStepsDeviations ?: listOf()
+
+    val stepsDeviationInfo = travelInfo.transitDeviationData.transitStepsDeviations ?: listOf()
+
 
     if (stepsDeviationInfo.isNotEmpty() || departureInfo.isNotEmpty()) {
         Column(
@@ -99,7 +103,9 @@ fun TravelInformationExpandableSection(
                 .padding(horizontal = 4.dp)
                 .fillMaxWidth()
         ) {
-            TextButton(onClick = { expanded = !expanded }) {
+            TextButton(
+                onClick = { expanded = !expanded },
+            ) {
                 Text(
                     text = if (expanded) "Hide information" else "Show information",
                     color = DeepPurple50
@@ -161,7 +167,7 @@ fun TravelStepCard(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 1.dp),
         colors = CardDefaults.cardColors(
-            containerColor = DeepPurple100 //RoyalPurple80
+            containerColor = DeepPurple100
         )
     ) {
         Row(
@@ -206,7 +212,8 @@ fun TravelStepCard(
                 }
             }
             if (lineName != null) {
-                Text(text = lineName,
+                Text(
+                    text = lineName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = DeepPurple500,
@@ -221,7 +228,7 @@ fun TravelStepCard(
 
 @Composable
 fun StepDeviationCard(
-    deviationInfo: DeviationInformation,
+    deviationInfo: DeviationData,
 ) {
     Card(
         modifier = Modifier
@@ -250,7 +257,7 @@ fun StepDeviationCard(
                     item.importanceLevel != 0 || item.text.isNullOrEmpty()
                             || !item.consequence.isNullOrEmpty()
                 }
-                if(containsInfo) {
+                if (containsInfo) {
                     deviationInfo.deviations.forEach { deviation ->
                         DeviationText(deviation = deviation)
                     }

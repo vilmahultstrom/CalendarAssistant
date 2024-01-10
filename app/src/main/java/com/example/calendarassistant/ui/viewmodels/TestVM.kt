@@ -10,10 +10,10 @@ import com.example.calendarassistant.login.SignInInterface
 import com.example.calendarassistant.model.calendar.Calendars
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
-import com.example.calendarassistant.model.mock.travel.MockTravelInformation
-import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
-import com.example.calendarassistant.model.mock.travel.TravelInformation
+import com.example.calendarassistant.model.travel.DeviationInformation
+import com.example.calendarassistant.model.travel.TravelInformation
+import com.example.calendarassistant.model.travel.TransitDeviationData
+import com.example.calendarassistant.model.travel.TravelInformationData
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
@@ -61,15 +61,15 @@ class TestVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         UiState(
-            travelInformation = TravelInformation(),
-            transitDeviationInformation = TransitDeviationInformation()
+            travelInformationData = TravelInformationData(),
+            transitDeviationData = TransitDeviationData()
         )
     )
     val uiState: StateFlow<UiState> = _uiState
 //    val uiState: StateFlow<UiState> // TODO: vilken variant? Detta är mer robust, men speler ej så stor roll...
 //        get() = _uiState.asStateFlow()
 
-    val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
+    val transitSteps: StateFlow<List<Steps>> = TravelInformation.transitSteps
 
     fun login() {
         viewModelScope.launch {
@@ -180,19 +180,19 @@ class TestVM @Inject constructor(
 
             // Coroutine for collecting next mock event for display
             launch {
-                MockTravelInformation.getNextEventTravelInformation().collect { next: TravelInformation ->
+                TravelInformation.getNextEventTravelInformation().collect { next: TravelInformationData ->
                     Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(travelInformation = next) }
+                    _uiState.update { currentState -> currentState.copy(travelInformationData = next) }
                 }
             }
 
             launch {
-                MockDeviationInformation.getNextTransitDeviationsInformation()
-                    .collect { next: TransitDeviationInformation ->
+                DeviationInformation.getNextTransitDeviationsInformation()
+                    .collect { next: TransitDeviationData ->
                         Log.d(TAG, "Collecting: $next")
                         _uiState.update { currentState ->
                             currentState.copy(
-                                transitDeviationInformation = next
+                                transitDeviationData = next
                             )
                         }
                     }
@@ -204,10 +204,3 @@ class TestVM @Inject constructor(
 // TODO:
 //  Behöver vi ha lon & lat i ui (förutom för de gps funktionerna som ligger i HomeScreen) eller
 //  är det för att trigga uppdatering av ui?
-data class UiState(
-    val currentLatitude: String = "",
-    val currentLongitude: String = "",
-    val travelInformation: TravelInformation,
-    val transitDeviationInformation: TransitDeviationInformation,
-    val travelMode: TravelMode = TravelMode.Transit
-)
