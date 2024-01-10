@@ -28,6 +28,7 @@ import com.example.calendarassistant.ui.screens.HomeScreen
 import com.example.calendarassistant.ui.screens.LoginScreen
 import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
+import com.example.calendarassistant.ui.viewmodels.CalendarVM
 import com.example.calendarassistant.ui.viewmodels.HomeVM
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import com.example.calendarassistant.ui.viewmodels.TestVM
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val testVM = hiltViewModel<TestVM>()
                     val homeVM = hiltViewModel<HomeVM>()
+                    val calendarVM = hiltViewModel<CalendarVM>()
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
@@ -91,7 +93,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(vm = homeVM, navController)
                         }
                         composable(BMRoutes.Calendar.route) {
-                            CalendarScreen(vm = testVM, navController)
+                            CalendarScreen(vm = calendarVM, navController)
                         }
                         composable(BMRoutes.Settings.route) {
                             settingsVM = hiltViewModel<SettingsVM>()

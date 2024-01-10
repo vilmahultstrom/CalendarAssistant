@@ -27,12 +27,13 @@ import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkViolet
+import com.example.calendarassistant.ui.theme.DeepPink
 import com.example.calendarassistant.ui.theme.TextWhite
 import com.google.api.services.calendar.model.Event
 
 @Composable
 fun NextEventSection(
-    color: Color = DarkViolet,
+    color: Color = DeepPink,
     onClick: () -> Unit,
     travelInformation: TravelInformation,
     nextEventInfo: CalendarEvent?
