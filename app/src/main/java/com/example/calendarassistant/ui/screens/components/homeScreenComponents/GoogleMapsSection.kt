@@ -23,8 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.calendar.CalendarEvent
-import com.example.calendarassistant.model.mock.travel.TravelInformation
+import com.example.calendarassistant.model.travel.TravelInformationData
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepPink
 import com.example.calendarassistant.ui.theme.Plum
@@ -34,11 +33,11 @@ import com.example.calendarassistant.ui.theme.TextWhite
 fun GoogleMapsSection(
     color: Color = Plum,
     onClick: () -> Unit,
-    travelInformation: TravelInformation,
+    travelInformationData: TravelInformationData,
 ) {
 
-    val departureTimeHHMM = travelInformation.departureTimeHHMM.hhmmDisplay
-    val isOnTime = travelInformation.departureTimeHHMM.onTime
+    val departureTimeHHMM = travelInformationData.departureTimeHHMM.hhmmDisplay
+    val isOnTime = travelInformationData.departureTimeHHMM.onTime
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -54,7 +53,7 @@ fun GoogleMapsSection(
             Text(
 
                 text = when (isOnTime) {
-                    true -> "Leave in $departureTimeHHMM\nat ${travelInformation.departureTime}" //
+                    true -> "Leave in $departureTimeHHMM\nat ${travelInformationData.departureTime}" //
                     false -> "You are $departureTimeHHMM late"
                     else -> "" // isontime is null
                 },

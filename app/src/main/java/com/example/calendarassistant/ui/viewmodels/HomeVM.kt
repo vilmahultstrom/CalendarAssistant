@@ -10,10 +10,10 @@ import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.model.calendar.Calendar
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.calendar.Calendars
-import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
-import com.example.calendarassistant.model.mock.travel.MockTravelInformation
-import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
-import com.example.calendarassistant.model.mock.travel.TravelInformation
+import com.example.calendarassistant.model.travel.DeviationInformation
+import com.example.calendarassistant.model.travel.TravelInformation
+import com.example.calendarassistant.model.travel.TransitDeviationData
+import com.example.calendarassistant.model.travel.TravelInformationData
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
@@ -21,7 +21,6 @@ import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
 import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,15 +48,15 @@ class HomeVM @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         UiState(
-            travelInformation = TravelInformation(),
-            transitDeviationInformation = TransitDeviationInformation()
+            travelInformationData = TravelInformationData(),
+            transitDeviationData = TransitDeviationData()
         )
     )
     val uiState: StateFlow<UiState> = _uiState
 //    val uiState: StateFlow<UiState> // TODO: vilken variant? Detta är mer robust, men speler ej så stor roll...
 //        get() = _uiState.asStateFlow()
 
-    val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
+    val transitSteps: StateFlow<List<Steps>> = TravelInformation.transitSteps
 
     fun getUsername(): String {
         val user = googleAuthClient.getSignedInUser()
@@ -178,9 +177,9 @@ class HomeVM @Inject constructor(
 
             // Coroutine for collecting next mock event for display
             launch {
-                MockTravelInformation.getNextEventTravelInformation().collect { next: TravelInformation ->
+                TravelInformation.getNextEventTravelInformation().collect { next: TravelInformationData ->
                     Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(travelInformation = next) }
+                    _uiState.update { currentState -> currentState.copy(travelInformationData = next) }
                 }
             }
             launch {
@@ -192,12 +191,12 @@ class HomeVM @Inject constructor(
             }
 
             launch {
-                MockDeviationInformation.getNextTransitDeviationsInformation()
-                    .collect { next: TransitDeviationInformation ->
+                DeviationInformation.getNextTransitDeviationsInformation()
+                    .collect { next: TransitDeviationData ->
                         Log.d(TAG, "Collecting: $next")
                         _uiState.update { currentState ->
                             currentState.copy(
-                                transitDeviationInformation = next
+                                transitDeviationData = next
                             )
                         }
                     }
@@ -211,7 +210,7 @@ data class UiState(
     val isFetchingLocationData: Boolean = false,
     val currentLatitude: String = "",
     val currentLongitude: String = "",
-    val travelInformation: TravelInformation,
-    val transitDeviationInformation: TransitDeviationInformation,
+    val travelInformationData: TravelInformationData,
+    val transitDeviationData: TransitDeviationData,
     val travelMode: TravelMode = TravelMode.Transit
 )

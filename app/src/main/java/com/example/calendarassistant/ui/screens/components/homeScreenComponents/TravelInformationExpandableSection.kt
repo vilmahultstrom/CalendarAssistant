@@ -1,8 +1,6 @@
 package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -10,10 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,18 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.calendarassistant.R
-import com.example.calendarassistant.model.mock.travel.Deviation
-import com.example.calendarassistant.model.mock.travel.DeviationInformation
-import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
+import com.example.calendarassistant.model.travel.Deviation
+import com.example.calendarassistant.model.travel.DeviationData
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
-import com.example.calendarassistant.ui.theme.ButtonBlue
-import com.example.calendarassistant.ui.theme.DarkAmber
 import com.example.calendarassistant.ui.theme.LightRed
-import com.example.calendarassistant.ui.theme.OrangeYellow1
 import com.example.calendarassistant.ui.theme.RoyalPurple40
 import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.viewmodels.UiState
@@ -104,8 +92,9 @@ fun TravelInformationExpandableSection(
 
 
     var expanded by remember { mutableStateOf(false) }
-    val stepsDeviationInfo =
-        travelInfo.transitDeviationInformation.transitStepsDeviations ?: listOf()
+
+    val stepsDeviationInfo = travelInfo.transitDeviationData.transitStepsDeviations ?: listOf()
+
 
     if (stepsDeviationInfo.isNotEmpty() || departureInfo.isNotEmpty()) {
         Column(
@@ -196,7 +185,7 @@ fun TravelStepCard(
 
 @Composable
 fun StepDeviationCard(
-    deviationInfo: DeviationInformation,
+    deviationInfo: DeviationData,
 ) {
     Card(
         modifier = Modifier

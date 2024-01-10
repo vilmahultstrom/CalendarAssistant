@@ -1,4 +1,4 @@
-package com.example.calendarassistant.model.mock.travel
+package com.example.calendarassistant.model.travel
 
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.utilities.TimeToLeaveDisplay
@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 
-object MockTravelInformation {
+object TravelInformation {
 
     private val _transitSteps = MutableStateFlow<List<Steps>>(listOf())
     var transitSteps: StateFlow<List<Steps>> = _transitSteps
 
-    private var travelInformation = MutableSharedFlow<TravelInformation>()
+    private var travelInformationData = MutableSharedFlow<TravelInformationData>()
 
     suspend fun setTravelInformation(
         departureTimeHHMM: TimeToLeaveDisplay,
@@ -22,8 +22,8 @@ object MockTravelInformation {
         endLocation: Pair<Double?, Double?>,
         transitSteps: List<Steps>,
     ) {
-        travelInformation.emit(
-            TravelInformation(
+        travelInformationData.emit(
+            TravelInformationData(
                 departureTime = departureTime,
                 departureTimeHHMM = departureTimeHHMM,
                 destinationCoordinates = endLocation
@@ -34,10 +34,10 @@ object MockTravelInformation {
     }
 
     //TODO: funktionsnamn till "getNextEventTravelInformation" ?
-    fun getNextEventTravelInformation() : SharedFlow<TravelInformation> = travelInformation.asSharedFlow()
+    fun getNextEventTravelInformation() : SharedFlow<TravelInformationData> = travelInformationData.asSharedFlow()
 }
 
-data class TravelInformation (
+data class TravelInformationData (
     var departureTimeHHMM: TimeToLeaveDisplay = TimeToLeaveDisplay(),
     var departureTime: String? = "",
     var destinationCoordinates: Pair<Double?, Double?> = Pair(null, null),

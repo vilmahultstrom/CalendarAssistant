@@ -1,6 +1,5 @@
-package com.example.calendarassistant.model.mock.travel
+package com.example.calendarassistant.model.travel
 
-import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -8,18 +7,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 
-object MockDeviationInformation {
+object DeviationInformation {
 
-    private val _transitDeviations = MutableStateFlow<List<DeviationInformation>>(listOf())
-    var transitDeviations: StateFlow<List<DeviationInformation>> = _transitDeviations
+    private val _transitDeviations = MutableStateFlow<List<DeviationData>>(listOf())
+    var transitDeviations: StateFlow<List<DeviationData>> = _transitDeviations
 
-    private var deviationInformation = MutableSharedFlow<TransitDeviationInformation>()
+    private var deviationInformation = MutableSharedFlow<TransitDeviationData>()
 
     suspend fun setTransitDeviationInformation(
-        transitStepsDeviations: List<DeviationInformation>
+        transitStepsDeviations: List<DeviationData>
     ) {
         deviationInformation.emit(
-            TransitDeviationInformation(
+            TransitDeviationData(
                 transitStepsDeviations = transitStepsDeviations
             )
         )
@@ -29,15 +28,15 @@ object MockDeviationInformation {
     }
 
     fun getNextTransitDeviationsInformation():
-            SharedFlow<TransitDeviationInformation> = deviationInformation.asSharedFlow()
+            SharedFlow<TransitDeviationData> = deviationInformation.asSharedFlow()
 
 }
 
-data class TransitDeviationInformation (
-    val transitStepsDeviations: List<DeviationInformation>? = emptyList()
+data class TransitDeviationData (
+    val transitStepsDeviations: List<DeviationData>? = emptyList()
 )
 
-data class DeviationInformation(
+data class DeviationData(
     val delayInMinutes: Int? = 0,
     val deviations: List<Deviation>? = emptyList()
 )

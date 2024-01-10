@@ -63,7 +63,7 @@ fun HomeScreen(
     val departureInfo by vm.transitSteps.collectAsState()
 
     val uiState by vm.uiState.collectAsState()
-    val destCoordinates = uiState.travelInformation.destinationCoordinates
+    val destCoordinates = uiState.travelInformationData.destinationCoordinates
 //    val stepsDeviationInfo = uiState.transitDeviationInformation.transitStepsDeviations
 
     Box(
@@ -89,7 +89,7 @@ fun HomeScreen(
                     onClick = { openGoogleMaps(
                             context, destCoordinates.first, destCoordinates.second, uiState.travelMode
                     ) },
-                    travelInformation = uiState.travelInformation
+                    travelInformationData = uiState.travelInformationData
                 )
 
                 TravelModeSection(selected = uiState.travelMode, vm::setTravelMode)
