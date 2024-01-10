@@ -8,9 +8,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.data.AndroidAlarmScheduler
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
+import com.example.calendarassistant.model.AlarmOffset
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +31,7 @@ private const val TAG = "SettingsVm"
 class SettingsVM @Inject constructor(
     private val googleAuthClient: GoogleAuthClient,
     private val calendarService: CalendarService,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
@@ -76,5 +78,9 @@ class SettingsVM @Inject constructor(
 
     fun resetState() {
         _signInState.update { SignInState() }
+    }
+
+    fun setAlarmOffset(minutes: Long) {
+        AlarmOffset.setAlarmOffset(minutes = minutes)
     }
 }

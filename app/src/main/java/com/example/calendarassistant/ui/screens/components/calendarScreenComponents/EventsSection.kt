@@ -1,5 +1,6 @@
 package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,24 +40,20 @@ import com.example.calendarassistant.ui.theme.DarkViolet
 import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.CalendarVM
 
 @Composable
 fun EventsSection(
     events: List<CalendarEvent>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    vm: CalendarVM
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row {
             Text(
-                text = "TODAY",
+                text = if (events.size <= 1) "${events.size} Event" else "${events.size} Events",
                 style = MaterialTheme.typography.headlineSmall,
                 color = LightRed,
-                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
-            )
-            Text(
-                text = "${events.size} Events",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White,
                 modifier = Modifier.padding(start = 15.dp, end = 15.dp)
             )
         }
@@ -65,14 +63,19 @@ fun EventsSection(
         ) {
             items(events.size) { index ->
                 val event = events[index]
-                EventItem(event, Modifier)
+                EventItem(event, Modifier,vm)
             }
         }
     }
 }
 
 @Composable
-fun EventItem(event: CalendarEvent, modifier: Modifier) {
+fun EventItem(
+    event: CalendarEvent,
+    modifier: Modifier,
+    vm: CalendarVM
+) {
+    val context = LocalContext.current
     BoxWithConstraints(
         modifier = Modifier
             .padding(7.5.dp)
@@ -128,23 +131,24 @@ fun EventItem(event: CalendarEvent, modifier: Modifier) {
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
+                    val formattedTime = event.startDateTime?.let { DateConverter(it) }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .width(150.dp)
+                            .width(175.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(ButtonBlue)
                             .padding(10.dp)
-                            .clickable { /* TODO: Ställ ett larm för den tiden? */ },
-                    ) {
+                            .clickable { vm.setAlarm(event) },
+                    )
+                    {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_access_time_24),
                             contentDescription = event.summary,
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
-                        val formattedTime = event.startDateTime?.let { DateConverter(it) }
                         if (formattedTime != null) {
                             Text(
                                 text = formattedTime,

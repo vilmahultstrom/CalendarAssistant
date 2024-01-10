@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
+package com.example.calendarassistant.ui.screens.components.settingsScreenComponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

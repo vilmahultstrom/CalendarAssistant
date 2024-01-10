@@ -31,7 +31,6 @@ import java.time.LocalDate
 fun CalendarScreen(
     vm: CalendarVM, navController: NavController
 ) {
-    // TODO: Get date logic from backend
     val state by vm.uiState.collectAsState()
 
     // updating calender
@@ -49,7 +48,6 @@ fun CalendarScreen(
 
 
     val daysInMonth = DateHelpers.getCurrentMonthDates(state.dateOfToday)
-    // TODO: Replace with real events imported from Google Calendar?
     val events = vm.eventsWithLocation.collectAsState().value
 //    LaunchedEffect(Unit) {
 //        if (!vm.isUserSignedIn()) {
@@ -67,7 +65,7 @@ fun CalendarScreen(
         ) {
             InformationSection("Daily overview", state.dateOfToday.toString(), modifier = Modifier.weight(.1f))
             DatePickSection(dates = daysInMonth, startIndex = (state.startIndex), vm = vm, modifier = Modifier.weight(.3f))
-            EventsSection(events, modifier = Modifier.weight(.6f))
+            EventsSection(events, modifier = Modifier.weight(.6f), vm=vm)
         }
         BottomMenu(
             items = listOf(

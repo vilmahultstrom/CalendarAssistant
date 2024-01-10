@@ -3,18 +3,22 @@ package com.example.calendarassistant.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.data.AndroidAlarmScheduler
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInState
+import com.example.calendarassistant.model.AlarmItem
 import com.example.calendarassistant.model.calendar.Calendar
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.calendar.Calendars
 import com.example.calendarassistant.services.CalendarService
+import com.example.calendarassistant.utilities.DateHelpers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 private const val TAG = "CalendarVM"
@@ -22,7 +26,8 @@ private const val TAG = "CalendarVM"
 @HiltViewModel
 class CalendarVM @Inject constructor(
     private val calendarService: CalendarService,
-    private val googleAuthClient: GoogleAuthClient
+    private val googleAuthClient: GoogleAuthClient,
+    private val androidAlarmScheduler: AndroidAlarmScheduler
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState())
@@ -33,6 +38,17 @@ class CalendarVM @Inject constructor(
 
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf()) //calendars
     val calendars = _calendars.asStateFlow()
+
+    fun setAlarm(event: CalendarEvent){
+        var timeConverted = DateHelpers.convertUnixTimeToLocalDateTime(event.startDateTime!!)
+        var alarmItem= AlarmItem(
+            time=timeConverted,
+            title="Timer set!",
+            message=event.summary!!
+        )
+        androidAlarmScheduler.schedule(alarmItem)
+    }
+
 
     // Methods to update the selected values
     fun updateSelectedMonthIndex(newIndex: Int) {

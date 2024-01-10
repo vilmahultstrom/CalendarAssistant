@@ -31,6 +31,13 @@ object DateHelpers {
     }
 
 
+
+    fun convertUnixTimeToLocalDateTime(unixTime: Long): LocalDateTime {
+        val instant = Instant.ofEpochSecond(unixTime)
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+    }
+
+
     /**
      *  DateString format is "2024-01-19T09:00:00.000Z"
      *  Z indicates UTC, converts to local time

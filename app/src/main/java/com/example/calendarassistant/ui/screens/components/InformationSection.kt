@@ -23,7 +23,7 @@ import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun InformationSection(
-    greeting: String = "Hello, User", // TODO: Sync with logged in user's name
+    greeting: String = "Hello, User",
     secondGreeting: String = "I hope you're not late today", // TODO: Add random fun messages (prio 4)
     modifier: Modifier = Modifier
     ) {

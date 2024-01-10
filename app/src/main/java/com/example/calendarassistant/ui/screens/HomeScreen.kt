@@ -57,10 +57,9 @@ fun HomeScreen(
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
 
-    LaunchedEffect(key1 = vm.firstEventWithLocation){
+    LaunchedEffect(key1 = Unit){
         vm.updateCalendar()
     }
-
 
     val nextEventInfo by vm.firstEventWithLocation.collectAsState()
     val departureInfo by vm.transitSteps.collectAsState()

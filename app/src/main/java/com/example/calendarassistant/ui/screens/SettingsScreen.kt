@@ -35,11 +35,11 @@ import com.example.calendarassistant.model.AlarmItem
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.calendarScreenComponents.AlarmTestSection
+import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.AlarmOffsetSection
+import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.AlarmTestSection
 import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.SettingButton
 import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.NotificationSettingsSection
 import com.example.calendarassistant.ui.theme.DeepBlue
-import com.example.calendarassistant.ui.theme.TextWhite
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 import java.time.LocalDateTime
 
@@ -81,7 +81,7 @@ fun SettingsScreen(
 
         Column {
             if (vm.isUserSignedIn()) {
-                InformationSection("Settings", "Here you can manage your google account")
+                InformationSection("Settings", "Here you can manage your settings")
             } else {
                 InformationSection("Calender Assistant", "Please sign in below")
             }
@@ -93,8 +93,6 @@ fun SettingsScreen(
                     .padding(30.dp)
                 ,
             ) {
-                // TODO: Get "Sign in with Google" or "Sign out" from VM depending on state
-                // TODO: Open Google sign in intent
                 Log.d("CalenderScreen", "is Logged in: ${vm.isUserSignedIn()}")
                 if (vm.isUserSignedIn()) {
                     val googleButtonText2 = "Sign out"
@@ -106,15 +104,13 @@ fun SettingsScreen(
                         },
                         painterId = R.drawable.google_g_logo
                     )
+                    AlarmOffsetSection(vm)
                 } else {
                     val googleButtonText = "Sign in with Google"
                     SettingButton(
                         text = googleButtonText,
                         onClick = {
                             onSignInClick()
-                            //UPDATE UI?
-                            // await??
-                            //navController.navigate(BMRoutes.Settings.route)
                         },
                         painterId = R.drawable.google_g_logo
                     )
@@ -147,4 +143,6 @@ fun SettingsScreen(
         }
     }
 }
+
+
 
