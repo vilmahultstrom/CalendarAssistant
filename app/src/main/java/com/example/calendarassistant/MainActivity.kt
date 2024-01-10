@@ -36,6 +36,7 @@ import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "MainActivity"
 
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var signInLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var settingsVM: SettingsVM
+    @Inject lateinit var googleAuthClient: GoogleAuthClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -56,13 +58,6 @@ class MainActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
-
-        val googleAuthClient by lazy {
-            GoogleAuthClient(
-                context = applicationContext,
-                signInClient = Identity.getSignInClient(applicationContext)
-            )
-        }
 
         ActivityCompat.requestPermissions(
             this,
