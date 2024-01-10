@@ -34,6 +34,7 @@ import com.example.calendarassistant.model.AlarmItem
 import com.example.calendarassistant.model.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.InformationSection
+import com.example.calendarassistant.ui.screens.components.calendarScreenComponents.AlarmTestSection
 import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.SettingButton
 import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.NotificationSettingsSection
 import com.example.calendarassistant.ui.theme.DeepBlue
@@ -110,71 +111,3 @@ fun SettingsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AlarmTestSection(
-
-) {
-    val scheduler = AndroidAlarmScheduler(LocalContext.current) // TODO: Move to VM
-    var alarmItem: AlarmItem? = null
-
-    var secondsText by remember {
-        mutableStateOf("")
-    }
-    var title by remember {
-        mutableStateOf("")
-    }
-    var message by remember {
-        mutableStateOf("")
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedTextField(
-            value = secondsText,
-            onValueChange = { secondsText = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Trigger alarm in x seconds") }
-            ,textStyle = TextStyle(Color.White)
-        )
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Title") },
-            textStyle = TextStyle(Color.White)
-        )
-        OutlinedTextField(
-            value = message,
-            onValueChange = { message = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "Message") },
-            textStyle = TextStyle(Color.White)
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(onClick = {
-                alarmItem = AlarmItem(
-                    time = LocalDateTime.now().plusSeconds(secondsText.toLong()), // TODO: Move to VM and calculate depending on next event?
-                    title = title,
-                    message = message
-                )
-                alarmItem?.let(scheduler::schedule)
-                secondsText = ""
-                message = ""
-            }) {
-                Text(text = "Schedule")
-            }
-            Button(onClick = {
-                alarmItem?.let(scheduler::cancel)
-            }) {
-                Text(text = "Cancel")
-            }
-        }
-    }
-}

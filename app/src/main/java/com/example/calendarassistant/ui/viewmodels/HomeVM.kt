@@ -10,17 +10,17 @@ import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.model.calendar.Calendar
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.calendar.Calendars
-import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
-import com.example.calendarassistant.model.mock.travel.MockTravelInformation
-import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
-import com.example.calendarassistant.model.mock.travel.TravelInformation
+import com.example.calendarassistant.model.travel.DeviationInformation
+import com.example.calendarassistant.model.travel.TravelInformation
+import com.example.calendarassistant.model.travel.TransitDeviationData
+import com.example.calendarassistant.model.travel.TravelInformationData
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
+import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,24 +43,20 @@ class HomeVM @Inject constructor(
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
     val calendars = _calendars.asStateFlow()
 
-
-    private var isFetchingLocationData: Boolean = false
-
-
     private val _startServiceAction = mutableStateOf<com.example.calendarassistant.utilities.Event<String>?>(null)
     val startServiceAction: State<com.example.calendarassistant.utilities.Event<String>?> = _startServiceAction
 
     private val _uiState = MutableStateFlow(
         UiState(
-            travelInformation = TravelInformation(),
-            transitDeviationInformation = TransitDeviationInformation()
+            travelInformationData = TravelInformationData(),
+            transitDeviationData = TransitDeviationData()
         )
     )
     val uiState: StateFlow<UiState> = _uiState
 //    val uiState: StateFlow<UiState> // TODO: vilken variant? Detta är mer robust, men speler ej så stor roll...
 //        get() = _uiState.asStateFlow()
 
-    val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
+    val transitSteps: StateFlow<List<Steps>> = TravelInformation.transitSteps
 
     fun getUsername(): String {
         val user = googleAuthClient.getSignedInUser()
@@ -73,7 +69,7 @@ class HomeVM @Inject constructor(
     // Start fetching gps data
     fun onStartServiceClicked() {
         calendarService.getUpcomingEvents()
-        if (!isFetchingLocationData) {
+        if (!_uiState.value.isFetchingLocationData) {
             startLocationService()
         } else {
             stopLocationService()
@@ -110,14 +106,14 @@ class HomeVM @Inject constructor(
         _startServiceAction.value =
             com.example.calendarassistant.utilities.Event(LocationService.ACTION_START)
         //fetchTravelInformation()
-        isFetchingLocationData = true
+        _uiState.update { it.copy(isFetchingLocationData = true) }
     }
 
     private fun stopLocationService() {
         _startServiceAction.value =
             com.example.calendarassistant.utilities.Event(LocationService.ACTION_STOP)
         clearLocationData()
-        isFetchingLocationData = false
+        _uiState.update { it.copy(isFetchingLocationData = false) }
     }
 
 
@@ -144,13 +140,11 @@ class HomeVM @Inject constructor(
             // Coroutine for getting location at start up
 
             calendarService.getUpcomingEvents()
-
+            _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
+            _uiState.update { it.copy(isFetchingLocationData = true) }
 
 
             launch {
-                _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_GET) // Inits and collects location info
-                delay(10000)    // Delay for init
-
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
                     networkService.getTravelInformation(_uiState.value.travelMode, it) // fetches data
@@ -183,25 +177,26 @@ class HomeVM @Inject constructor(
 
             // Coroutine for collecting next mock event for display
             launch {
-                MockTravelInformation.getNextEventTravelInformation().collect { next: TravelInformation ->
+                TravelInformation.getNextEventTravelInformation().collect { next: TravelInformationData ->
                     Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(travelInformation = next) }
+                    _uiState.update { currentState -> currentState.copy(travelInformationData = next) }
                 }
             }
             launch {
                 Calendars.calendarList.collect {
                     _calendars.value = it
                     getAllEventsWithLocationFromCalendars()
+                    
                 }
             }
 
             launch {
-                MockDeviationInformation.getNextTransitDeviationsInformation()
-                    .collect { next: TransitDeviationInformation ->
+                DeviationInformation.getNextTransitDeviationsInformation()
+                    .collect { next: TransitDeviationData ->
                         Log.d(TAG, "Collecting: $next")
                         _uiState.update { currentState ->
                             currentState.copy(
-                                transitDeviationInformation = next
+                                transitDeviationData = next
                             )
                         }
                     }
@@ -210,3 +205,12 @@ class HomeVM @Inject constructor(
         }
     }
 }
+
+data class UiState(
+    val isFetchingLocationData: Boolean = false,
+    val currentLatitude: String = "",
+    val currentLongitude: String = "",
+    val travelInformationData: TravelInformationData,
+    val transitDeviationData: TransitDeviationData,
+    val travelMode: TravelMode = TravelMode.Transit
+)

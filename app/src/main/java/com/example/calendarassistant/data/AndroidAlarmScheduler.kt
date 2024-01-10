@@ -11,6 +11,7 @@ import com.example.calendarassistant.interfaces.AlarmScheduler
 import com.example.calendarassistant.model.AlarmItem
 import java.time.ZoneId
 import android.provider.Settings
+import android.util.Log
 
 class AndroidAlarmScheduler(
     private val context: Context
@@ -32,6 +33,7 @@ class AndroidAlarmScheduler(
             putExtra("EXTRA_TITLE", item.title)
             putExtra("EXTRA_MESSAGE", item.message)
         }
+        Log.d("AlarmScheduler", "Scheduling alarm for: ${item.time}")
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,

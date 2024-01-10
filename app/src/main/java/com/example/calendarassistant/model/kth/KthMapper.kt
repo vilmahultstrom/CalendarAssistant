@@ -13,6 +13,7 @@ object KthMapper {
             "T61, Hälsovägen",
             "Brånemarksalen",
             "Fl-Projektrum 3",
+            "T3 (Meitnersalen)",
             "Hertzsalen" -> "Hälsovägen 11C"
             else -> null
         }

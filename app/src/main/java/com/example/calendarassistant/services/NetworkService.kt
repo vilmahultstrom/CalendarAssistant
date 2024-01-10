@@ -6,10 +6,10 @@ import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.kth.KthMapper
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
-import com.example.calendarassistant.model.mock.travel.Deviation
-import com.example.calendarassistant.model.mock.travel.DeviationInformation
-import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
-import com.example.calendarassistant.model.mock.travel.MockTravelInformation
+import com.example.calendarassistant.model.travel.Deviation
+import com.example.calendarassistant.model.travel.DeviationData
+import com.example.calendarassistant.model.travel.DeviationInformation
+import com.example.calendarassistant.model.travel.TravelInformation
 import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.SlNearbyStopsApi
 import com.example.calendarassistant.network.SlRealTimeApi
@@ -48,7 +48,7 @@ class NetworkService : INetworkService {
 //        get() = _transitSteps.asStateFlow()
 
     private var transitSteps: MutableList<Steps> = mutableListOf()
-    private var transitStepsDeviations: MutableList<DeviationInformation> = mutableListOf()
+    private var transitStepsDeviations: MutableList<DeviationData> = mutableListOf()
 
     /**
      *  Makes api call to Google directions and updates the next event info
@@ -186,7 +186,7 @@ class NetworkService : INetworkService {
         val departureTimeText = departureTime?.text
 
         // Updates set new info, which updates the ui
-        MockTravelInformation.setTravelInformation(
+        TravelInformation.setTravelInformation(
             departureTimeHHMM,
             departureTimeText,
             Pair(endLocation?.lat, endLocation?.lng),
@@ -222,7 +222,7 @@ class NetworkService : INetworkService {
             )*/
 
             val mockTransitStepsDeviations = listOf(
-                DeviationInformation(
+                DeviationData(
                     delayInMinutes = 5,
                     deviations = listOf(
                         Deviation(
@@ -232,7 +232,7 @@ class NetworkService : INetworkService {
                         )
                     )
                 ),
-                DeviationInformation(
+                DeviationData(
                     delayInMinutes = 10,
                     deviations = listOf(
                         Deviation(
@@ -247,14 +247,14 @@ class NetworkService : INetworkService {
                         )
                     )
                 ),
-                DeviationInformation(
+                DeviationData(
                     delayInMinutes = 0,
                     deviations = emptyList()
                 )
             )
 
             // Använd mockTransitStepsDeviations i din funktion
-            MockDeviationInformation.setTransitDeviationInformation(
+            DeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = mockTransitStepsDeviations
             )
 
@@ -305,10 +305,10 @@ class NetworkService : INetworkService {
     private fun compareStepWithRealTimeData(
         step: Steps,
         realTimeData: SlRealtimeDataResponse
-    ): DeviationInformation {
+    ): DeviationData {
 
         val transportMode = step.transitDetails?.line?.vehicle?.type
-            ?: return DeviationInformation(0, emptyList())
+            ?: return DeviationData(0, emptyList())
         val lineShortName = step.transitDetails?.line?.shortName
         val headSign = step.transitDetails?.headsign
         val scheduledDepartureTime = step.transitDetails?.departureTime?.value
@@ -328,7 +328,7 @@ class NetworkService : INetworkService {
         headSignGoogle: String?,
         scheduledDepartureTimeGoogle: Int?,
         realTimeData: SlRealtimeDataResponse
-    ): DeviationInformation {
+    ): DeviationData {
 
         Log.d(TAG, realTimeData.toString())
 
@@ -404,7 +404,7 @@ class NetworkService : INetworkService {
         val delayInMinutes = calculateDelay(scheduledDepartureTimeGoogle, expectedDepartureTimeSl)
         Log.d(TAG, "DELAY JÄMFÖRELSE: delayAbsInMinutes: $delayAbsInMinutes " +
                 " || delayInMinutes: $delayInMinutes")
-        return DeviationInformation(delayInMinutes, deviations)
+        return DeviationData(delayInMinutes, deviations)
     }
 
     fun areTimesSimilar(
