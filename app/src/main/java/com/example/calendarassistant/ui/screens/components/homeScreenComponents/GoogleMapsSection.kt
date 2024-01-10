@@ -27,11 +27,12 @@ import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.mock.travel.TravelInformation
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepPink
+import com.example.calendarassistant.ui.theme.Plum
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
 fun GoogleMapsSection(
-    color: Color = DeepPink,
+    color: Color = Plum,
     onClick: () -> Unit,
     travelInformation: TravelInformation,
 ) {
