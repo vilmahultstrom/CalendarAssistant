@@ -1,5 +1,6 @@
 package com.example.calendarassistant.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +47,8 @@ import java.time.LocalDateTime
 fun SettingsScreen(
     vm: SettingsVM,
     navController: NavController,
-    onSignInClick: () -> Unit
+    onSignInClick: () -> Unit,
+    onSignOutClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -74,18 +76,32 @@ fun SettingsScreen(
                     .padding(30.dp),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(text = "Welcome to the Settings Screen", color = TextWhite)
-
                 // TODO: Get "Sign in with Google" or "Sign out" from VM depending on state
                 // TODO: Open Google sign in intent
-                val googleButtonText = "Sign in with Google"
-                SettingButton(
-                    text = googleButtonText,
-                    onClick = { onSignInClick() },
-                    painterId = R.drawable.google_g_logo
-                )
+                Log.d("CalenderScreen", "is Logged in: ${vm.isUserSignedIn()}")
+                if (vm.isUserSignedIn()) {
+                    val googleButtonText2 = "Sign out"
+                    SettingButton(
+                        text = googleButtonText2,
+                        onClick = {
+                            onSignOutClick()
+                            navController.navigate(BMRoutes.Home.route)
+                        },
+                        painterId = R.drawable.google_g_logo
+                    )
+                } else {
+                    val googleButtonText = "Sign in with Google"
+                    SettingButton(
+                        text = googleButtonText,
+                        onClick = {
+                            onSignInClick()
+                            navController.navigate(BMRoutes.Home.route)
+                        },
+                        painterId = R.drawable.google_g_logo
+                    )
+                }
                 NotificationSettingsSection(vm)
-                AlarmTestSection()
+                //AlarmTestSection() // Dev UI
             }
 
             // TODO: Välj vilken kalender som ska importeras / logga in?

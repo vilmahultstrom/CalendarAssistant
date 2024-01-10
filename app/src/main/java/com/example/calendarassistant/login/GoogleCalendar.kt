@@ -42,6 +42,10 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
         MutableStateFlow<List<com.google.api.services.calendar.model.Event>>(listOf())
     var events: StateFlow<List<com.google.api.services.calendar.model.Event>> = _events
 
+    fun clearEvents() {
+        _events.value = listOf()
+    }
+
     private fun getCalendarService(email: String): Calendar {
         synchronized(this) {
             if (calendar != null && currentEmail == email) {
@@ -175,4 +179,5 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
             }
         }
     }
+
 }

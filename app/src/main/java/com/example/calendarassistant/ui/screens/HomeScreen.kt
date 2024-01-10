@@ -104,8 +104,9 @@ fun HomeScreen(
                     )
                 }
 
-                ButtonSection()
-
+                // Unused
+                //ButtonSection()
+                /*
                 Column(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.SpaceEvenly
@@ -123,6 +124,7 @@ fun HomeScreen(
                         color = Color.White)
 
                 }
+                */
                 Spacer(modifier = Modifier.height(200.dp))
             }
         }

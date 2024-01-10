@@ -58,6 +58,7 @@ fun NotificationSettingsSection(
             painterId = R.drawable.baseline_no_adult_content_24
         )
     }
+    /* Dev UI
     SettingButton(
         text = "Show test notification",
         onClick = {
@@ -67,4 +68,5 @@ fun NotificationSettingsSection(
         },
         painterId = R.drawable.baseline_notifications_24
     )
+    */
 }

@@ -47,6 +47,17 @@ class SettingsVM @Inject constructor(
         }
     }
 
+    fun signOut() {
+        viewModelScope.launch {
+            googleAuthClient.signOut()
+            calendarService.clearEvents()
+            resetState()
+        }
+    }
+
+    fun isUserSignedIn(): Boolean {
+        return googleAuthClient.getSignedInUser() != null
+    }
 
     fun handleSignInResult(resultCode: Int, data: Intent?) {
         viewModelScope.launch {
@@ -60,8 +71,6 @@ class SettingsVM @Inject constructor(
         }
     }
 
-
-
     fun onSignInResult(result: SignInResult) {
         _signInState.update {
             it.copy(
@@ -74,11 +83,4 @@ class SettingsVM @Inject constructor(
     fun resetState() {
         _signInState.update { SignInState() }
     }
-
-
-
-
-
-
-
 }

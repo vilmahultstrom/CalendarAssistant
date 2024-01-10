@@ -3,6 +3,8 @@ package com.example.calendarassistant.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.login.GoogleAuthClient
+import com.example.calendarassistant.login.SignInState
 import com.example.calendarassistant.model.calendar.Calendar
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.calendar.Calendars
@@ -18,7 +20,9 @@ import javax.inject.Inject
 private const val TAG = "CalendarVM"
 
 @HiltViewModel
-class CalendarVM @Inject constructor(private val calendarService: CalendarService
+class CalendarVM @Inject constructor(
+    private val calendarService: CalendarService,
+    private val googleAuthClient: GoogleAuthClient
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState())
@@ -36,6 +40,14 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
         _uiState.update { it.copy(selectedMonthIndex = newIndex) }
         fetchEventsForSelectedDay()
         Log.d(TAG, newIndex.toString())
+    }
+
+    fun isUserSignedIn(): Boolean {
+        return googleAuthClient.getSignedInUser() != null
+    }
+
+    fun clearEvents() {
+        _eventsWithLocation.value = listOf()
     }
 
     fun updateSelectedDayIndex(newIndex: Int) {

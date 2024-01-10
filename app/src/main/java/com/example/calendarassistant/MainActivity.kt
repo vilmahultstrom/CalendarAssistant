@@ -45,7 +45,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var signInLauncher: ActivityResultLauncher<IntentSenderRequest>
     private lateinit var settingsVM: SettingsVM
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         signInLauncher = registerForActivityResult(
@@ -106,10 +105,15 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-
-                            SettingsScreen(vm = settingsVM, navController, onSignInClick = {
+                            SettingsScreen(
+                                vm = settingsVM,
+                                navController,
+                                onSignInClick = {
                                 settingsVM.signIn() // Trigger sign-in from the ViewModel
-                            })
+                                },
+                                onSignOutClick = {
+                                    settingsVM.signOut()
+                                })
 
                         }
                         composable(BMRoutes.Login.route) {

@@ -72,6 +72,10 @@ class HomeVM @Inject constructor(
             "User"
     }
 
+    fun isUserSignedIn(): Boolean {
+        return googleAuthClient.getSignedInUser() != null
+    }
+
     // Start fetching gps data
     fun onStartServiceClicked() {
         calendarService.getUpcomingEventsForOneDay()

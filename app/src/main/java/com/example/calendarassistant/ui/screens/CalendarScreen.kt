@@ -1,5 +1,6 @@
 package com.example.calendarassistant.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +51,12 @@ fun CalendarScreen(
     val daysInMonth = DateHelpers.getCurrentMonthDates(state.dateOfToday)
     // TODO: Replace with real events imported from Google Calendar?
     val events = vm.eventsWithLocation.collectAsState().value
+//    LaunchedEffect(Unit) {
+//        if (!vm.isUserSignedIn()) {
+//            vm.clearEvents()
+//        }
+//    }
+    //Log.d("CalenderScreen", "is Logged in: ${vm.isUserSignedIn()}")
     Box(
         modifier = Modifier
             .background(DeepBlue)
