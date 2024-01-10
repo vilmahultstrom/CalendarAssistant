@@ -19,6 +19,7 @@ import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
+import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -143,10 +144,6 @@ class HomeVM @Inject constructor(
             _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
             _uiState.update { it.copy(isFetchingLocationData = true) }
 
-
-
-
-
             launch {
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
@@ -189,6 +186,7 @@ class HomeVM @Inject constructor(
                 Calendars.calendarList.collect {
                     _calendars.value = it
                     getAllEventsWithLocationFromCalendars()
+                    
                 }
             }
 
