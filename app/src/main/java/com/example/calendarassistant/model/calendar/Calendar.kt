@@ -59,6 +59,7 @@ object Calendars {
         if (events.size == 1) return events.first()
 
         val sortedList = events.sortedByStartTime()
+        if (sortedList.isEmpty()) return null
         return sortedList.first()
     }
 
