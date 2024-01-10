@@ -3,7 +3,9 @@ package com.example.calendarassistant.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -35,22 +37,18 @@ fun CalendarScreen(
             .background(DeepBlue)
             .fillMaxSize()
     ) {
-        Column {
-            InformationSection("Daily overview", specificDate.toString())
-            DatePickSection(
-                dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString()
-            )
-            EventsSection(events)
+        Column( modifier = Modifier
+            .fillMaxSize()
+        ) {
+            InformationSection("Daily overview", specificDate.toString(), modifier = Modifier.weight(.1f))
+            DatePickSection(dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString(), modifier = Modifier.weight(.3f))
+            EventsSection(events, modifier = Modifier.weight(.6f))
         }
         BottomMenu(
             items = listOf(
                 BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
-                BottomMenuContent(
-                    "Calendar", R.drawable.baseline_calendar_month_24, BMRoutes.Calendar.route
-                ),
-                BottomMenuContent(
-                    "Settings", R.drawable.baseline_settings_24, BMRoutes.Settings.route
-                ),
+                BottomMenuContent("Calendar", R.drawable.baseline_calendar_month_24, BMRoutes.Calendar.route),
+                BottomMenuContent("Settings", R.drawable.baseline_settings_24, BMRoutes.Settings.route),
             ), modifier = Modifier.align(Alignment.BottomCenter), navController = navController
         )
     }

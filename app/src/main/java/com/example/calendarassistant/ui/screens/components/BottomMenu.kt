@@ -38,7 +38,7 @@ fun BottomMenu(
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
     initialSelectedItemIndex: Int = 0,
-    navController: NavController
+    navController: NavController,
 ) {
     val currentRoute = getCurrentRoute(navController)
     var selectedItemIndex by remember {

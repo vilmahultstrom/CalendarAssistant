@@ -39,20 +39,23 @@ import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable
-fun EventsSection(events: List<CalendarEvent>) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+fun EventsSection(
+    events: List<CalendarEvent>,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Row {
             Text(
                 text = "TODAY",
                 style = MaterialTheme.typography.headlineSmall,
                 color = LightRed,
-                modifier = Modifier.padding(15.dp)
+                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
             )
             Text(
                 text = "${events.size} Events",
                 style = MaterialTheme.typography.headlineSmall,
                 color = Color.White,
-                modifier = Modifier.padding(15.dp)
+                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
             )
         }
         LazyColumn(
@@ -61,14 +64,14 @@ fun EventsSection(events: List<CalendarEvent>) {
         ) {
             items(events.size) { index ->
                 val event = events[index]
-                EventItem(event)
+                EventItem(event, Modifier)
             }
         }
     }
 }
 
 @Composable
-fun EventItem(event: CalendarEvent) {
+fun EventItem(event: CalendarEvent, modifier: Modifier) {
     BoxWithConstraints(
         modifier = Modifier
             .padding(7.5.dp)

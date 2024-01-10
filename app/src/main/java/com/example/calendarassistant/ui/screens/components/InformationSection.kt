@@ -25,11 +25,12 @@ import com.example.calendarassistant.ui.theme.TextWhite
 fun InformationSection(
     greeting: String = "Hello, User", // TODO: Sync with logged in user's name
     secondGreeting: String = "I hope you're not late today", // TODO: Add random fun messages (prio 4)
-) {
+    modifier: Modifier = Modifier
+    ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(15.dp)
     ) {

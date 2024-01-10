@@ -41,7 +41,8 @@ import java.time.LocalDate
 @Composable
 fun DatePickSection(
     dates: List<String>,
-    startIndex: String
+    startIndex: String,
+    modifier: Modifier = Modifier
 ) {
     // TODO: Replace year logic with LocalDate.now() logic in backend to calculate last year, current year + 5 years onwards or something
     val years = listOf("2023", "2024", "2025", "2026", "2027", "2028")
@@ -49,8 +50,8 @@ fun DatePickSection(
     val months =
         listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec")
 
-    Column {
-        Row() {
+    Column (modifier=modifier){
+        Row(modifier=Modifier.weight(0.5f)) {
             // Month picker
             ClickableScroller(
                 items = months,
@@ -68,13 +69,15 @@ fun DatePickSection(
                     .width(250.dp)
             )
         }
-        // Day picker
-        ClickableScroller(
-            items = dates,
-            startIndex = startIndex,
-            verticalScroll = false,
-            modifier = Modifier
-        )
+        Row(modifier=Modifier.weight(0.5f)){
+            // Day picker
+            ClickableScroller(
+                items = dates,
+                startIndex = startIndex,
+                verticalScroll = false,
+                modifier = Modifier
+            )
+        }
     }
 }
 
@@ -118,7 +121,8 @@ fun ClickableScroller(
                             selectedDateIndex = newIndex
                             // TODO: Call VM to update UI based on the new index
                         },
-                        horizontal = true
+                        horizontal = true,
+                        modifier=Modifier
                     )
                 }
             }
@@ -137,7 +141,8 @@ fun ClickableScroller(
                             selectedDateIndex = newIndex
                             // TODO: Call VM to update UI based on the new index
                         },
-                        horizontal = false
+                        horizontal = false,
+                        modifier=Modifier
                     )
                 }
             }
@@ -151,10 +156,11 @@ fun ItemContent(
     index: Int,
     selectedDateIndex: String,
     onSelect: (String) -> Unit,
-    horizontal: Boolean
+    horizontal: Boolean,
+    modifier: Modifier
 ) {
     val horizontalModifier = Modifier
-        .padding(start = 6.dp, top = 12.dp, bottom = 12.dp, end = 6.dp)
+        .padding(start = 6.dp, top = 3.dp, bottom = 3.dp, end = 6.dp)
         .width(70.dp)
         .clickable {
             onSelect(index.toString())
@@ -164,10 +170,10 @@ fun ItemContent(
             if (selectedDateIndex == index.toString()) ButtonBlue
             else DeepBlue
         )
-        .padding(15.dp)
+        .padding(10.dp)
 
     val verticalModifier = Modifier
-        .padding(start = 12.dp, top = 6.dp, bottom = 6.dp, end = 12.dp)
+        .padding(start = 6.dp, top = 3.dp, bottom = 3.dp, end = 6.dp)
         .fillMaxWidth()
         .clickable {
             onSelect(index.toString())
@@ -186,7 +192,7 @@ fun ItemContent(
         Text(
             text = item,
             color = TextWhite,
-            fontSize = 24.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
         )
     }
