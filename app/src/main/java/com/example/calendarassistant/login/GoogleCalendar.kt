@@ -90,11 +90,11 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
 
                         for (event in items) {
                             val eventSum = event.summary
-                            val startDateTime = event?.start?.dateTime?.value
-                            val startDate = event?.start?.date?.value
+                            val startDateTime = event?.start?.dateTime?.value?.div(1000)
+                            val startDate = event?.start?.date?.value?.div(1000)
                             val location = event?.location
-                            val endDateTime = event?.end?.dateTime?.value
-                            val endDate = event?.end?.date?.value
+                            val endDateTime = event?.end?.dateTime?.value?.div(1000)
+                            val endDate = event?.end?.date?.value?.div(1000)
                             val calendarEvent: CalendarEvent = CalendarEvent(
                                 summary = eventSum,
                                 startDate = startDate,

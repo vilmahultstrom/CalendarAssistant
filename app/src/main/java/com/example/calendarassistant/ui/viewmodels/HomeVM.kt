@@ -7,17 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.login.GoogleAuthClient
-import com.example.calendarassistant.login.SignInInterface
 import com.example.calendarassistant.model.calendar.Calendar
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.calendar.Calendars
-import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
-import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.model.mock.travel.TransitDeviationInformation
 import com.example.calendarassistant.model.mock.travel.TravelInformation
-import com.example.calendarassistant.network.GoogleApi
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
@@ -113,7 +109,7 @@ class HomeVM @Inject constructor(
     private fun startLocationService() {
         _startServiceAction.value =
             com.example.calendarassistant.utilities.Event(LocationService.ACTION_START)
-        fetchTravelInformation()
+        //fetchTravelInformation()
         isFetchingLocationData = true
     }
 
@@ -125,11 +121,11 @@ class HomeVM @Inject constructor(
     }
 
 
-    private fun fetchTravelInformation() {
+/*    private fun fetchTravelInformation() {
         viewModelScope.launch {
-            networkService.getTravelInformation(TravelMode.Transit) // TODO: ändra till valda TravelMode
+            networkService.getTravelInformation(_uiState.value.travelMode, it.startDateTime) // TODO: ändra till valda TravelMode
         }
-    }
+    }*/
 
     private fun clearLocationData() {
         _uiState.update { it.copy(currentLatitude = "", currentLongitude = "") }
@@ -138,37 +134,31 @@ class HomeVM @Inject constructor(
     fun setTravelMode(mode: TravelMode) {
         _uiState.update { _uiState.value.copy(travelMode = mode) }
         viewModelScope.launch {
-            networkService.getTravelInformation(mode)
+            networkService.getTravelInformation(mode, Calendars.firstEventWithLocation.value)
         }
     }
 
-
-
-    fun getDirectionsByPlace() {
-        viewModelScope.launch {
-            val response =
-                GoogleApi.getDirectionsByPlace("Nyköping", "Stockholm", TravelMode.Transit)
-            Log.d(TAG, response.body().toString())
-        }
-    }
-
-    fun getDirectionsByCoordinates() {
-        viewModelScope.launch {
-            val response = GoogleApi.getDirectionsByCoordinates(
-                Pair(58.75311F, 17.009333F), Pair(59.33459f, 18.063240f), TravelMode.Transit
-            )
-        }
-    }
 
     init {
         viewModelScope.launch {
             // Coroutine for getting location at start up
+
+            calendarService.getUpcomingEvents()
+
+
+
             launch {
-                _startServiceAction.value =
-                    com.example.calendarassistant.utilities.Event(LocationService.ACTION_GET) // Inits and collects location info
+                _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
-                networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
-                networkService.getDeviationInformation()
+
+                Calendars.firstEventWithLocation.collect {
+                    Log.d(TAG, "Fetching first event " + it.toString())
+                    networkService.getTravelInformation(_uiState.value.travelMode, it) // fetches data
+                    networkService.getDeviationInformation()
+                }
+
+
+
             }
 
             /**
@@ -187,13 +177,13 @@ class HomeVM @Inject constructor(
                         )
                     }
                     // This updates the time left, could maybe ge done by internal timer
-                    networkService.getTravelInformation(_uiState.value.travelMode)
+                    networkService.getTravelInformation(_uiState.value.travelMode, Calendars.firstEventWithLocation.value)
                 }
             }
 
             // Coroutine for collecting next mock event for display
             launch {
-                MockTravelInformation.getNextEventInformation().collect { next: TravelInformation ->
+                MockTravelInformation.getNextEventTravelInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
                     _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }
@@ -215,10 +205,6 @@ class HomeVM @Inject constructor(
                             )
                         }
                     }
-            }
-
-            launch {
-                calendarService.getUpcomingEvents()
             }
 
         }
