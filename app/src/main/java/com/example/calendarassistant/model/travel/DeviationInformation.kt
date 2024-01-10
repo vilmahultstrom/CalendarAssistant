@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 object DeviationInformation {
 
-    private val _transitDeviations = MutableStateFlow<List<DeviationData>>(listOf())
-    var transitDeviations: StateFlow<List<DeviationData>> = _transitDeviations
+//    private val _transitDeviations = MutableStateFlow<List<DeviationData>>(listOf())
+//    var transitDeviations: StateFlow<List<DeviationData>> = _transitDeviations
 
     private var deviationInformation = MutableSharedFlow<TransitDeviationData>()
 
@@ -23,7 +23,6 @@ object DeviationInformation {
             )
         )
 
-        // TODO: på vilket sätt borde man göra?
         //_transitDeviations.value = transitStepsDeviations
     }
 

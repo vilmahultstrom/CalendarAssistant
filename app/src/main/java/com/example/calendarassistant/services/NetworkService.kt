@@ -220,7 +220,9 @@ class NetworkService : INetworkService {
             DeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
             )
-/*
+
+            //TODO: TA BORT/FLYTTA MOCK
+            /*
             val mockTransitStepsDeviations = listOf(
                 DeviationData(
                     delayInMinutes = 5,
@@ -256,10 +258,11 @@ class NetworkService : INetworkService {
                     deviations = emptyList()
                 )
             )
-*/
+
             DeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = mockTransitStepsDeviations
-            )*/ //TODO: TA BORT/FLYTTA MOCK
+            )
+            */
 
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching real-time transit data: ${e.message}")

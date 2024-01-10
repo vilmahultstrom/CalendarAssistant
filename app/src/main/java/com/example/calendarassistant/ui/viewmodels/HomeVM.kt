@@ -124,7 +124,7 @@ class HomeVM @Inject constructor(
 
 /*    private fun fetchTravelInformation() {
         viewModelScope.launch {
-            networkService.getTravelInformation(_uiState.value.travelMode, it.startDateTime) // TODO: ändra till valda TravelMode
+            networkService.getTravelInformation(_uiState.value.travelMode, it.startDateTime)
         }
     }*/
 
@@ -168,7 +168,6 @@ class HomeVM @Inject constructor(
                 _startServiceAction.value = com.example.calendarassistant.utilities.Event(
                     LocationService.ACTION_GET
                 ) // Inits and collects location info
-                delay(10000)    // Delay for init
 
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())

@@ -26,8 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import com.example.calendarassistant.model.mock.travel.Deviation
-import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.travel.Deviation
 import com.example.calendarassistant.model.travel.DeviationData
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
@@ -144,7 +142,7 @@ fun TravelInformationExpandableSection(
     }
 }
 
-private fun isContainingInfo(deviationInfo: DeviationInformation) : Boolean {
+private fun isContainingInfo(deviationInfo: DeviationData) : Boolean {
     if (!deviationInfo.deviations.isNullOrEmpty()) {
         // Checks if any step has delay or deviations info
         return deviationInfo.deviations.any { item ->
@@ -182,12 +180,14 @@ fun TravelStepCard(
                 if (departureTime != null) {
                     Text(
                         text = departureTime,
+                        fontWeight = FontWeight.Bold,
                         color = DeepPurple500
                     )
                 }
                 if (arrivalTime != null) {
                     Text(
                         text = arrivalTime,
+                        fontWeight = FontWeight.Bold,
                         color = DeepPurple500
                     )
                 }
@@ -201,12 +201,14 @@ fun TravelStepCard(
                 if (originName != null) {
                     Text(
                         text = originName,
+                        fontWeight = FontWeight.Bold,
                         color = DeepPurple500,
                     )
                 }
                 if (stopName != null) {
                     Text(
                         text = stopName,
+                        fontWeight = FontWeight.Bold,
                         color = DeepPurple500,
                     )
                 }
