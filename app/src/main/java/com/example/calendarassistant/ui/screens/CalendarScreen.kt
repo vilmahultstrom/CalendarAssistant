@@ -28,7 +28,7 @@ fun CalendarScreen(
     vm: CalendarVM, navController: NavController
 ) {
     // TODO: Get date logic from backend
-    val specificDate = LocalDate.of(2024, 1, 8)
+    val specificDate = LocalDate.of(2024, 1, 10)
     val daysInMonth = DateHelpers.getCurrentMonthDates(specificDate)
     // TODO: Replace with real events imported from Google Calendar?
     val events = vm.eventsWithLocation.collectAsState().value

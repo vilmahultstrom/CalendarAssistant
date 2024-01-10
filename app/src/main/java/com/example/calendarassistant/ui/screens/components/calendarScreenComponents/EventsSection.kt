@@ -91,7 +91,8 @@ fun EventItem(event: CalendarEvent, modifier: Modifier) {
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    lineHeight = 20.sp
+                    lineHeight = 20.sp,
+                    color = Color.White
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

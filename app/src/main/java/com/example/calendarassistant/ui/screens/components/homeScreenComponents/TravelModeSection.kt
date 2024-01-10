@@ -81,7 +81,8 @@ fun TravelModeCard(
             Icon(
                 modifier = Modifier.fillMaxSize(sizeFraction),
                 painter = painterResource(id = iconId),
-                contentDescription = travelMode.name
+                contentDescription = travelMode.name,
+                tint = Color.White
             )
         }
     }
