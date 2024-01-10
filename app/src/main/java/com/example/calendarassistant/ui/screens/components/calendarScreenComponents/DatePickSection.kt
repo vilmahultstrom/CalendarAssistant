@@ -152,7 +152,7 @@ fun ClickableScroller(
                                 onSelectionChanged(items.get(newIndex.toInt()).toInt()) // Call the ViewModel method to update UI based on the new index
                             }else{
                                 //months, mars, february etc
-                                onSelectionChanged(newIndex.toInt()) // Call the ViewModel method to update UI based on the new index
+                                onSelectionChanged(newIndex.toInt() +1) // months are 0,1,2,3,4 so I do +1 to increase it to 1,2,3,4,5  etc.  Call the ViewModel method to update UI based on the new index
                             }
                             //Call VM to update UI based on the new index
                         },
