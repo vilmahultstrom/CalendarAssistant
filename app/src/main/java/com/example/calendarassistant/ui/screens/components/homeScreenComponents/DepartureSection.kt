@@ -85,6 +85,7 @@ fun DepartureSection(
         }
         TravelInformationExpandableSection(
             travelInfo = uiState,
-            departureInfo = departureInfo)
+            departureInfo = departureInfo
+        )
     }
 }

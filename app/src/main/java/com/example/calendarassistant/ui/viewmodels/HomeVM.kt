@@ -44,6 +44,8 @@ class HomeVM @Inject constructor(
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
     val calendars = _calendars.asStateFlow()
 
+    private var isFetchingLocationData: Boolean = false
+
     private val _startServiceAction = mutableStateOf<com.example.calendarassistant.utilities.Event<String>?>(null)
     val startServiceAction: State<com.example.calendarassistant.utilities.Event<String>?> = _startServiceAction
 
@@ -89,7 +91,7 @@ class HomeVM @Inject constructor(
         var totalEvents = 0
         val events = mutableListOf<CalendarEvent>()
         for(calendar in calendars.value) {
-            for (event in calendar.calendarEvents){
+            for (event in calendar.calendarEvents) {
                 totalEvents++
                 if (event.location != null) {
                     events.add(event)
@@ -104,7 +106,6 @@ class HomeVM @Inject constructor(
     private fun List<CalendarEvent>.sortedByStartTime(): List<CalendarEvent> {
         return this.sortedWith(compareBy { it.startDateTime ?: it.startDate })
     }
-
 
     private fun startLocationService() {
         _startServiceAction.value =
@@ -123,7 +124,7 @@ class HomeVM @Inject constructor(
 
 /*    private fun fetchTravelInformation() {
         viewModelScope.launch {
-            networkService.getTravelInformation(_uiState.value.travelMode, it.startDateTime) // TODO: ändra till valda TravelMode
+            networkService.getTravelInformation(_uiState.value.travelMode, it.startDateTime)
         }
     }*/
 
@@ -163,8 +164,11 @@ class HomeVM @Inject constructor(
             calendarService.getUpcomingEventsForOneWeek()
 
 
-
             launch {
+                _startServiceAction.value = com.example.calendarassistant.utilities.Event(
+                    LocationService.ACTION_GET
+                ) // Inits and collects location info
+
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
                     _firstEventWithLocation.value = it
@@ -189,7 +193,10 @@ class HomeVM @Inject constructor(
                         )
                     }
                     // This updates the time left, could maybe ge done by internal timer
-                    networkService.getTravelInformation(_uiState.value.travelMode, Calendars.firstEventWithLocation.value)
+                    networkService.getTravelInformation(
+                        _uiState.value.travelMode,
+                        Calendars.firstEventWithLocation.value
+                    )
                 }
             }
 
@@ -197,15 +204,17 @@ class HomeVM @Inject constructor(
             launch {
                 TravelInformation.getNextEventTravelInformation().collect { next: TravelInformationData ->
                     Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(travelInformationData = next) }
+                    _uiState.update { currentState ->
+                        currentState.copy(travelInformationData = next)
+                    }
 
                     // Used for scheduling alarms based on next departure time
 //                    Log.d("AlarmScheduler", "next.deptime: ${next.departureTime}")
 //                    Log.d("AlarmScheduler", "next.deptimeHHMM: ${next.departureTimeHHMM.hhmmDisplay}")
                     //next.departureTimeHHMM.hhmmDisplay?.let { scheduleAlarmsForEvents(it) }
                 }
-
             }
+
             viewModelScope.launch {
                 Calendars.calendarList.collect { calendarEvents ->
                     _calendars.value = calendarEvents
@@ -226,8 +235,8 @@ class HomeVM @Inject constructor(
                             )
                         }
                     }
-            }
 
+            }
         }
     }
 }

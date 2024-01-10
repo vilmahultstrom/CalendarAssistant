@@ -1,5 +1,6 @@
 package com.example.calendarassistant.utilities
 
+import android.util.Log
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -7,6 +8,7 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.format.FormatStyle
 import java.util.Locale
 import kotlin.math.absoluteValue
@@ -20,6 +22,7 @@ data class TimeToLeaveDisplay (
 
 
 object DateHelpers {
+
     fun getCurrentMonthDates(date: LocalDate): List<String> {
         val yearMonth = YearMonth.of(date.year, date.month)
         val daysInMonth = yearMonth.lengthOfMonth()
@@ -82,7 +85,7 @@ object DateHelpers {
         return ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
     }
 
-    fun zonedDateTimeToShortFormat(zonedDateTime: ZonedDateTime) : String{
+    fun zonedDateTimeToShortFormat(zonedDateTime: ZonedDateTime) : String {
         val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
             .withLocale(Locale.ENGLISH)
         return formatter.format(zonedDateTime)
@@ -91,6 +94,23 @@ object DateHelpers {
     fun googleTimeToHoursMinutes(timeString: String): String {
         val zonedDateTime = ZonedDateTime.parse(timeString)
         return zonedDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+    }
+
+    fun formatSecondsToDateTimeString(seconds: Int?): String {
+        val instant = seconds?.let { Instant.ofEpochSecond(it.toLong()) }
+        val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        return localDateTime.format(formatter)
+    }
+
+    fun formatDateTimeStringToUnix(timestamp: String?): Long {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        return try {
+            LocalDateTime.parse(timestamp, formatter).atZone(ZoneId.systemDefault()).toEpochSecond()
+        } catch (e: DateTimeParseException) {
+            Log.e(TAG, "Error parsing timestamp from Date Time String to Unix: ${e.message}")
+            return 0
+        }
     }
 }
 
