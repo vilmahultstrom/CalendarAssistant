@@ -40,7 +40,6 @@ import javax.inject.Inject
 
 private const val TAG = "MainActivity"
 
-// TODO: Remove rotation
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
