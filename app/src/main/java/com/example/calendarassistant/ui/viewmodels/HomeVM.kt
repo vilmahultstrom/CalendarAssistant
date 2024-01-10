@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.data.AndroidAlarmScheduler
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.model.calendar.Calendar
@@ -19,7 +20,6 @@ import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.services.NetworkService
-import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +34,8 @@ private const val TAG = "HomeVM"
 class HomeVM @Inject constructor(
     private val calendarService: CalendarService,
     private val networkService: NetworkService,
-    private val googleAuthClient: GoogleAuthClient
+    private val googleAuthClient: GoogleAuthClient,
+    private val alarmScheduler: AndroidAlarmScheduler
 ): ViewModel()  {
 
     private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf())
@@ -133,7 +134,15 @@ class HomeVM @Inject constructor(
             networkService.getTravelInformation(mode, Calendars.firstEventWithLocation.value)
         }
     }
+    private fun scheduleAlarmsForEvents(startDate: String) {
+        alarmScheduler.scheduleAlarmForEvent(startDate)
+    }
 
+    private fun scheduleAlarmsForEvents(calendarEvents: List<CalendarEvent>) {
+        calendarEvents.forEach { calendarEvent ->
+            alarmScheduler.scheduleAlarmForEvent(calendarEvent)
+        }
+    }
 
     init {
         viewModelScope.launch {
@@ -150,9 +159,6 @@ class HomeVM @Inject constructor(
                     networkService.getTravelInformation(_uiState.value.travelMode, it) // fetches data
                     networkService.getDeviationInformation()
                 }
-
-
-
             }
 
             /**
@@ -180,13 +186,21 @@ class HomeVM @Inject constructor(
                 TravelInformation.getNextEventTravelInformation().collect { next: TravelInformationData ->
                     Log.d(TAG, "Collecting: $next")
                     _uiState.update { currentState -> currentState.copy(travelInformationData = next) }
+
+                    // Used for scheduling alarms based on next departure time
+//                    Log.d("AlarmScheduler", "next.deptime: ${next.departureTime}")
+//                    Log.d("AlarmScheduler", "next.deptimeHHMM: ${next.departureTimeHHMM.hhmmDisplay}")
+                    //next.departureTimeHHMM.hhmmDisplay?.let { scheduleAlarmsForEvents(it) }
                 }
+
             }
-            launch {
-                Calendars.calendarList.collect {
-                    _calendars.value = it
+            viewModelScope.launch {
+                Calendars.calendarList.collect { calendarEvents ->
+                    _calendars.value = calendarEvents
                     getAllEventsWithLocationFromCalendars()
-                    
+
+                    // Set alarm 2 hours before each event that is loaded (unused)
+                   //scheduleAlarmsForEvents(_eventsWithLocation.value)
                 }
             }
 

@@ -33,17 +33,13 @@ object Calendars {
     private val _calendarList = MutableStateFlow<List<Calendar>>(listOf())
     val calendarList = _calendarList.asStateFlow()
 
-
     private val _firstEventWithLocation = MutableStateFlow<CalendarEvent?>(null)
     val firstEventWithLocation = _firstEventWithLocation.asStateFlow()
-
 
     fun setCalendarList(calendarList: List<Calendar>){
         _calendarList.value = calendarList
         _firstEventWithLocation.value = setFirstEventWithLocation()
     }
-
-
 
     private fun setFirstEventWithLocation(): CalendarEvent? {
         if (_calendarList.value.isEmpty()) return null
@@ -63,13 +59,9 @@ object Calendars {
         return sortedList.first()
     }
 
-
-
     private fun List<CalendarEvent>.sortedByStartTime(): List<CalendarEvent> {
         return this.sortedWith(compareBy { it.startDateTime ?: it.startDate })
     }
-
-
     
 }
 
