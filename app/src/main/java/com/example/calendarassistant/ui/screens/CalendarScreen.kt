@@ -41,7 +41,7 @@ fun CalendarScreen(
             .fillMaxSize()
         ) {
             InformationSection("Daily overview", specificDate.toString(), modifier = Modifier.weight(.1f))
-            DatePickSection(dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString(), modifier = Modifier.weight(.3f))
+            DatePickSection(dates = daysInMonth, startIndex = (specificDate.dayOfMonth - 1).toString(), vm= vm, modifier = Modifier.weight(.3f))
             EventsSection(events, modifier = Modifier.weight(.6f))
         }
         BottomMenu(

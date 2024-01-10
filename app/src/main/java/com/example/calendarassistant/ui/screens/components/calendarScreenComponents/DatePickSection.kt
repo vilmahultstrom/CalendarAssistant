@@ -36,12 +36,14 @@ import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.theme.TealButton
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.CalendarVM
 import java.time.LocalDate
 
 @Composable
 fun DatePickSection(
     dates: List<String>,
     startIndex: String,
+    vm: CalendarVM,
     modifier: Modifier = Modifier
 ) {
     // TODO: Replace year logic with LocalDate.now() logic in backend to calculate last year, current year + 5 years onwards or something
@@ -57,6 +59,7 @@ fun DatePickSection(
                 items = months,
                 startIndex = "0", // TODO: Change with logic from backend
                 verticalScroll = true,
+                onSelectionChanged = vm::updateSelectedMonthIndex,
                 modifier = Modifier
                     .width(180.dp)
             )
@@ -65,6 +68,7 @@ fun DatePickSection(
                 items = years,
                 startIndex = "0", // TODO: Change with logic from backend
                 verticalScroll = true,
+                onSelectionChanged = vm::updateSelectedYearIndex,
                 modifier = Modifier
                     .width(250.dp)
             )
@@ -75,6 +79,7 @@ fun DatePickSection(
                 items = dates,
                 startIndex = startIndex,
                 verticalScroll = false,
+                onSelectionChanged = vm::updateSelectedDayIndex,
                 modifier = Modifier
             )
         }
@@ -86,6 +91,7 @@ fun ClickableScroller(
     items: List<String>,
     startIndex: String,
     verticalScroll: Boolean,
+    onSelectionChanged: (Int) -> Unit, // Pass the index back to the caller
     modifier: Modifier
 ) {
     var selectedDateIndex by remember { mutableStateOf(startIndex) }
@@ -119,7 +125,7 @@ fun ClickableScroller(
                         selectedDateIndex,
                         onSelect = { newIndex ->
                             selectedDateIndex = newIndex
-                            // TODO: Call VM to update UI based on the new index
+                            onSelectionChanged(newIndex.toInt()) // Call the ViewModel method to update UI based on the new index
                         },
                         horizontal = true,
                         modifier=Modifier

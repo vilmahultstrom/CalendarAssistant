@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 private const val TAG = "CalendarVM"
@@ -38,11 +39,48 @@ private const val TAG = "CalendarVM"
 class CalendarVM @Inject constructor(private val calendarService: CalendarService
 ): ViewModel() {
 
-    private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf())
+    private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf()) //events
     val eventsWithLocation = _eventsWithLocation.asStateFlow()
 
-    private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
+    private val _calendars = MutableStateFlow<List<Calendar>>(listOf()) //calendars
     val calendars = _calendars.asStateFlow()
+
+    // which day, month, year was selected on screen:
+    private val _selectedMonthIndex = MutableStateFlow(LocalDate.now().monthValue)
+    private val _selectedDayIndex = MutableStateFlow(LocalDate.now().dayOfMonth) // Note: monthValue is 1-12 for January-December
+    private val _selectedYearIndex = MutableStateFlow(LocalDate.now().year)
+
+    val selectedMonthIndex: StateFlow<Int> = _selectedMonthIndex
+    val selectedDayIndex: StateFlow<Int> = _selectedDayIndex
+    val selectedYearIndex: StateFlow<Int> = _selectedYearIndex
+
+    // Methods to update the selected values
+    fun updateSelectedMonthIndex(newIndex: Int) {
+        _selectedMonthIndex.value = newIndex
+        fetchEventsForSelectedDay()
+        Log.d(TAG, newIndex.toString())
+    }
+
+    fun updateSelectedDayIndex(newIndex: Int) {
+        _selectedDayIndex.value = newIndex +1
+        fetchEventsForSelectedDay()
+        Log.d(TAG, newIndex.toString())
+    }
+
+    fun updateSelectedYearIndex(newIndex: Int) {
+        _selectedYearIndex.value = newIndex
+        fetchEventsForSelectedDay()
+        Log.d(TAG, newIndex.toString())
+    }
+
+
+    /**
+     * hämtar alla events för den dagen som har blivit vald på skärmen
+     */
+    private fun fetchEventsForSelectedDay(){
+        val date: LocalDate = LocalDate.of(_selectedYearIndex.value, _selectedMonthIndex.value, _selectedDayIndex.value)
+        calendarService.getUpcomingEventsForOneDay(date)
+    }
 
     /**
      *  Testar att få in alla events med platsdata

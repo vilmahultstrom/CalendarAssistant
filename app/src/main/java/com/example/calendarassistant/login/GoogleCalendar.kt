@@ -61,6 +61,20 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
         }
     }
 
+    fun getUpcomingEventsOneDayFromStartDate(email: String, startDate: LocalDate) {
+        // Convert startDate (LocalDate) to java.util.Date at the start of the day
+        val startDateUtilDate = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        // Convert startDate to com.google.api.client.util.DateTime
+        val startDateTime = DateTime(startDateUtilDate)
+        // Calculate the next day
+        val nextDay = startDate.plusDays(1)
+        val nextDayUtilDate = Date.from(nextDay.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        // Convert nextDay to com.google.api.client.util.DateTime
+        val nextDayDateTime = DateTime(nextDayUtilDate)
+        // Now fetch events between startDateTime and nextDayDateTime
+        getUpcomingEvents(email, startDateTime, nextDayDateTime)
+    }
+
     fun getUpcomingEventsOneDayFromToday(email: String) {
         val now = com.google.api.client.util.DateTime(System.currentTimeMillis())
         val nowDate = Date(now.value) // Convert to java.util.Date
@@ -81,6 +95,9 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
     }
 
 
+    /**
+     * retreives events with email-adress, startdate for the events, end-date for the events
+     */
         fun getUpcomingEvents(email: String, startDate:DateTime, endDate:DateTime) {
         val calendarService = getCalendarService(email)
         CoroutineScope(Dispatchers.IO).launch {
