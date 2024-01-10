@@ -57,11 +57,12 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-//        val googleAuthClient by lazy {
-//            GoogleAuthClient(
-//                context = applicationContext,
-//                signInClient = Identity.getSignInClient(applicationContext)
-//            )
+        val googleAuthClient by lazy {
+            GoogleAuthClient(
+                context = applicationContext,
+                signInClient = Identity.getSignInClient(applicationContext)
+            )
+        }
 
         ActivityCompat.requestPermissions(
             this,
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
             0
         )
 
-
+        val isLoggedIn = googleAuthClient.getSignedInUser() != null
 
         setContent {
             CalendarAssistantTheme {
@@ -87,7 +88,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = BMRoutes.Settings.route
+                        startDestination = if(isLoggedIn) BMRoutes.Home.route else BMRoutes.Settings.route
                     ) {
                         composable(BMRoutes.Home.route) {
                             HomeScreen(vm = homeVM, navController)
