@@ -36,8 +36,7 @@ import com.example.calendarassistant.ui.screens.components.homeScreenComponents.
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.homeScreenComponents.ExpandableTravelInformationSection
-import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelInformationSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelInformationExpandableSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelModeSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
@@ -97,8 +96,10 @@ fun HomeScreen(
                         departureInfo = departureInfo,
                         //onClick = {}
                     )
-
-                    ExpandableTravelInformationSection(travelInfo = uiState) // TODO: Fixa denna för lite info om resa!!
+                    TravelInformationExpandableSection(
+                        travelInfo = uiState,
+                        departureInfo = departureInfo
+                    ) // TODO: Fixa denna för lite info om resa!!
                 }
 
                 ButtonSection()

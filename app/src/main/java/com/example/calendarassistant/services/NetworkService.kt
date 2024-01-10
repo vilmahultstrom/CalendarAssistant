@@ -9,7 +9,7 @@ import com.example.calendarassistant.model.mock.travel.DeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
 import com.example.calendarassistant.model.mock.travel.MockTravelInformation
 import com.example.calendarassistant.network.GoogleApi
-import com.example.calendarassistant.network.SlLookUpApi
+import com.example.calendarassistant.network.SlNearbyStopsApi
 import com.example.calendarassistant.network.SlRealTimeApi
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
 import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
@@ -202,13 +202,50 @@ class NetworkService : INetworkService {
      */
     override suspend fun getDeviationInformation() {
         try {
-            transitSteps.map { step ->
+            /*transitSteps.map { step ->
                 val realTimeData = fetchRealTimeDataForStep(step)
                 transitStepsDeviations.add(compareStepWithRealTimeData(step, realTimeData))
             }
 
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
+            )*/
+
+            val mockTransitStepsDeviations = listOf(
+                DeviationInformation(
+                    delayInMinutes = 5,
+                    deviations = listOf(
+                        Deviation(
+                            text = "Förseningar pga halt väglag",
+                            consequence = "INFORMATION",
+                            importanceLevel = 7
+                        )
+                    )
+                ),
+                DeviationInformation(
+                    delayInMinutes = 10,
+                    deviations = listOf(
+                        Deviation(
+                            text = "Förseningar pga halt väglag",
+                            consequence = "INFORMATION",
+                            importanceLevel = 7
+                        ),
+                        Deviation(
+                            text = "Stora mossen: Hissen är avstängd pga tekniskt fel. Hänvisning till angränsande stationer eller tillgänglighetsgarantin",
+                            consequence = null,
+                            importanceLevel = 2
+                        )
+                    )
+                ),
+                DeviationInformation(
+                    delayInMinutes = 0,
+                    deviations = emptyList()
+                )
+            )
+
+            // Använd mockTransitStepsDeviations i din funktion
+            MockDeviationInformation.setTransitDeviationInformation(
+                transitStepsDeviations = mockTransitStepsDeviations
             )
 
         } catch (e: Exception) {
@@ -219,21 +256,38 @@ class NetworkService : INetworkService {
     private suspend fun fetchRealTimeDataForStep(step: Steps): SlRealtimeDataResponse {
         // Fetch real-time data from SL API using the step information
 
-        val stationName = step.transitDetails?.departureStop?.name
-            ?: return SlRealtimeDataResponse()
+        val originLat = step.transitDetails?.departureStop?.location?.lat.toString()
+        val originLng = step.transitDetails?.departureStop?.location?.lng.toString()
 
+        val siteIdResponse = SlNearbyStopsApi.getSiteIdByCoordinates(originLat, originLng)
+        if (!siteIdResponse.isSuccessful) {
+            throw INetworkService.NetworkException("Unsuccessful network call to SL Nearby Stops api")
+        }
+        /*
+        val stationName = step.transitDetails?.departureStop?.name ?: return SlRealtimeDataResponse()
         val siteIdResponse = SlLookUpApi.getSiteIdByStationName(stationName)
         if (!siteIdResponse.isSuccessful) {
             throw INetworkService.NetworkException("Unsuccessful network call to SL LookUp api")
-        }
+        }*/
 
-        val siteId = siteIdResponse.body()?.responseData?.firstOrNull()?.siteId
-            ?: return SlRealtimeDataResponse()
+
+        // Extract the 4 last characters from the mainMastExtId
+        val siteId = siteIdResponse.body()?.stopLocationOrCoordLocation?.firstOrNull()
+            ?.stopLocation?.mainMastExtId?.takeLast(4) ?: return SlRealtimeDataResponse()
+
+        Log.d(TAG, "site id: $siteId")
 
         val realTimeDataResponse = SlRealTimeApi.getRealtimeDataBySiteId(siteId)
         if (!realTimeDataResponse.isSuccessful) {
             throw INetworkService.NetworkException("Unsuccessful network call to SL RealTime api")
         }
+
+        Log.d(TAG, "station name: ${realTimeDataResponse.body()?.responseData?.buses?.find { 
+            ((((it.lineNumber == step.transitDetails?.line?.shortName) && 
+                    (it.destination == step.transitDetails?.headsign) && 
+                    (areTimesSimilar(it.timeTabledDateTime.toString(), 
+                        formatSecondsToDateTimeString(step.transitDetails?.departureTime?.value))))))
+        }}")
 
         return realTimeDataResponse.body() ?: SlRealtimeDataResponse()
     }
@@ -259,75 +313,87 @@ class NetworkService : INetworkService {
     }
 
     private fun findRealTimeData(
-        transportMode: String,
-        lineShortName: String?,
-        headSign: String?,
-        scheduledDepartureTime: Int?,
+        transportModeGoogle: String,
+        lineShortNameGoogle: String?,
+        headSignGoogle: String?,
+        scheduledDepartureTimeGoogle: Int?,
         realTimeData: SlRealtimeDataResponse
     ): DeviationInformation {
 
         Log.d(TAG, realTimeData.toString())
 
-        val realDepartureTime: String?
+        val scheduledDepartureTimeSl: String?
+        val expectedDepartureTimeSl: String?
         val deviations: List<Deviation>
 
         /**
          * Ensures that the line number, scheduled departure time, ... from the Google Directions API matches
          * with the line number, ..., ... in the SL Real-Time API.
          */
-        when (transportMode) {
+        when (transportModeGoogle) {
             "BUS" -> {
                 val busData = realTimeData.responseData?.buses?.find {
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                    ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
-                realDepartureTime = busData?.expectedDateTime
+                scheduledDepartureTimeSl = busData?.timeTabledDateTime
+                expectedDepartureTimeSl = busData?.expectedDateTime
                 deviations = convertDeviations(busData?.deviations)
             }
             "SUBWAY" -> {
                 val metroData = realTimeData.responseData?.metros?.find {
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                    ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                                formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                                formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
-                realDepartureTime = metroData?.expectedDateTime
+                scheduledDepartureTimeSl = metroData?.timeTabledDateTime
+                expectedDepartureTimeSl = metroData?.expectedDateTime
                 deviations = convertDeviations(metroData?.deviations)
             }
             "TRAIN" -> {
                 val trainData = realTimeData.responseData?.trains?.find {
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                    ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
-                realDepartureTime = trainData?.expectedDateTime
+                scheduledDepartureTimeSl = trainData?.timeTabledDateTime
+                expectedDepartureTimeSl = trainData?.expectedDateTime
                 deviations = convertDeviations(trainData?.deviations)
             }
             "TRAM" -> {
                 val tramData = realTimeData.responseData?.trams?.find {
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                    ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
-                realDepartureTime = tramData?.expectedDateTime
+                scheduledDepartureTimeSl = tramData?.timeTabledDateTime
+                expectedDepartureTimeSl = tramData?.expectedDateTime
                 deviations = convertDeviations(tramData?.deviations)
             }
             "SHIP" -> {
                 val shipData = realTimeData.responseData?.ships?.find {
-                    ((((it.lineNumber == lineShortName) && (it.destination == headSign)
+                    ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTime))))))
+                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
-                realDepartureTime = shipData?.expectedDateTime
+                scheduledDepartureTimeSl = shipData?.timeTabledDateTime
+                expectedDepartureTimeSl = shipData?.expectedDateTime
                 deviations = convertDeviations(shipData?.deviations)
             }
             else -> {
-                realDepartureTime = null
+                scheduledDepartureTimeSl = null
+                expectedDepartureTimeSl = null
                 deviations = emptyList()
             }
         }
 
-        val delayInMinutes = calculateDelay(scheduledDepartureTime, realDepartureTime)
+        val delayAbsInMinutes = calculateMaxDelay(
+            scheduledDepartureTimeGoogle, scheduledDepartureTimeSl, expectedDepartureTimeSl
+        )
+        val delayInMinutes = calculateDelay(scheduledDepartureTimeGoogle, expectedDepartureTimeSl)
+        Log.d(TAG, "DELAY JÄMFÖRELSE: delayAbsInMinutes: $delayAbsInMinutes " +
+                " || delayInMinutes: $delayInMinutes")
         return DeviationInformation(delayInMinutes, deviations)
     }
 
@@ -354,16 +420,40 @@ class NetworkService : INetworkService {
         } ?: emptyList()
     }
 
-    private fun calculateDelay(scheduledTime: Int?, actualTime: String?): Int {
-        if (scheduledTime == null || actualTime == null) return 0
+    private fun calculateDelay(scheduledTime: Int?, expectedTime: String?): Int { // TODO: DELETE EN AV DESSA
+        if (scheduledTime == null || expectedTime == null) return 0
 
         // Parse the actual time (expectedDateTime) to a Unix timestamp
-        val actualDateTime = formatDateTimeStringToUnix(actualTime)
+        val actualDateTime = formatDateTimeStringToUnix(expectedTime)
 
         // Calculate the delay in seconds
         val delayInSeconds = actualDateTime - scheduledTime
         // Convert the delay to minutes
-        return (delayInSeconds / 60).toInt() + 2 //TODO: TA BORT "+ 2", MOCK DELAY !!!!!
+        return (delayInSeconds / 60).toInt()
+    }
+
+    private fun calculateMaxDelay( // TODO: DELETE EN AV DESSA
+        scheduledTimeGoogle: Int?,
+        scheduledTimeSl: String?,
+        expectedTimeSl: String?
+    ): Int {
+        if (expectedTimeSl == null) return 0
+
+        val expectedTimeUnixSl = formatDateTimeStringToUnix(expectedTimeSl)
+        var maxDelayInSeconds = 0L
+
+        scheduledTimeSl?.let {
+            val scheduledTimeUnixSl = formatDateTimeStringToUnix(it)
+            maxDelayInSeconds = maxOf(maxDelayInSeconds, expectedTimeUnixSl - scheduledTimeUnixSl)
+        }
+
+        scheduledTimeGoogle?.let {
+            maxDelayInSeconds = maxOf(maxDelayInSeconds, expectedTimeUnixSl - it)
+        }
+
+        // Convert the delay to minutes
+        // Only positive values are considered delays
+        return if (maxDelayInSeconds > 0) (maxDelayInSeconds / 60).toInt() else 0
     }
 
     private fun formatSecondsToDateTimeString(seconds: Int?): String { //TODO: flytta till utilities

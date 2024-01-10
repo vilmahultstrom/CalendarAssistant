@@ -9,6 +9,7 @@ object Retrofit {
     private const val BASE_URL_TRAFIKVERKET = "https://api.trafikinfo.trafikverket.se"
     private const val BASE_URL_GOOGLE_MAPS = "https://maps.googleapis.com"
     private const val BASE_URL_SL_REALTIME = "https://api.sl.se/"
+    private const val BASE_URL_SL_NEARBY_STOPS = "https://journeyplanner.integration.sl.se/"
     private const val BASE_URL_SL_LOOK_UP = "https://journeyplanner.integration.sl.se/"
 
 
@@ -29,6 +30,13 @@ object Retrofit {
     val slRealtimeInstance: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL_SL_REALTIME)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val slNearbyStopsInstance: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_SL_NEARBY_STOPS)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

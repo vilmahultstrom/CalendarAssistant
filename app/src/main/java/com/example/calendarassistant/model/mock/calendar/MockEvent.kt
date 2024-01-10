@@ -14,7 +14,7 @@ object MockEvent {
             start = ZonedDateTime.now(ZoneId.of("Z")).plusMinutes(60)//300)
                 .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             summary = "Föreläsning - Mjukvarukonstruktion, projektkurs (HI1036)",
-            location = "flemingsberg" //"T67 Hälsovägen"
+            location = "slussen hornsgatan" //"T67 Hälsovägen"
         ),
         MockCalendarEvent(
             start = ZonedDateTime.now(ZoneId.of("Z")).plusHours(6)
