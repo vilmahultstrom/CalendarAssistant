@@ -52,6 +52,7 @@ class NetworkService : INetworkService {
 
     /**
      *  Makes api call to Google directions and updates the next event info
+     *  Parameters are mode of travel and a calendar event with a non null location
      */
     override suspend fun getTravelInformation(travelMode: TravelMode, calendarEvent: CalendarEvent?) {
         try {
@@ -62,12 +63,12 @@ class NetworkService : INetworkService {
             // Gets the next event happening from the mock calendar
             //val nextEvent = getNextCalendarEvent()
 
+
+            // Checks if next location is a Kth lecture hall only for demonstration purposes
             var location = KthMapper.map(calendarEvent.location)
             if (location == null) {
                 location = calendarEvent.location
             }
-
-            Log.d(TAG, location)
 
 
             // Sets arrival time for google directions to the event start-time
@@ -81,10 +82,15 @@ class NetworkService : INetworkService {
                 travelMode
             )
 
-            Log.d(TAG, "Response: $response")
 
-            Log.d(TAG, response.routes.first().legs.first().arrivalTime.toString())
-            Log.d(TAG, response.routes.first().legs.first().duration.toString())
+            if (response.status == null){
+                throw INetworkService.NetworkException("Google response was null")
+            } else if (response.status == "NOT_FOUND"){
+                throw INetworkService.NetworkException("No directions found")
+            }
+
+
+
             if (travelMode == TravelMode.Transit) {
                 processGoogleDirectionsResponse(response)
             } else {
@@ -128,22 +134,17 @@ class NetworkService : INetworkService {
         return response.body()!!
     }
 
+
+    /**
+     *  Start time is in unixTime
+     */
     private suspend fun processNonTransitResponse(response: GoogleDirectionsResponse, startTime: Long) {
         val legs = response.routes.first().legs.first()
         val travelDuration = legs.duration
 
-        //val firstEvent = MockEvent.getMockEvents().first()      // TODO: real event
-        //val firstEventStartLocalTime = DateHelpers.convertToSystemTimeZone(firstEvent.start)!!.toEpochSecond()
         val travelTime = travelDuration!!.value!!
         val leaveAtUnixTime = startTime.minus(travelTime)
         val leaveAtZonedDateTime = DateHelpers.unixTimeToLocalZonedDateTime(leaveAtUnixTime)
-        //val firstEventStartLocalTimeZone = DateHelpers.unixTimeToLocalZonedDateTime(firstEventStartLocalTime)
-
-
-        // Log.d(TAG, "Next event starts: $firstEventStartLocalTimeZone")
-        // Log.d(TAG, "Leave in: " + DateHelpers.formatSecondsToHourMinutes(leaveAtUnixTime - DateHelpers.getLocalTimeInUnixTime()))
-        // Log.d(TAG, "Leave at (Local Time): ${DateHelpers.zonedDateTimeToShortFormat(leaveAtZonedDateTime)}")
-
 
         val endLocation = legs.endLocation
         val departureTime = DepartureTime(
@@ -151,10 +152,6 @@ class NetworkService : INetworkService {
             timeZone = ZoneId.systemDefault().id,
             value = leaveAtUnixTime.toInt()
         )
-
-
-        Log.d(TAG, departureTime.toString())
-
 
         updateTravelInformation(departureTime = departureTime, endLocation = endLocation)
     }
