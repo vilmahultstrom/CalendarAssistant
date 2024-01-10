@@ -1,21 +1,11 @@
 package com.example.calendarassistant.ui.viewmodels
 
 import android.app.Activity.RESULT_OK
-import android.app.Application
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
-import androidx.activity.result.IntentSenderRequest
-import androidx.core.app.NotificationCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
-import com.example.calendarassistant.R
-import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
@@ -63,7 +53,7 @@ class SettingsVM @Inject constructor(
             if (resultCode == RESULT_OK && data != null) {
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 Log.d(TAG, signInResult.data.toString())
-                calendarService.getUpcomingEvents()
+                calendarService.getUpcomingEventsForOneWeek()
             } else {
                 Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
             }

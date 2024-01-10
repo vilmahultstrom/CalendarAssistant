@@ -68,7 +68,7 @@ class HomeVM @Inject constructor(
 
     // Start fetching gps data
     fun onStartServiceClicked() {
-        calendarService.getUpcomingEvents()
+        calendarService.getUpcomingEventsForOneDay()
         if (!_uiState.value.isFetchingLocationData) {
             startLocationService()
         } else {
@@ -139,7 +139,7 @@ class HomeVM @Inject constructor(
         viewModelScope.launch {
             // Coroutine for getting location at start up
 
-            calendarService.getUpcomingEvents()
+            calendarService.getUpcomingEventsForOneDay()
             _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_START) // Starts gps collection
             _uiState.update { it.copy(isFetchingLocationData = true) }
 

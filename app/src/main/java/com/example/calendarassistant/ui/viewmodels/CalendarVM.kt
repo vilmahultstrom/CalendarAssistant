@@ -32,10 +32,6 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
     private val _selectedDayIndex = MutableStateFlow(LocalDate.now().dayOfMonth) // Note: monthValue is 1-12 for January-December
     private val _selectedYearIndex = MutableStateFlow(LocalDate.now().year)
 
-    val selectedMonthIndex: StateFlow<Int> = _selectedMonthIndex
-    val selectedDayIndex: StateFlow<Int> = _selectedDayIndex
-    val selectedYearIndex: StateFlow<Int> = _selectedYearIndex
-
     // Methods to update the selected values
     fun updateSelectedMonthIndex(newIndex: Int) {
         _selectedMonthIndex.value = newIndex
@@ -94,7 +90,7 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
         viewModelScope.launch {
             // Coroutine for getting location at start up
             launch {
-                calendarService.getUpcomingEvents()
+                calendarService.getUpcomingEventsForOneDay()
             }
             launch {
                 Calendars.calendarList.collect {
