@@ -1,20 +1,26 @@
 package com.example.calendarassistant.ui.viewmodels
 
 import android.app.Activity.RESULT_OK
+import android.app.Application
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
 import androidx.activity.result.IntentSenderRequest
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.R
 import com.example.calendarassistant.login.GoogleCalendar
 import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
 import com.example.calendarassistant.services.CalendarService
+import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,16 +36,19 @@ private const val TAG = "SettingsVm"
 @HiltViewModel
 class SettingsVM @Inject constructor(
     private val googleAuthClient: GoogleAuthClient,
-    private val calendarService: CalendarService
+    private val calendarService: CalendarService,
+    private val notificationHelper: NotificationHelper
 ) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
     val signInState = _signInState.asStateFlow()
 
-
-
     private val _signInIntentSender = MutableSharedFlow<IntentSender?>(replay = 1)
     val signInIntentSender: SharedFlow<IntentSender?> = _signInIntentSender.asSharedFlow()
+
+    fun showNotification(title: String, contentText: String) {
+        notificationHelper.showNotification(title, contentText)
+    }
 
     fun signIn() {
         viewModelScope.launch {

@@ -22,10 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import com.example.calendarassistant.R
+import com.example.calendarassistant.ui.viewmodels.SettingsVM
 
 @Composable
-fun NotificationSettingsSection() {
+fun NotificationSettingsSection(
+    vm: SettingsVM
+) {
     val context = LocalContext.current
     var hasNotificationPermission by remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -37,40 +41,30 @@ fun NotificationSettingsSection() {
             )
         } else mutableStateOf(true)
     }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val launcher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                hasNotificationPermission = isGranted
-            }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            hasNotificationPermission = isGranted
+        }
+    )
+    if (!hasNotificationPermission) {
+        SettingButton(
+            text = "Allow notifications",
+            onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            },
+            painterId = R.drawable.baseline_no_adult_content_24
         )
-        Button(onClick = {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }) {
-            Text(text = "Allow notifications")
-        }
-        Button(onClick = {
-            if(hasNotificationPermission) {
-                showNotification(context)
-            }
-        }) {
-            Text(text = "Show test notification")
-        }
     }
-}
-
-private fun showNotification(applicationContext: Context) {
-    val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    val notification = NotificationCompat.Builder(applicationContext, "channel_id")
-        .setSmallIcon(R.drawable.ic_launcher_foreground)
-        .setContentTitle("Hello world")
-        .setContentText("This is a description")
-        .build()
-    notificationManager.notify(1, notification)
+    SettingButton(
+        text = "Show test notification",
+        onClick = {
+            if (hasNotificationPermission) {
+                vm.showNotification("Hello World", "this is a test")
+            }
+        },
+        painterId = R.drawable.baseline_notifications_24
+    )
 }

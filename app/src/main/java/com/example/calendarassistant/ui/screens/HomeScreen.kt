@@ -36,6 +36,7 @@ import com.example.calendarassistant.ui.screens.components.homeScreenComponents.
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.DepartureSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.NextEventSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
+import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelInformationExpandableSection
 import com.example.calendarassistant.ui.screens.components.homeScreenComponents.TravelModeSection
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
@@ -47,13 +48,13 @@ private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
     vm: HomeVM,
-    navController: NavController
+    navController: NavController,
+
 ) {
     // For starting Gps tracking
     val context = LocalContext.current
     val startServiceAction by vm.startServiceAction
     gpsTracking(context, startServiceAction)
-
 
     //val intent = Intent(context, Signin::class.java)
     //context.startActivity(intent)
@@ -72,8 +73,10 @@ fun HomeScreen(
     ) {
 
         Column {
-
-            InformationSection()
+            val username = vm.getUsername()
+            InformationSection(
+                greeting = "Hello, $username"
+            )
 
             Column(
                 modifier = Modifier
@@ -96,8 +99,10 @@ fun HomeScreen(
                         departureInfo = departureInfo,
                         //onClick = {}
                     )
-
-                    //TravelInformationSection(travelInfo = uiState) // TODO: Fixa denna för lite info om resa!!
+                    TravelInformationExpandableSection(
+                        travelInfo = uiState,
+                        departureInfo = departureInfo
+                    ) // TODO: Fixa denna för lite info om resa!!
                 }
 
                 ButtonSection()

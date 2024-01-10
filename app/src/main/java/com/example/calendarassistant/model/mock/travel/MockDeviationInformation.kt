@@ -24,7 +24,8 @@ object MockDeviationInformation {
             )
         )
 
-        //_transitDeviations.value = transitStepsDeviations // TODO: vilket sätt borde man göra?
+        // TODO: på vilket sätt borde man göra?
+        //_transitDeviations.value = transitStepsDeviations
     }
 
     fun getNextTransitDeviationsInformation():

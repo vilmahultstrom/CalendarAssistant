@@ -10,7 +10,6 @@ data class Calendar(
     val calendarEvents: List<CalendarEvent>
 )
 
-
 data class CalendarInformation(
     val summary: String?,
     val id: String?,
@@ -33,19 +32,20 @@ data class CalendarEvent (
 )
 
 object Calendars {
-
-
     private val _calendarList = MutableStateFlow<List<Calendar>>(listOf())
     val calendarList = _calendarList.asStateFlow()
+
 
     private val _firstEventWithLocation = MutableStateFlow<CalendarEvent?>(null)
     val firstEventWithLocation = _firstEventWithLocation.asStateFlow()
 
 
 
+
     fun setCalendarList(calendarList: List<Calendar>){
         _calendarList.value = calendarList
     }
+
 
 
     fun getFirstEventWithLocation() {
@@ -65,8 +65,7 @@ object Calendars {
     }
 
 
-
-
+    
 }
 
 

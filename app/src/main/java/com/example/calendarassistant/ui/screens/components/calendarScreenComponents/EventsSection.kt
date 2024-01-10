@@ -52,6 +52,7 @@ fun EventsSection(events: List<MockCalendarEvent>) {
             Text(
                 text = "${events.size} Events",
                 style = MaterialTheme.typography.headlineSmall,
+                color = Color.White,
                 modifier = Modifier.padding(15.dp)
             )
         }

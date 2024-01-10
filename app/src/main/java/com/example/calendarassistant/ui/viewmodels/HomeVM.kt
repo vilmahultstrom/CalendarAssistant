@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
+import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInInterface
 import com.example.calendarassistant.model.calendar.Calendar
 import com.example.calendarassistant.model.calendar.CalendarEvent
@@ -36,7 +37,8 @@ private const val TAG = "HomeVM"
 @HiltViewModel
 class HomeVM @Inject constructor(
     private val calendarService: CalendarService,
-    private val networkService: NetworkService
+    private val networkService: NetworkService,
+    private val googleAuthClient: GoogleAuthClient
 ): ViewModel()  {
 
     private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf())
@@ -70,6 +72,13 @@ class HomeVM @Inject constructor(
 
     val transitSteps: StateFlow<List<Steps>> = MockTravelInformation.transitSteps
 
+    fun getUsername(): String {
+        val user = googleAuthClient.getSignedInUser()
+        return if(user?.username != null)
+            user.username
+        else
+            "User"
+    }
 
     fun fetchEvents() {
         viewModelScope.launch {
@@ -94,15 +103,18 @@ class HomeVM @Inject constructor(
      */
 
     private fun getAllEventsWithLocationFromCalendars() {
+        var totalEvents = 0
         val events = mutableListOf<CalendarEvent>()
         for(calendar in calendars.value) {
             for (event in calendar.calendarEvents){
+                totalEvents++
                 if (event.location != null) {
                     events.add(event)
                 }
             }
         }
-        Log.d(TAG, "No of events: " + events.size.toString())
+        Log.d(TAG, "No of events with location: " + events.size.toString())
+        Log.d(TAG, "Total no of events: $totalEvents")
         _eventsWithLocation.value = events.sortedByStartTime()
     }
 
@@ -160,7 +172,6 @@ class HomeVM @Inject constructor(
             )
         }
     }
-
 
     init {
         viewModelScope.launch {
