@@ -9,7 +9,6 @@ import com.example.calendarassistant.model.calendar.Calendars
 import com.example.calendarassistant.services.CalendarService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -20,6 +19,9 @@ private const val TAG = "CalendarVM"
 @HiltViewModel
 class CalendarVM @Inject constructor(private val calendarService: CalendarService
 ): ViewModel() {
+
+    private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState())
+    val uiState = _uiState.asStateFlow()
 
     private val _eventsWithLocation = MutableStateFlow<List<CalendarEvent>>(listOf()) //events
     val eventsWithLocation = _eventsWithLocation.asStateFlow()
@@ -42,7 +44,7 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
     fun updateSelectedDayIndex(newIndex: Int) {
         _selectedDayIndex.value = newIndex +1
         fetchEventsForSelectedDay()
-        Log.d(TAG, newIndex.toString())
+        Log.d(TAG, (newIndex + 1).toString())
     }
 
     fun updateSelectedYearIndex(newIndex: Int) {
@@ -57,6 +59,7 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
      */
     private fun fetchEventsForSelectedDay(){
         val date: LocalDate = LocalDate.of(_selectedYearIndex.value, _selectedMonthIndex.value, _selectedDayIndex.value)
+        Log.d(TAG, date.toString())
         calendarService.getUpcomingEventsForOneDay(date)
     }
 
@@ -90,7 +93,7 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
         viewModelScope.launch {
             // Coroutine for getting location at start up
             launch {
-                calendarService.getUpcomingEventsForOneDay()
+                calendarService.getUpcomingEventsForOneDay(startDate = LocalDate.now())
             }
             launch {
                 Calendars.calendarList.collect {
@@ -103,3 +106,7 @@ class CalendarVM @Inject constructor(private val calendarService: CalendarServic
     }
 
 }
+
+data class CalendarUiState(
+    val dateOfToday: LocalDate = LocalDate.now()
+)
