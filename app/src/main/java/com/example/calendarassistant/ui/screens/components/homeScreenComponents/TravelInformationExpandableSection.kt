@@ -38,6 +38,8 @@ import com.example.calendarassistant.network.dto.google.directions.internal.Depa
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.DarkAmber
 import com.example.calendarassistant.ui.theme.OrangeYellow1
+import com.example.calendarassistant.ui.theme.RoyalPurple40
+import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.viewmodels.UiState
 
 private const val TAG = "TravelInformationSection"
@@ -50,7 +52,7 @@ private const val TAG = "TravelInformationSection"
 
 @Composable
 fun TravelInformationExpandableSection(
-    color: Color = DarkAmber,
+    color: Color = RoyalPurple40,
     travelInfo: UiState,
     departureInfo: List<Steps>
 ) {
@@ -99,20 +101,19 @@ fun TravelInformationExpandableSection(
 
 
     var expanded by remember { mutableStateOf(false) }
-
     val stepsDeviationInfo = travelInfo.transitDeviationInformation.transitStepsDeviations ?: listOf()
 
     if (stepsDeviationInfo.isNotEmpty() || departureInfo.isNotEmpty()) {
         Column(
             modifier = Modifier
-                .padding(4.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(color)
-                .padding(horizontal = 4.dp, vertical = 8.dp)
+//                .padding(15.dp)
+//                .clip(RoundedCornerShape(10.dp))
+//                .background(color)
+                .padding(horizontal = 4.dp)
                 .fillMaxWidth()
         ) {
             TextButton(onClick = { expanded = !expanded }) {
-                Text(text = if (expanded) "Dölj information" else "Visa information")
+                Text(text = if (expanded) "Hide information" else "Show information")
             }
 
             AnimatedVisibility(visible = expanded) {
@@ -150,7 +151,7 @@ fun TravelStepCard(
 ) {
     Card(
         modifier = Modifier.padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = OrangeYellow1)
+        colors = CardDefaults.cardColors(containerColor = RoyalPurple80)
     ) {
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -191,7 +192,7 @@ fun StepDeviationCard(
             .padding(8.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = OrangeYellow1
+            containerColor = RoyalPurple80
         ),
     ) {
         Column {
@@ -199,7 +200,7 @@ fun StepDeviationCard(
                 Text(
                     text = "Delay: ${deviationInfo.delayInMinutes} minutes",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Black
+                    color = Color.White
                 )
             }
             if (!deviationInfo.deviations.isNullOrEmpty()) {
@@ -236,13 +237,13 @@ fun DeviationText(
             text = "${deviation.text}",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = Color.White
         )
         Text(
             text = "${deviation.consequence}",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Normal,
-            color = Color.Black
+            color = Color.White
         )
     }
 }

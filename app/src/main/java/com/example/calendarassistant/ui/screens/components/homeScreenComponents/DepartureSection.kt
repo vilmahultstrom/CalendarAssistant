@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,74 +31,73 @@ import com.example.calendarassistant.model.mock.travel.TransitDeviationInformati
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DarkAmber
+import com.example.calendarassistant.ui.theme.RoyalPurple40
+import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.theme.TextWhite
+import com.example.calendarassistant.ui.viewmodels.UiState
 
 @Composable
 fun DepartureSection(
-    color: Color = DarkAmber,
+    color: Color = RoyalPurple40,
     departureInfo: List<Steps>,
+    uiState: UiState,
 //    onClick: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Column (
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .fillMaxWidth()
             .padding(15.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(color)
-            .padding(horizontal = 15.dp, vertical = 20.dp)
-            .fillMaxWidth()
+
     ) {
-        Column {
-            Text(
-                text = "Next departure",
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextWhite
-            )
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                departureInfo.first().transitDetails?.departureTime?.text?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = TextWhite,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                departureInfo.first().transitDetails?.departureStop?.name?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = TextWhite
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                departureInfo.first().transitDetails?.line?.shortName?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = TextWhite
-                    )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 10.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Next departure",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextWhite
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    departureInfo.first().transitDetails?.departureTime?.text?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = TextWhite,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    departureInfo.first().transitDetails?.departureStop?.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = TextWhite
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    departureInfo.first().transitDetails?.line?.shortName?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = TextWhite
+                        )
+                    }
                 }
             }
         }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(60.dp)
-                .clip(CircleShape)
-                .shadow(8.dp, CircleShape)
-                .background(ButtonBlue)
-                .padding(10.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_info_24),
-                contentDescription = "Info",
-                tint = Color.White,
-                modifier = Modifier.size(48.dp)
-            )
-        }
+        TravelInformationExpandableSection(
+            travelInfo = uiState,
+            departureInfo = departureInfo)
     }
 }

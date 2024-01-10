@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.TravelMode
+import com.example.calendarassistant.ui.theme.DeepGreen
 import com.example.calendarassistant.ui.theme.ForestGreen
 import com.example.calendarassistant.ui.theme.LightGreen1
 
@@ -61,7 +62,7 @@ fun TravelModeCard(
 ) {
     val padding = if (isSelected) 0.dp else 10.dp
     val sizeFraction = if (isSelected) 1F else 0.8F
-    val color = if (isSelected) ForestGreen else Color.LightGray
+    val color = if (isSelected) DeepGreen else Color.LightGray
 
     Card(
         modifier = modifier
