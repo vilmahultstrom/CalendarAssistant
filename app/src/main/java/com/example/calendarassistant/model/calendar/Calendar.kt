@@ -10,7 +10,6 @@ data class Calendar(
     val calendarEvents: List<CalendarEvent>
 )
 
-
 data class CalendarInformation(
     val summary: String?,
     val id: String?,
@@ -33,19 +32,12 @@ data class CalendarEvent (
 )
 
 object Calendars {
-
-
     private val _calendarList = MutableStateFlow<List<Calendar>>(listOf())
     val calendarList = _calendarList.asStateFlow()
-
-
 
     fun setCalendarList(calendarList: List<Calendar>){
         _calendarList.value = calendarList
     }
-
-
-
 
 }
 

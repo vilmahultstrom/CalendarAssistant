@@ -48,7 +48,8 @@ private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
     vm: HomeVM,
-    navController: NavController
+    navController: NavController,
+
 ) {
     // For starting Gps tracking
     val context = LocalContext.current
@@ -72,8 +73,10 @@ fun HomeScreen(
     ) {
 
         Column {
-
-            InformationSection()
+            val username = vm.getUsername()
+            InformationSection(
+                greeting = "Hello, $username"
+            )
 
             Column(
                 modifier = Modifier
