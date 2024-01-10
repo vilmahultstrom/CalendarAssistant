@@ -144,9 +144,6 @@ class HomeVM @Inject constructor(
             _uiState.update { it.copy(isFetchingLocationData = true) }
 
 
-
-
-
             launch {
                 Calendars.firstEventWithLocation.collect {
                     Log.d(TAG, "Fetching first event " + it.toString())
