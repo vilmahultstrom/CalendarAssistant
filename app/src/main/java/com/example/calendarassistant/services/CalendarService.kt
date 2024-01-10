@@ -13,7 +13,7 @@ class CalendarService(
     fun getUpcomingEvents() {
         val email = googleAuthClient.getSignedInUser()!!.email
         if (email != null) {
-            googleCalendar.getUpcomingEvents(email)
+            googleCalendar.getUpcomingEventsOneWeekFromToday(email)
         }
     }
 }

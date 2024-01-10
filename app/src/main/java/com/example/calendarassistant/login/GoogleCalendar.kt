@@ -1,26 +1,28 @@
 package com.example.calendarassistant.login
 
 import android.accounts.Account
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.calendar.Calendar
-import com.google.api.services.calendar.CalendarScopes
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.example.calendarassistant.R
 import com.example.calendarassistant.model.calendar.CalendarEvent
 import com.example.calendarassistant.model.calendar.CalendarInformation
 import com.example.calendarassistant.model.calendar.Calendars
-import com.example.calendarassistant.network.dto.google.directions.internal.Steps
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-
+import com.google.api.client.json.JsonFactory
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.util.DateTime
+import com.google.api.services.calendar.Calendar
+import com.google.api.services.calendar.CalendarScopes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 import javax.inject.Inject
+
 
 private const val TAG = "CalendarGoogle"
 
@@ -59,17 +61,34 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
         }
     }
 
-    fun getUpcomingEvents(email: String) {
+    fun getUpcomingEventsOneDayFromToday(email: String) {
+        val now = com.google.api.client.util.DateTime(System.currentTimeMillis())
+        val nowDate = Date(now.value) // Convert to java.util.Date
+        val localDate: LocalDate = nowDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()                 // Convert to java.time.LocalDate
+        val tomorrow = localDate.plusDays(1)                // Add a day
+        // Convert back to com.google.api.client.util.DateTime
+        val tomorrowDateTime: DateTime = DateTime(Date.from(tomorrow.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+        getUpcomingEvents(email,now,tomorrowDateTime)
+    }
+
+    fun getUpcomingEventsOneWeekFromToday(email: String) {
+        val now = com.google.api.client.util.DateTime(System.currentTimeMillis())
+        val nowDate = Date(now.value) // Convert to java.util.Date
+        val localDate: LocalDate = nowDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()                 // Convert to java.time.LocalDate
+        val nextWeek = localDate.plusWeeks(1)                 // Add a week
+        val nextWeekDateTime: DateTime = DateTime(Date.from(nextWeek.atStartOfDay(ZoneId.systemDefault()).toInstant()))         // Convert back to com.google.api.client.util.DateTime
+        getUpcomingEvents(email,now,nextWeekDateTime)
+    }
+
+
+        fun getUpcomingEvents(email: String, startDate:DateTime, endDate:DateTime) {
         val calendarService = getCalendarService(email)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val now = com.google.api.client.util.DateTime(System.currentTimeMillis())
                 val calendars = calendarService.CalendarList().list().execute()
                 val listItems = calendars.items
 
                 val calendarList = mutableListOf<com.example.calendarassistant.model.calendar.Calendar>()
-
-
 
                 for (calendar in listItems) {
                     val id = calendar.id
@@ -80,8 +99,9 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                         val description = calendar.description
                         val calendarEvents = mutableListOf<CalendarEvent>()
                         val events = calendarService.events().list(id)
-                            .setMaxResults(10)
-                            .setTimeMin(now)
+                            .setMaxResults(100)
+                            .setTimeMin(startDate)
+                            .setTimeMax(endDate)
                             .setOrderBy("startTime")
                             .setSingleEvents(true)
                             .execute()
