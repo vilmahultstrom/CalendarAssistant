@@ -97,12 +97,12 @@ fun HomeScreen(
                 if (departureInfo.isNotEmpty() && uiState.travelMode == TravelMode.Transit){ // TODO: Kanske ändra detta
                     DepartureSection(
                         departureInfo = departureInfo,
-                        //onClick = {}
+                        uiState = uiState
                     )
-                    TravelInformationExpandableSection(
-                        travelInfo = uiState,
-                        departureInfo = departureInfo
-                    ) // TODO: Fixa denna för lite info om resa!!
+//                    TravelInformationExpandableSection(
+//                        travelInfo = uiState,
+//                        departureInfo = departureInfo
+//                    ) // TODO: Fixa denna för lite info om resa!!
                 }
 
                 ButtonSection()

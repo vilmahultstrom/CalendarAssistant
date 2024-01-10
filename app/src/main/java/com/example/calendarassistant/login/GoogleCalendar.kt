@@ -90,11 +90,11 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
 
                         for (event in items) {
                             val eventSum = event.summary
-                            val startDateTime = event?.start?.dateTime?.value
-                            val startDate = event?.start?.date?.value
+                            val startDateTime = event?.start?.dateTime?.value?.div(1000)
+                            val startDate = event?.start?.date?.value?.div(1000)
                             val location = event?.location
-                            val endDateTime = event?.end?.dateTime?.value
-                            val endDate = event?.end?.date?.value
+                            val endDateTime = event?.end?.dateTime?.value?.div(1000)
+                            val endDate = event?.end?.date?.value?.div(1000)
                             val calendarEvent: CalendarEvent = CalendarEvent(
                                 summary = eventSum,
                                 startDate = startDate,
@@ -126,47 +126,6 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                 }
                 Calendars.setCalendarList(calendarList)
 
-                /*
-                val events = calendarService.events().list("primary")
-                    .setMaxResults(10)
-                    .setTimeMin(now)
-                    .setOrderBy("startTime")
-                    .setSingleEvents(true)
-                    .execute()
-
-
-                val items = events.items
-
-                withContext(Dispatchers.Main) {
-                    if (items.isEmpty()) {
-                        Log.d(TAG, "no events present")
-                        // Update UI to show no events
-                    } else {
-                        Log.d(TAG, "found events")
-                        _events.value = items
-                        for (e in events) {
-                        }
-
-                        Log.d(TAG, items.toString())
-                        Log.d(TAG, "good")
-                        var itemList = ""
-                        for (i in items) {
-                            itemList += i.toString() + "\n";
-                            //i.summary
-                            //i.start
-                            //i.location
-                        }
-                        Log.d(TAG, itemList)
-                        // Update UI to show events
-                        for (event in items) {
-                            val start = event.start.dateTime ?: event.start.date
-                            // Update UI with event details
-                        }
-                    }
-
-
-                 */
-                //}
             } catch (e: UserRecoverableAuthIOException) { //user needs to accept that the app will have access to users calendar. This exception-handling is absolutely necessary for retreiving events in the app.
                 val intent = e.intent
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) //:TODO Bättre lösning?

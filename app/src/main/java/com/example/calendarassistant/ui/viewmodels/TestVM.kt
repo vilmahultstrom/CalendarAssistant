@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.login.SignInInterface
+import com.example.calendarassistant.model.calendar.Calendars
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.mock.travel.MockDeviationInformation
@@ -111,7 +112,7 @@ class TestVM @Inject constructor(
 
     private fun fetchTravelInformation() {
         viewModelScope.launch {
-            networkService.getTravelInformation(TravelMode.Transit) // TODO: ändra till valda TravelMode
+            networkService.getTravelInformation(TravelMode.Transit, Calendars.firstEventWithLocation.value) // TODO: ändra till valda TravelMode
         }
     }
 
@@ -119,13 +120,13 @@ class TestVM @Inject constructor(
         _uiState.update { it.copy(currentLatitude = "", currentLongitude = "") }
     }
 
-    fun setTravelMode(mode: TravelMode) {
+    /*fun setTravelMode(mode: TravelMode) {
         _uiState.update { _uiState.value.copy(travelMode = mode) }
         viewModelScope.launch {
-            networkService.getTravelInformation(mode)
+            networkService.getTravelInformation(mode, it.startDateTime)
         }
     }
-
+*/
 
 
     fun getDirectionsByPlace() {
@@ -152,7 +153,7 @@ class TestVM @Inject constructor(
                 _startServiceAction.value =
                     Event(LocationService.ACTION_GET) // Inits and collects location info
                 delay(10000)    // Delay for init
-                networkService.getTravelInformation(_uiState.value.travelMode) // fetches data
+                networkService.getTravelInformation(_uiState.value.travelMode, Calendars.firstEventWithLocation.value) // fetches data
                 networkService.getDeviationInformation()
             }
 
@@ -172,14 +173,14 @@ class TestVM @Inject constructor(
                         )
                     }
                     // This updates the time left, could maybe ge done by internal timer
-                    networkService.getTravelInformation(_uiState.value.travelMode)
+                    networkService.getTravelInformation(_uiState.value.travelMode, Calendars.firstEventWithLocation.value)
                     networkService.getDeviationInformation()
                 }
             }
 
             // Coroutine for collecting next mock event for display
             launch {
-                MockTravelInformation.getNextEventInformation().collect { next: TravelInformation ->
+                MockTravelInformation.getNextEventTravelInformation().collect { next: TravelInformation ->
                     Log.d(TAG, "Collecting: $next")
                     _uiState.update { currentState -> currentState.copy(travelInformation = next) }
                 }

@@ -34,7 +34,7 @@ object MockTravelInformation {
     }
 
     //TODO: funktionsnamn till "getNextEventTravelInformation" ?
-    fun getNextEventInformation() : SharedFlow<TravelInformation> = travelInformation.asSharedFlow()
+    fun getNextEventTravelInformation() : SharedFlow<TravelInformation> = travelInformation.asSharedFlow()
 }
 
 data class TravelInformation (
