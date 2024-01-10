@@ -212,7 +212,6 @@ class NetworkService : INetworkService {
      */
     override suspend fun getDeviationInformation() {
         try {
-/*
             transitSteps.map { step ->
                 val realTimeData = fetchRealTimeDataForStep(step)
                 transitStepsDeviations.add(compareStepWithRealTimeData(step, realTimeData))
@@ -221,10 +220,9 @@ class NetworkService : INetworkService {
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
             )
-*/
 
-            val mockTransitStepsDeviations = listOf(
-                /*DeviationInformation(
+/*            val mockTransitStepsDeviations = listOf(
+               DeviationInformation(
                     delayInMinutes = 5,
                     deviations = listOf(
                         Deviation(
@@ -233,7 +231,7 @@ class NetworkService : INetworkService {
                             importanceLevel = 7
                         )
                     )
-                ),*/
+                ),
                 DeviationInformation(
                     delayInMinutes = 0,
                     deviations = emptyList()
@@ -261,7 +259,7 @@ class NetworkService : INetworkService {
 
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = mockTransitStepsDeviations
-            ) //TODO: TA BORT/FLYTTA MOCK
+            )*/ //TODO: TA BORT/FLYTTA MOCK
 
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching real-time transit data: ${e.message}")
