@@ -212,17 +212,19 @@ class NetworkService : INetworkService {
      */
     override suspend fun getDeviationInformation() {
         try {
-            /*transitSteps.map { step ->
+/*
+            transitSteps.map { step ->
                 val realTimeData = fetchRealTimeDataForStep(step)
                 transitStepsDeviations.add(compareStepWithRealTimeData(step, realTimeData))
             }
 
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = transitStepsDeviations
-            )*/
+            )
+*/
 
             val mockTransitStepsDeviations = listOf(
-                DeviationInformation(
+                /*DeviationInformation(
                     delayInMinutes = 5,
                     deviations = listOf(
                         Deviation(
@@ -231,6 +233,10 @@ class NetworkService : INetworkService {
                             importanceLevel = 7
                         )
                     )
+                ),*/
+                DeviationInformation(
+                    delayInMinutes = 0,
+                    deviations = emptyList()
                 ),
                 DeviationInformation(
                     delayInMinutes = 10,
@@ -241,9 +247,9 @@ class NetworkService : INetworkService {
                             importanceLevel = 7
                         ),
                         Deviation(
-                            text = "Stora mossen: Hissen är avstängd pga tekniskt fel. Hänvisning till angränsande stationer eller tillgänglighetsgarantin",
-                            consequence = null,
-                            importanceLevel = 2
+                            text = "Kör inte till Sluts hage pga väghinder",
+                            consequence = "INFORMATION",
+                            importanceLevel = 7
                         )
                     )
                 ),
@@ -253,10 +259,9 @@ class NetworkService : INetworkService {
                 )
             )
 
-            // Använd mockTransitStepsDeviations i din funktion
             MockDeviationInformation.setTransitDeviationInformation(
                 transitStepsDeviations = mockTransitStepsDeviations
-            )
+            ) //TODO: TA BORT/FLYTTA MOCK
 
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching real-time transit data: ${e.message}")
@@ -295,8 +300,11 @@ class NetworkService : INetworkService {
         Log.d(TAG, "station name: ${realTimeDataResponse.body()?.responseData?.buses?.find { 
             ((((it.lineNumber == step.transitDetails?.line?.shortName) && 
                     (it.destination == step.transitDetails?.headsign) && 
-                    (areTimesSimilar(it.timeTabledDateTime.toString(), 
-                        formatSecondsToDateTimeString(step.transitDetails?.departureTime?.value))))))
+                    (areTimesSimilar(
+                        it.timeTabledDateTime.toString(), DateHelpers.formatSecondsToDateTimeString(
+                            step.transitDetails?.departureTime?.value
+                        )))
+                    )))
         }}")
 
         return realTimeDataResponse.body() ?: SlRealtimeDataResponse()
@@ -337,15 +345,16 @@ class NetworkService : INetworkService {
         val deviations: List<Deviation>
 
         /**
-         * Ensures that the line number, scheduled departure time, ... from the Google Directions API matches
-         * with the line number, ..., ... in the SL Real-Time API.
+         * Ensures that the line number, head sign and scheduled departure time
+         * from the Google Directions API matches with the line number,
+         * destination and scheduled departure time in the SL Real-Time API.
          */
         when (transportModeGoogle) {
             "BUS" -> {
                 val busData = realTimeData.responseData?.buses?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
+                        DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = busData?.timeTabledDateTime
                 expectedDepartureTimeSl = busData?.expectedDateTime
@@ -355,7 +364,7 @@ class NetworkService : INetworkService {
                 val metroData = realTimeData.responseData?.metros?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                                formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
+                        DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = metroData?.timeTabledDateTime
                 expectedDepartureTimeSl = metroData?.expectedDateTime
@@ -365,7 +374,7 @@ class NetworkService : INetworkService {
                 val trainData = realTimeData.responseData?.trains?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
+                        DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = trainData?.timeTabledDateTime
                 expectedDepartureTimeSl = trainData?.expectedDateTime
@@ -375,7 +384,7 @@ class NetworkService : INetworkService {
                 val tramData = realTimeData.responseData?.trams?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
+                        DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = tramData?.timeTabledDateTime
                 expectedDepartureTimeSl = tramData?.expectedDateTime
@@ -385,7 +394,7 @@ class NetworkService : INetworkService {
                 val shipData = realTimeData.responseData?.ships?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
                             && (areTimesSimilar(it.timeTabledDateTime.toString(),
-                        formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
+                        DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = shipData?.timeTabledDateTime
                 expectedDepartureTimeSl = shipData?.expectedDateTime
@@ -404,14 +413,14 @@ class NetworkService : INetworkService {
         val delayInMinutes = calculateDelay(scheduledDepartureTimeGoogle, expectedDepartureTimeSl)
         Log.d(TAG, "DELAY JÄMFÖRELSE: delayAbsInMinutes: $delayAbsInMinutes " +
                 " || delayInMinutes: $delayInMinutes")
+
         return DeviationInformation(delayInMinutes, deviations)
     }
 
     fun areTimesSimilar(
         time1: String,
         time2: String
-    ): Boolean { // TODO: använda eller ej?? Jämför test. Är Googles och SLs planerade tider lika även fast vi hämtar ny data från google (som då är uppdaterad)?
-        // Example using java.time API (requires API level 26 or using a backport library like ThreeTenABP)
+    ): Boolean {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val dateTime1 = LocalDateTime.parse(time1, formatter)
         val dateTime2 = LocalDateTime.parse(time2, formatter)
@@ -434,7 +443,7 @@ class NetworkService : INetworkService {
         if (scheduledTime == null || expectedTime == null) return 0
 
         // Parse the actual time (expectedDateTime) to a Unix timestamp
-        val actualDateTime = formatDateTimeStringToUnix(expectedTime)
+        val actualDateTime = DateHelpers.formatDateTimeStringToUnix(expectedTime)
 
         // Calculate the delay in seconds
         val delayInSeconds = actualDateTime - scheduledTime
@@ -449,11 +458,11 @@ class NetworkService : INetworkService {
     ): Int {
         if (expectedTimeSl == null) return 0
 
-        val expectedTimeUnixSl = formatDateTimeStringToUnix(expectedTimeSl)
+        val expectedTimeUnixSl = DateHelpers.formatDateTimeStringToUnix(expectedTimeSl)
         var maxDelayInSeconds = 0L
 
         scheduledTimeSl?.let {
-            val scheduledTimeUnixSl = formatDateTimeStringToUnix(it)
+            val scheduledTimeUnixSl = DateHelpers.formatDateTimeStringToUnix(it)
             maxDelayInSeconds = maxOf(maxDelayInSeconds, expectedTimeUnixSl - scheduledTimeUnixSl)
         }
 
@@ -465,22 +474,4 @@ class NetworkService : INetworkService {
         // Only positive values are considered delays
         return if (maxDelayInSeconds > 0) (maxDelayInSeconds / 60).toInt() else 0
     }
-
-    private fun formatSecondsToDateTimeString(seconds: Int?): String { //TODO: flytta till utilities
-        val instant = seconds?.let { Instant.ofEpochSecond(it.toLong()) }
-        val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-        return localDateTime.format(formatter)
-    }
-
-    private fun formatDateTimeStringToUnix(timestamp: String?): Long { //TODO: flytta till utilities
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-        return try {
-            LocalDateTime.parse(timestamp, formatter).atZone(ZoneId.systemDefault()).toEpochSecond()
-        } catch (e: DateTimeParseException) {
-            Log.e(TAG, "Error parsing timestamp from Date Time String to Unix: ${e.message}")
-            return 0
-        }
-    }
-
 }

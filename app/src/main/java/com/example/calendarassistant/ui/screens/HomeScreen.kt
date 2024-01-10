@@ -99,10 +99,6 @@ fun HomeScreen(
                         departureInfo = departureInfo,
                         uiState = uiState
                     )
-//                    TravelInformationExpandableSection(
-//                        travelInfo = uiState,
-//                        departureInfo = departureInfo
-//                    ) // TODO: Fixa denna för lite info om resa!!
                 }
 
                 ButtonSection()

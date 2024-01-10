@@ -1,8 +1,7 @@
 package com.example.calendarassistant.ui.screens.components.homeScreenComponents
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -10,9 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,28 +25,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.calendarassistant.R
 import com.example.calendarassistant.model.mock.travel.Deviation
 import com.example.calendarassistant.model.mock.travel.DeviationInformation
-import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
-import com.example.calendarassistant.ui.theme.DarkAmber
-import com.example.calendarassistant.ui.theme.LightRed
-import com.example.calendarassistant.ui.theme.OrangeYellow1
+import com.example.calendarassistant.ui.theme.DeepPurple100
+import com.example.calendarassistant.ui.theme.DeepPurple50
+import com.example.calendarassistant.ui.theme.DeepPurple500
+import com.example.calendarassistant.ui.theme.Red700
+import com.example.calendarassistant.ui.theme.Red900
 import com.example.calendarassistant.ui.theme.RoyalPurple40
-import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.viewmodels.UiState
 
 private const val TAG = "TravelInformationSection"
-
-/**
- * TODO: Ni får ändra hur mycket som helst i denna!! Låt kreativiteten flöda! Min tog slut...
- *      OBS! Deviation-data som visas här är hårdkodad i NetworkService.
- */
-
 
 @Composable
 fun TravelInformationExpandableSection(
@@ -57,7 +45,7 @@ fun TravelInformationExpandableSection(
     travelInfo: UiState,
     departureInfo: List<Steps>
 ) {
-/*    var expanded by remember { mutableStateOf(false) }
+    /*    var expanded by remember { mutableStateOf(false) }
 
     val stepsDeviationInfo = travelInfo.transitDeviationInformation.transitStepsDeviations
 
@@ -102,27 +90,31 @@ fun TravelInformationExpandableSection(
 
 
     var expanded by remember { mutableStateOf(false) }
-    val stepsDeviationInfo = travelInfo.transitDeviationInformation.transitStepsDeviations ?: listOf()
+    val stepsDeviationInfo =
+        travelInfo.transitDeviationInformation.transitStepsDeviations ?: listOf()
 
     if (stepsDeviationInfo.isNotEmpty() || departureInfo.isNotEmpty()) {
         Column(
             modifier = Modifier
-//                .padding(15.dp)
-//                .clip(RoundedCornerShape(10.dp))
-//                .background(color)
                 .padding(horizontal = 4.dp)
                 .fillMaxWidth()
         ) {
             TextButton(onClick = { expanded = !expanded }) {
-                Text(text = if (expanded) "Hide information" else "Show information")
+                Text(
+                    text = if (expanded) "Hide information" else "Show information",
+                    color = DeepPurple50
+                )
             }
 
-            AnimatedVisibility(visible = expanded) {
-                departureInfo.forEachIndexed { index, step ->
-                    Column(modifier = Modifier
+            AnimatedVisibility(
+                visible = expanded
+            ) {
+                Column(
+                    modifier = Modifier
                         .verticalScroll(rememberScrollState())
-                        .height(IntrinsicSize.Max)) {
-
+                        .height(IntrinsicSize.Max)
+                ) {
+                    departureInfo.forEachIndexed { index, step ->
                         TravelStepCard(
                             departureTime = step.transitDetails?.departureTime?.text,
                             arrivalTime = step.transitDetails?.arrivalTime?.text,
@@ -130,16 +122,31 @@ fun TravelInformationExpandableSection(
                             stopName = step.transitDetails?.arrivalStop?.name,
                             lineName = step.transitDetails?.line?.shortName,
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+
                         if (index < stepsDeviationInfo.size) {
-                            StepDeviationCard(stepsDeviationInfo[index])
-                            Spacer(modifier = Modifier.height(8.dp))
+                            val containsInfo = isContainingInfo(stepsDeviationInfo[index])
+                            if (containsInfo) {
+                                StepDeviationCard(deviationInfo = stepsDeviationInfo[index])
+                            }
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
+}
+
+private fun isContainingInfo(deviationInfo: DeviationInformation) : Boolean {
+    if (!deviationInfo.deviations.isNullOrEmpty()) {
+        // Checks if any step has delay or deviations info
+        return deviationInfo.deviations.any { item ->
+            item.importanceLevel != 0 || item.text.isNullOrEmpty()
+                    || !item.consequence.isNullOrEmpty()
+        }
+    }
+    return false
 }
 
 @Composable
@@ -151,38 +158,66 @@ fun TravelStepCard(
     lineName: String?,
 ) {
     Card(
-        modifier = Modifier.padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = RoyalPurple80)
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 1.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = DeepPurple100 //RoyalPurple80
+        )
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)) {
-            Column(modifier = Modifier.weight(1f)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(0.2f)
+            ) {
                 if (departureTime != null) {
-                    Text(text = departureTime)
+                    Text(
+                        text = departureTime,
+                        color = DeepPurple500
+                    )
                 }
                 if (arrivalTime != null) {
-                    Text(text = arrivalTime)
+                    Text(
+                        text = arrivalTime,
+                        color = DeepPurple500
+                    )
                 }
             }
-            if (originName != null) {
-                Text(
-                    text = originName,
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .weight(0.7f)
+            ) {
+                if (originName != null) {
+                    Text(
+                        text = originName,
+                        color = DeepPurple500,
+                    )
+                }
+                if (stopName != null) {
+                    Text(
+                        text = stopName,
+                        color = DeepPurple500,
+                    )
+                }
             }
             if (lineName != null) {
                 Text(text = lineName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = DeepPurple500,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .weight(0.1f)
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun StepDeviationCard(
@@ -190,18 +225,23 @@ fun StepDeviationCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 0.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = RoyalPurple80
+            containerColor = DeepPurple100
         ),
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+        ) {
             if (deviationInfo.delayInMinutes != 0) {
                 Text(
                     text = "Delay: ${deviationInfo.delayInMinutes} minutes",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.White
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Red900,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }
             if (!deviationInfo.deviations.isNullOrEmpty()) {
@@ -226,25 +266,27 @@ fun DeviationText(
 ) {
     Column(
         modifier = Modifier
-        .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
-        Text(
+        /*Text(
             text = "${deviation.importanceLevel}",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             color = LightRed
+        )*/
+        Text(
+            text = "${deviation.consequence}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = DeepPurple500
         )
         Text(
             text = "${deviation.text}",
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-        Text(
-            text = "${deviation.consequence}",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Normal,
-            color = Color.White
+            fontWeight = FontWeight.Medium,
+            color = DeepPurple500,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
         )
     }
 }

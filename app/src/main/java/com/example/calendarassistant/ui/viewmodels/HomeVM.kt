@@ -43,9 +43,7 @@ class HomeVM @Inject constructor(
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf())
     val calendars = _calendars.asStateFlow()
 
-
     private var isFetchingLocationData: Boolean = false
-
 
     private val _startServiceAction = mutableStateOf<com.example.calendarassistant.utilities.Event<String>?>(null)
     val startServiceAction: State<com.example.calendarassistant.utilities.Event<String>?> = _startServiceAction
@@ -89,7 +87,7 @@ class HomeVM @Inject constructor(
         var totalEvents = 0
         val events = mutableListOf<CalendarEvent>()
         for(calendar in calendars.value) {
-            for (event in calendar.calendarEvents){
+            for (event in calendar.calendarEvents) {
                 totalEvents++
                 if (event.location != null) {
                     events.add(event)
@@ -104,7 +102,6 @@ class HomeVM @Inject constructor(
     private fun List<CalendarEvent>.sortedByStartTime(): List<CalendarEvent> {
         return this.sortedWith(compareBy { it.startDateTime ?: it.startDate })
     }
-
 
     private fun startLocationService() {
         _startServiceAction.value =
@@ -146,9 +143,10 @@ class HomeVM @Inject constructor(
             calendarService.getUpcomingEvents()
 
 
-
             launch {
-                _startServiceAction.value = com.example.calendarassistant.utilities.Event(LocationService.ACTION_GET) // Inits and collects location info
+                _startServiceAction.value = com.example.calendarassistant.utilities.Event(
+                    LocationService.ACTION_GET
+                ) // Inits and collects location info
                 delay(10000)    // Delay for init
 
                 Calendars.firstEventWithLocation.collect {
@@ -177,15 +175,21 @@ class HomeVM @Inject constructor(
                         )
                     }
                     // This updates the time left, could maybe ge done by internal timer
-                    networkService.getTravelInformation(_uiState.value.travelMode, Calendars.firstEventWithLocation.value)
+                    networkService.getTravelInformation(
+                        _uiState.value.travelMode,
+                        Calendars.firstEventWithLocation.value
+                    )
                 }
             }
 
             // Coroutine for collecting next mock event for display
             launch {
-                MockTravelInformation.getNextEventTravelInformation().collect { next: TravelInformation ->
-                    Log.d(TAG, "Collecting: $next")
-                    _uiState.update { currentState -> currentState.copy(travelInformation = next) }
+                MockTravelInformation.getNextEventTravelInformation()
+                    .collect { next: TravelInformation ->
+                        Log.d(TAG, "Collecting: $next")
+                        _uiState.update { currentState ->
+                            currentState.copy(travelInformation = next)
+                        }
                 }
             }
             launch {
@@ -205,8 +209,8 @@ class HomeVM @Inject constructor(
                             )
                         }
                     }
-            }
 
+            }
         }
     }
 }
