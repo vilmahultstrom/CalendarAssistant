@@ -13,12 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.R
-import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.enums.NavRoute
 import com.example.calendarassistant.model.google.GoogleCalendar
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -111,9 +110,9 @@ class SignIn: AppCompatActivity(), SignInInterface {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = BMRoutes.Login.route
+                        startDestination = NavRoute.Login.route
                     ) {
-                        composable(BMRoutes.Login.route) {
+                        composable(NavRoute.Login.route) {
                             //LoginScreen(testVM, navController)
                         }
                     }

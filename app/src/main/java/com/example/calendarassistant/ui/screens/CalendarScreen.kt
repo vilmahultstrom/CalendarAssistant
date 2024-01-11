@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
-import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.enums.NavRoute
 import com.example.calendarassistant.ui.screens.components.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.calendar_screen.DatePickSection
@@ -65,9 +65,9 @@ fun CalendarScreen(
         }
         BottomMenu(
             items = listOf(
-                BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
-                BottomMenuContent("Calendar", R.drawable.baseline_calendar_month_24, BMRoutes.Calendar.route),
-                BottomMenuContent("Settings", R.drawable.baseline_settings_24, BMRoutes.Settings.route),
+                BottomMenuContent("Home", R.drawable.baseline_home_24, NavRoute.Home.route),
+                BottomMenuContent("Calendar", R.drawable.baseline_calendar_month_24, NavRoute.Calendar.route),
+                BottomMenuContent("Settings", R.drawable.baseline_settings_24, NavRoute.Settings.route),
             ), modifier = Modifier.align(Alignment.BottomCenter), navController = navController
         )
     }

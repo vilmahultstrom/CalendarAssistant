@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
-import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.enums.NavRoute
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.ui.screens.components.BottomMenuContent
 import com.example.calendarassistant.network.location.LocationService
@@ -127,17 +127,17 @@ fun HomeScreen(
                 BottomMenuContent(
                     "Home",
                     R.drawable.baseline_home_24,
-                    BMRoutes.Home.route
+                    NavRoute.Home.route
                 ),
                 BottomMenuContent(
                     "Calendar",
                     R.drawable.baseline_calendar_month_24,
-                    BMRoutes.Calendar.route
+                    NavRoute.Calendar.route
                 ),
                 BottomMenuContent(
                     "Settings",
                     R.drawable.baseline_settings_24,
-                    BMRoutes.Settings.route
+                    NavRoute.Settings.route
                 ),
             ),
             modifier = Modifier.align(Alignment.BottomCenter),

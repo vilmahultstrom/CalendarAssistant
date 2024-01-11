@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
-import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.enums.NavRoute
 import com.example.calendarassistant.ui.screens.components.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.InformationSection
@@ -50,7 +50,7 @@ fun SettingsScreen(
 
             if (state.isSignInSuccessful) {
                 Log.d("SettingsScreen", "Sign-in successful, navigating to Home route")
-                navController.navigate(BMRoutes.Home.route)
+                navController.navigate(NavRoute.Home.route)
             } else {
                 Log.d("SettingsScreen", "Sign-in not successful yet")
             }
@@ -86,7 +86,7 @@ fun SettingsScreen(
                         text = googleButtonText2,
                         onClick = {
                             onSignOutClick()
-                            navController.navigate(BMRoutes.Settings.route)
+                            navController.navigate(NavRoute.Settings.route)
                         },
                         painterId = R.drawable.google_g_logo
                     )
@@ -111,16 +111,16 @@ fun SettingsScreen(
         if(vm.isUserSignedIn()) {
             BottomMenu(
                 items = listOf(
-                    BottomMenuContent("Home", R.drawable.baseline_home_24, BMRoutes.Home.route),
+                    BottomMenuContent("Home", R.drawable.baseline_home_24, NavRoute.Home.route),
                     BottomMenuContent(
                         "Calendar",
                         R.drawable.baseline_calendar_month_24,
-                        BMRoutes.Calendar.route
+                        NavRoute.Calendar.route
                     ),
                     BottomMenuContent(
                         "Settings",
                         R.drawable.baseline_settings_24,
-                        BMRoutes.Settings.route
+                        NavRoute.Settings.route
                     ),
                 ),
                 modifier = Modifier.align(Alignment.BottomCenter),

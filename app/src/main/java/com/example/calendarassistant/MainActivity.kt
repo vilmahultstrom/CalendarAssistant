@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.calendarassistant.enums.BMRoutes
+import com.example.calendarassistant.enums.NavRoute
 import com.example.calendarassistant.model.google.GoogleAuthClient
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
@@ -74,15 +74,15 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = if(isLoggedIn) BMRoutes.Home.route else BMRoutes.Settings.route
+                        startDestination = if(isLoggedIn) NavRoute.Home.route else NavRoute.Settings.route
                     ) {
-                        composable(BMRoutes.Home.route) {
+                        composable(NavRoute.Home.route) {
                             HomeScreen(vm = homeVM, navController)
                         }
-                        composable(BMRoutes.Calendar.route) {
+                        composable(NavRoute.Calendar.route) {
                             CalendarScreen(vm = calendarVM, navController)
                         }
-                        composable(BMRoutes.Settings.route) {
+                        composable(NavRoute.Settings.route) {
                             settingsVM = hiltViewModel<SettingsVM>()
                             LaunchedEffect(settingsVM.signInIntentSender) { // or a specific key if needed
                                 settingsVM.signInIntentSender.collect { intentSender ->
