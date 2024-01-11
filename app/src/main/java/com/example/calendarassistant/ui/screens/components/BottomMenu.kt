@@ -28,7 +28,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.calendarassistant.ui.theme.AquaBlue
 import com.example.calendarassistant.ui.theme.ButtonBlue
 import com.example.calendarassistant.ui.theme.DeepBlue
-import com.example.calendarassistant.model.BottomMenuContent
 
 @Composable
 fun BottomMenu(

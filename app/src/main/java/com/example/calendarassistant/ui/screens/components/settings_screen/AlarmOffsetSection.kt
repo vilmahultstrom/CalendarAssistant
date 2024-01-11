@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.settingsScreenComponents
+package com.example.calendarassistant.ui.screens.components.settings_screen
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement

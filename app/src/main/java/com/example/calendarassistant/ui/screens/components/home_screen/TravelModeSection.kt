@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.homeScreenComponents
+package com.example.calendarassistant.ui.screens.components.home_screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,8 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.ui.theme.DeepGreen
-import com.example.calendarassistant.ui.theme.ForestGreen
-import com.example.calendarassistant.ui.theme.LightGreen1
 
 @Composable
 fun TravelModeSection(selected: TravelMode, onClick: (TravelMode) -> Unit) {

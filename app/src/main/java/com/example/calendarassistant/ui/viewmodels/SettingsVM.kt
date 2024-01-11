@@ -63,7 +63,6 @@ class SettingsVM @Inject constructor(
         viewModelScope.launch {
             if (resultCode == RESULT_OK && data != null) {
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
-                Log.d(TAG, signInResult.data.toString())
                 calendarService.getUpcomingEventsForOneWeek()
                 _signInState.value = SignInState(isSignInSuccessful = true, signInError = "Successfully signed in")
             } else {
@@ -72,7 +71,7 @@ class SettingsVM @Inject constructor(
         }
     }
 
-    fun resetState() {
+    private fun resetState() {
         _signInState.update { SignInState() }
     }
 

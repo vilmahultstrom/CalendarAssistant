@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.homeScreenComponents
+package com.example.calendarassistant.ui.screens.components.home_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

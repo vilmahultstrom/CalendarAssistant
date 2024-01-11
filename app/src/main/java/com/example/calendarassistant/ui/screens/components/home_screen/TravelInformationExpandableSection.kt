@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.homeScreenComponents
+package com.example.calendarassistant.ui.screens.components.home_screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +32,7 @@ import com.example.calendarassistant.network.dto.google.directions.internal.Step
 import com.example.calendarassistant.ui.theme.DeepPurple100
 import com.example.calendarassistant.ui.theme.DeepPurple50
 import com.example.calendarassistant.ui.theme.DeepPurple500
-import com.example.calendarassistant.ui.theme.Red700
 import com.example.calendarassistant.ui.theme.Red900
-import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.RoyalPurple40
 import com.example.calendarassistant.ui.viewmodels.UiState
 

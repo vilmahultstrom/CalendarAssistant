@@ -19,9 +19,7 @@ import java.util.regex.Pattern
 class AndroidAlarmScheduler(
     private val context: Context
 ) : AlarmScheduler {
-
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
-
     @SuppressLint("MissingPermission")
     override fun schedule(item: AlarmItem) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

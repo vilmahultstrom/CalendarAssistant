@@ -1,4 +1,4 @@
-package com.example.calendarassistant.model
+package com.example.calendarassistant.ui.screens.components
 
 import androidx.annotation.DrawableRes
 

@@ -4,8 +4,8 @@ import android.util.Log
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.model.CalendarEvent
 import com.example.calendarassistant.utilities.KthMapper
-import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
-import com.example.calendarassistant.model.mock.calendar.MockEvent
+import com.example.calendarassistant.model.mock.MockCalendarEvent
+import com.example.calendarassistant.model.mock.MockEvent
 import com.example.calendarassistant.model.travel.Deviation
 import com.example.calendarassistant.model.travel.DeviationData
 import com.example.calendarassistant.model.travel.DeviationInformation
@@ -191,8 +191,6 @@ class NetworkService : INetworkService {
     private suspend fun processGoogleDirectionsResponse(response: GoogleDirectionsResponse) {
         val legs = response.routes.first().legs.first()
 
-        Log.d(TAG, legs.toString())
-
         transitStepsDeviations.clear()
         transitSteps.clear()
         // Collects steps where transit
@@ -200,8 +198,6 @@ class NetworkService : INetworkService {
 
         val departureInformation = legs.departureTime
         val endLocation = legs.endLocation
-
-        Log.d(TAG, departureInformation.toString())
 
         updateTravelInformation(departureInformation, endLocation)
     }
@@ -323,17 +319,16 @@ class NetworkService : INetworkService {
         val siteId = siteIdResponse.body()?.stopLocationOrCoordLocation?.firstOrNull()
             ?.stopLocation?.mainMastExtId?.takeLast(4) ?: return SlRealtimeDataResponse()
 
-        Log.d(TAG, "site id: $siteId")
-
         val realTimeDataResponse = SlRealTimeApi.getRealtimeDataBySiteId(siteId)
         if (!realTimeDataResponse.isSuccessful) {
             throw INetworkService.NetworkException("Unsuccessful network call to SL RealTime api")
         }
 
+        // TODO: Vad händer här?
         Log.d(TAG, "station name: ${realTimeDataResponse.body()?.responseData?.buses?.find { 
             ((((it.lineNumber == step.transitDetails?.line?.shortName) && 
                     (it.destination == step.transitDetails?.headsign) && 
-                    (areTimesSimilar(
+                    (compareTimeStrings(
                         it.timeTabledDateTime.toString(), DateHelpers.formatSecondsToDateTimeString(
                             step.transitDetails?.departureTime?.value
                         )))
@@ -370,9 +365,6 @@ class NetworkService : INetworkService {
         scheduledDepartureTimeGoogle: Int?,
         realTimeData: SlRealtimeDataResponse
     ): DeviationData {
-
-        Log.d(TAG, realTimeData.toString())
-
         val scheduledDepartureTimeSl: String?
         val expectedDepartureTimeSl: String?
         val deviations: List<Deviation>
@@ -386,7 +378,7 @@ class NetworkService : INetworkService {
             "BUS" -> {
                 val busData = realTimeData.responseData?.buses?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
-                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                            && (compareTimeStrings(it.timeTabledDateTime.toString(),
                         DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = busData?.timeTabledDateTime
@@ -396,7 +388,7 @@ class NetworkService : INetworkService {
             "SUBWAY" -> {
                 val metroData = realTimeData.responseData?.metros?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
-                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                            && (compareTimeStrings(it.timeTabledDateTime.toString(),
                         DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = metroData?.timeTabledDateTime
@@ -406,7 +398,7 @@ class NetworkService : INetworkService {
             "TRAIN" -> {
                 val trainData = realTimeData.responseData?.trains?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
-                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                            && (compareTimeStrings(it.timeTabledDateTime.toString(),
                         DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = trainData?.timeTabledDateTime
@@ -416,7 +408,7 @@ class NetworkService : INetworkService {
             "TRAM" -> {
                 val tramData = realTimeData.responseData?.trams?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
-                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                            && (compareTimeStrings(it.timeTabledDateTime.toString(),
                         DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = tramData?.timeTabledDateTime
@@ -426,7 +418,7 @@ class NetworkService : INetworkService {
             "SHIP" -> {
                 val shipData = realTimeData.responseData?.ships?.find {
                     ((((it.lineNumber == lineShortNameGoogle) && (it.destination == headSignGoogle)
-                            && (areTimesSimilar(it.timeTabledDateTime.toString(),
+                            && (compareTimeStrings(it.timeTabledDateTime.toString(),
                         DateHelpers.formatSecondsToDateTimeString(scheduledDepartureTimeGoogle))))))
                 }
                 scheduledDepartureTimeSl = shipData?.timeTabledDateTime
@@ -444,14 +436,10 @@ class NetworkService : INetworkService {
             scheduledDepartureTimeGoogle, scheduledDepartureTimeSl, expectedDepartureTimeSl
         )
         val delayInMinutes = calculateDelay(scheduledDepartureTimeGoogle, expectedDepartureTimeSl)
-        Log.d(
-            TAG, "DELAY JÄMFÖRELSE: delayAbsInMinutes: $delayAbsInMinutes " +
-                " || delayInMinutes: $delayInMinutes")
-
         return DeviationData(delayInMinutes, deviations)
     }
 
-    fun areTimesSimilar(
+    private fun compareTimeStrings(
         time1: String,
         time2: String
     ): Boolean {

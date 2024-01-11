@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.model.BottomMenuContent
+import com.example.calendarassistant.ui.screens.components.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
 import com.example.calendarassistant.ui.screens.components.InformationSection
-import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.AlarmOffsetSection
-import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.SettingButton
-import com.example.calendarassistant.ui.screens.components.settingsScreenComponents.NotificationSettingsSection
+import com.example.calendarassistant.ui.screens.components.settings_screen.AlarmOffsetSection
+import com.example.calendarassistant.ui.screens.components.settings_screen.SettingButton
+import com.example.calendarassistant.ui.screens.components.settings_screen.NotificationSettingsSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
 

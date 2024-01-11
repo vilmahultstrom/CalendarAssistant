@@ -3,12 +3,12 @@ package com.example.calendarassistant.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.calendarassistant.model.alarm.AndroidAlarmScheduler
-import com.example.calendarassistant.model.google.GoogleAuthClient
-import com.example.calendarassistant.model.alarm.AlarmItem
 import com.example.calendarassistant.model.Calendar
 import com.example.calendarassistant.model.CalendarEvent
 import com.example.calendarassistant.model.Calendars
+import com.example.calendarassistant.model.alarm.AlarmItem
+import com.example.calendarassistant.model.alarm.AndroidAlarmScheduler
+import com.example.calendarassistant.model.google.GoogleAuthClient
 import com.example.calendarassistant.model.services.CalendarService
 import com.example.calendarassistant.utilities.DateHelpers
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +26,7 @@ class CalendarVM @Inject constructor(
     private val calendarService: CalendarService,
     private val googleAuthClient: GoogleAuthClient,
     private val androidAlarmScheduler: AndroidAlarmScheduler
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState())
     val uiState = _uiState.asStateFlow()
@@ -37,12 +37,12 @@ class CalendarVM @Inject constructor(
     private val _calendars = MutableStateFlow<List<Calendar>>(listOf()) //calendars
     val calendars = _calendars.asStateFlow()
 
-    fun setAlarm(event: CalendarEvent){
-        var timeConverted = DateHelpers.convertUnixTimeToLocalDateTime(event.startDateTime!!)
-        var alarmItem= AlarmItem(
-            time=timeConverted,
-            title="Timer set!",
-            message=event.summary!!
+    fun setAlarm(event: CalendarEvent) {
+        val timeConverted = DateHelpers.convertUnixTimeToLocalDateTime(event.startDateTime!!)
+        val alarmItem = AlarmItem(
+            time = timeConverted,
+            title = "Timer set!",
+            message = event.summary!!
         )
         androidAlarmScheduler.schedule(alarmItem)
     }
@@ -80,9 +80,13 @@ class CalendarVM @Inject constructor(
     /**
      * hämtar alla events för den dagen som har blivit vald på skärmen
      */
-    private fun fetchEventsForSelectedDay(){
+    private fun fetchEventsForSelectedDay() {
         //val date: LocalDate = LocalDate.of(_selectedYearIndex.value, _selectedMonthIndex.value, _selectedDayIndex.value)
-        val date: LocalDate = LocalDate.of(_uiState.value.selectedYearIndex, uiState.value.selectedMonthIndex, uiState.value.selectedDayIndex)
+        val date: LocalDate = LocalDate.of(
+            _uiState.value.selectedYearIndex,
+            uiState.value.selectedMonthIndex,
+            uiState.value.selectedDayIndex
+        )
         Log.d(TAG, date.toString())
         calendarService.getUpcomingEventsForOneDay(date)
     }
@@ -93,8 +97,8 @@ class CalendarVM @Inject constructor(
     private fun getAllEventsWithLocationFromCalendars() {
         var totalEvents = 0
         val events = mutableListOf<CalendarEvent>()
-        for(calendar in calendars.value) {
-            for (event in calendar.calendarEvents){
+        for (calendar in calendars.value) {
+            for (event in calendar.calendarEvents) {
                 totalEvents++
                 if (event.location != null) {
                     events.add(event)
@@ -115,12 +119,18 @@ class CalendarVM @Inject constructor(
 
     fun updateCalendar() {
         Calendars.setCalendarList(listOf())
-        calendarService.getUpcomingEventsForOneDay(startDate = LocalDate.of(_uiState.value.selectedYearIndex, uiState.value.selectedMonthIndex, uiState.value.selectedDayIndex))
+        calendarService.getUpcomingEventsForOneDay(
+            startDate = LocalDate.of(
+                _uiState.value.selectedYearIndex,
+                uiState.value.selectedMonthIndex,
+                uiState.value.selectedDayIndex
+            )
+        )
     }
 
     fun setStartIndex() {
-        Log.d(TAG, "Updating startindex: " + (uiState.value.selectedDayIndex -1).toString())
-        _uiState.update { it.copy(startIndex = (it.selectedDayIndex -1).toString()) }
+        Log.d(TAG, "Updating startindex: " + (uiState.value.selectedDayIndex - 1).toString())
+        _uiState.update { it.copy(startIndex = (it.selectedDayIndex - 1).toString()) }
     }
 
 

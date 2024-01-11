@@ -1,12 +1,9 @@
 package com.example.calendarassistant.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -17,15 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.model.BottomMenuContent
+import com.example.calendarassistant.ui.screens.components.BottomMenuContent
 import com.example.calendarassistant.ui.screens.components.BottomMenu
-import com.example.calendarassistant.ui.screens.components.calendarScreenComponents.DatePickSection
-import com.example.calendarassistant.ui.screens.components.calendarScreenComponents.EventsSection
+import com.example.calendarassistant.ui.screens.components.calendar_screen.DatePickSection
+import com.example.calendarassistant.ui.screens.components.calendar_screen.EventsSection
 import com.example.calendarassistant.ui.screens.components.InformationSection
 import com.example.calendarassistant.ui.theme.DeepBlue
 import com.example.calendarassistant.ui.viewmodels.CalendarVM
 import com.example.calendarassistant.utilities.DateHelpers
-import java.time.LocalDate
 
 @Composable
 fun CalendarScreen(

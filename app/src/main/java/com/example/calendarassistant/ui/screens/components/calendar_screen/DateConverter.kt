@@ -1,4 +1,4 @@
-package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
+package com.example.calendarassistant.ui.screens.components.calendar_screen
 
 import java.time.Instant
 import java.time.LocalDateTime

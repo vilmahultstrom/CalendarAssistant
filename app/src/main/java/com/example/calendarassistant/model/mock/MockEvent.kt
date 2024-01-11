@@ -1,4 +1,4 @@
-package com.example.calendarassistant.model.mock.calendar
+package com.example.calendarassistant.model.mock
 
 import com.example.calendarassistant.utilities.DateHelpers
 import java.time.ZoneId
