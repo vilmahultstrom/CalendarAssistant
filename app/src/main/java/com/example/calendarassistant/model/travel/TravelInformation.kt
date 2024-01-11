@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-
+/**
+ *  Keeps and handles travel information from Google Maps
+ */
 object TravelInformation {
 
     private val _transitSteps = MutableStateFlow<List<Steps>>(listOf())
@@ -33,7 +35,6 @@ object TravelInformation {
         _transitSteps.value = transitSteps
     }
 
-    //TODO: funktionsnamn till "getNextEventTravelInformation" ?
     fun getNextEventTravelInformation() : SharedFlow<TravelInformationData> = travelInformationData.asSharedFlow()
 }
 

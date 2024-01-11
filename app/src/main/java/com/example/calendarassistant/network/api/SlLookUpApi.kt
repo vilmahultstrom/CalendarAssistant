@@ -1,6 +1,5 @@
-package com.example.calendarassistant.network
+package com.example.calendarassistant.network.api
 
-import android.util.Log
 import com.example.calendarassistant.network.dto.sl.stationLookup.SlStationLookupResponse
 import retrofit2.Response
 import retrofit2.http.GET

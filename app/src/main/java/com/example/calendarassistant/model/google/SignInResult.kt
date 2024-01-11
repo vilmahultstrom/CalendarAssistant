@@ -1,4 +1,4 @@
-package com.example.calendarassistant.login
+package com.example.calendarassistant.model.google
 
 data class SignInResult(
     val data: UserData?,

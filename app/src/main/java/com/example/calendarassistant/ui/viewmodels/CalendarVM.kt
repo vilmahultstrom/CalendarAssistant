@@ -3,14 +3,13 @@ package com.example.calendarassistant.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.calendarassistant.data.AndroidAlarmScheduler
-import com.example.calendarassistant.login.GoogleAuthClient
-import com.example.calendarassistant.login.SignInState
-import com.example.calendarassistant.model.AlarmItem
-import com.example.calendarassistant.model.calendar.Calendar
-import com.example.calendarassistant.model.calendar.CalendarEvent
-import com.example.calendarassistant.model.calendar.Calendars
-import com.example.calendarassistant.services.CalendarService
+import com.example.calendarassistant.model.alarm.AndroidAlarmScheduler
+import com.example.calendarassistant.model.google.GoogleAuthClient
+import com.example.calendarassistant.model.alarm.AlarmItem
+import com.example.calendarassistant.model.Calendar
+import com.example.calendarassistant.model.CalendarEvent
+import com.example.calendarassistant.model.Calendars
+import com.example.calendarassistant.model.services.CalendarService
 import com.example.calendarassistant.utilities.DateHelpers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 private const val TAG = "CalendarVM"

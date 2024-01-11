@@ -1,4 +1,4 @@
-package com.example.calendarassistant.model
+package com.example.calendarassistant.model.alarm
 
 import java.time.LocalDate
 import java.time.LocalDateTime

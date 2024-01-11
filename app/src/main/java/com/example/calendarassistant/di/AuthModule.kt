@@ -1,8 +1,8 @@
 package com.example.calendarassistant.di
 
 import android.content.Context
-import com.example.calendarassistant.login.GoogleCalendar
-import com.example.calendarassistant.login.GoogleAuthClient
+import com.example.calendarassistant.model.google.GoogleCalendar
+import com.example.calendarassistant.model.google.GoogleAuthClient
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import dagger.Module

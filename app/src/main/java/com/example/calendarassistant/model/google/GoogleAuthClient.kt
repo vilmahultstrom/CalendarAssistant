@@ -1,4 +1,4 @@
-package com.example.calendarassistant.login
+package com.example.calendarassistant.model.google
 
 import android.content.Context
 import android.content.Intent

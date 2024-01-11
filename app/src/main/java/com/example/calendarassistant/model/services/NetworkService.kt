@@ -1,18 +1,18 @@
-package com.example.calendarassistant.services
+package com.example.calendarassistant.model.services
 
 import android.util.Log
 import com.example.calendarassistant.enums.TravelMode
-import com.example.calendarassistant.model.calendar.CalendarEvent
-import com.example.calendarassistant.model.kth.KthMapper
+import com.example.calendarassistant.model.CalendarEvent
+import com.example.calendarassistant.utilities.KthMapper
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.travel.Deviation
 import com.example.calendarassistant.model.travel.DeviationData
 import com.example.calendarassistant.model.travel.DeviationInformation
 import com.example.calendarassistant.model.travel.TravelInformation
-import com.example.calendarassistant.network.GoogleApi
-import com.example.calendarassistant.network.SlNearbyStopsApi
-import com.example.calendarassistant.network.SlRealTimeApi
+import com.example.calendarassistant.network.api.GoogleApi
+import com.example.calendarassistant.network.api.SlNearbyStopsApi
+import com.example.calendarassistant.network.api.SlRealTimeApi
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
 import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
 import com.example.calendarassistant.network.dto.google.directions.internal.EndLocation
@@ -444,7 +444,8 @@ class NetworkService : INetworkService {
             scheduledDepartureTimeGoogle, scheduledDepartureTimeSl, expectedDepartureTimeSl
         )
         val delayInMinutes = calculateDelay(scheduledDepartureTimeGoogle, expectedDepartureTimeSl)
-        Log.d(TAG, "DELAY JÄMFÖRELSE: delayAbsInMinutes: $delayAbsInMinutes " +
+        Log.d(
+            TAG, "DELAY JÄMFÖRELSE: delayAbsInMinutes: $delayAbsInMinutes " +
                 " || delayInMinutes: $delayInMinutes")
 
         return DeviationData(delayInMinutes, deviations)

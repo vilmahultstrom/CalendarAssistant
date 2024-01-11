@@ -1,4 +1,4 @@
-package com.example.calendarassistant.model
+package com.example.calendarassistant.model.alarm
 
 object AlarmOffset {
     var alarmOffsetInMinutes: Long = 0

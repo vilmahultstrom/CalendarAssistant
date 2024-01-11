@@ -1,7 +1,6 @@
-package com.example.calendarassistant.network
+package com.example.calendarassistant.network.api
 
 import com.example.calendarassistant.network.dto.sl.realtimeData.SlRealtimeDataResponse
-import com.example.calendarassistant.network.dto.sl.stationLookup.SlStationLookupResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -1,4 +1,4 @@
-package com.example.calendarassistant.data
+package com.example.calendarassistant.model.alarm
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -7,15 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.example.calendarassistant.AlarmReceiver
-import com.example.calendarassistant.interfaces.AlarmScheduler
-import com.example.calendarassistant.model.AlarmItem
 import java.time.ZoneId
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.core.content.getSystemService
-import com.example.calendarassistant.model.AlarmOffset
-import com.example.calendarassistant.model.calendar.CalendarEvent
+import com.example.calendarassistant.model.CalendarEvent
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.regex.Pattern

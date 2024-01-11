@@ -1,12 +1,12 @@
-package com.example.calendarassistant.login
+package com.example.calendarassistant.model.google
 
 import android.accounts.Account
 import android.content.Context
 import android.content.Intent
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.calendar.CalendarEvent
-import com.example.calendarassistant.model.calendar.CalendarInformation
-import com.example.calendarassistant.model.calendar.Calendars
+import com.example.calendarassistant.model.CalendarEvent
+import com.example.calendarassistant.model.CalendarInformation
+import com.example.calendarassistant.model.Calendars
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
@@ -109,7 +109,7 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                 val calendars = calendarService.CalendarList().list().execute()
                 val listItems = calendars.items
 
-                val calendarList = mutableListOf<com.example.calendarassistant.model.calendar.Calendar>()
+                val calendarList = mutableListOf<com.example.calendarassistant.model.Calendar>()
 
                 for (calendar in listItems) {
                     val id = calendar.id
@@ -154,7 +154,7 @@ class GoogleCalendar @Inject constructor(private val context: Context) {
                             description = description
                         )
 
-                        val newCalendar = com.example.calendarassistant.model.calendar.Calendar(
+                        val newCalendar = com.example.calendarassistant.model.Calendar(
                             calendarInformation = calendarInformation,
                             calendarEvents = calendarEvents
                         )

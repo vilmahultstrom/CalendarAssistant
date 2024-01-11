@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".login.SignIn"
+            android:name=".login_notused.SignIn"
             android:exported="true"
             android:label="test"
             android:theme="@style/Theme.CalendarAssistant">

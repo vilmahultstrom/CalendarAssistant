@@ -1,4 +1,4 @@
-package com.example.calendarassistant.network
+package com.example.calendarassistant.network.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

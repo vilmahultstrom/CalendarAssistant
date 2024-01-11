@@ -1,4 +1,4 @@
-package com.example.calendarassistant.model.calendar
+package com.example.calendarassistant.model
 
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow

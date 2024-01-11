@@ -1,8 +1,7 @@
-package com.example.calendarassistant.network
+package com.example.calendarassistant.network.api
 
 import com.example.calendarassistant.enums.TravelMode
 import com.example.calendarassistant.network.dto.google.directions.GoogleDirectionsResponse
-import com.example.calendarassistant.network.dto.google.directions.internal.DepartureTime
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

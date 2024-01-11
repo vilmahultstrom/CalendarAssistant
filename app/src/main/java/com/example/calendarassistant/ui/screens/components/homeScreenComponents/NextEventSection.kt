@@ -25,11 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.calendar.CalendarEvent
-import com.example.calendarassistant.ui.theme.CharcoalGrey
+import com.example.calendarassistant.model.CalendarEvent
 import com.example.calendarassistant.ui.theme.DeepPink
 import com.example.calendarassistant.ui.theme.LightRed
-import com.example.calendarassistant.ui.theme.Plum
 import com.example.calendarassistant.ui.theme.TextWhite
 
 @Composable

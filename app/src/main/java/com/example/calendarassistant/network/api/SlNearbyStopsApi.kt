@@ -1,4 +1,4 @@
-package com.example.calendarassistant.network
+package com.example.calendarassistant.network.api
 
 import com.example.calendarassistant.network.dto.sl.nearbyStops.SlNearbyStopsResponse
 import retrofit2.Response

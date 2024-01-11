@@ -16,26 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.login.GoogleAuthClient
+import com.example.calendarassistant.model.google.GoogleAuthClient
 import com.example.calendarassistant.ui.screens.CalendarScreen
 import com.example.calendarassistant.ui.screens.HomeScreen
-import com.example.calendarassistant.ui.screens.LoginScreen
 import com.example.calendarassistant.ui.screens.SettingsScreen
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
 import com.example.calendarassistant.ui.viewmodels.CalendarVM
 import com.example.calendarassistant.ui.viewmodels.HomeVM
 import com.example.calendarassistant.ui.viewmodels.SettingsVM
-import com.example.calendarassistant.ui.viewmodels.TestVM
-import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MainActivity"
@@ -76,7 +69,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val testVM = hiltViewModel<TestVM>()
                     val homeVM = hiltViewModel<HomeVM>()
                     val calendarVM = hiltViewModel<CalendarVM>()
                     val navController = rememberNavController()
@@ -111,9 +103,6 @@ class MainActivity : ComponentActivity() {
                                     settingsVM.signOut()
                                 })
 
-                        }
-                        composable(BMRoutes.Login.route) {
-                            LoginScreen(testVM, navController)
                         }
                     }
                 }

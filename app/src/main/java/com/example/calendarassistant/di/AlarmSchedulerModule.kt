@@ -1,7 +1,7 @@
 package com.example.calendarassistant.di
 
 import android.content.Context
-import com.example.calendarassistant.data.AndroidAlarmScheduler
+import com.example.calendarassistant.model.alarm.AndroidAlarmScheduler
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

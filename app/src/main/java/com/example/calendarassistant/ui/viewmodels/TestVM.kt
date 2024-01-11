@@ -1,24 +1,24 @@
 package com.example.calendarassistant.ui.viewmodels
-
+/*
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calendarassistant.enums.TravelMode
-import com.example.calendarassistant.login.SignInInterface
-import com.example.calendarassistant.model.calendar.Calendars
+import com.example.calendarassistant.login_notused.SignInInterface
+import com.example.calendarassistant.model.Calendars
 import com.example.calendarassistant.model.mock.calendar.MockCalendarEvent
 import com.example.calendarassistant.model.mock.calendar.MockEvent
 import com.example.calendarassistant.model.travel.DeviationInformation
 import com.example.calendarassistant.model.travel.TravelInformation
 import com.example.calendarassistant.model.travel.TransitDeviationData
 import com.example.calendarassistant.model.travel.TravelInformationData
-import com.example.calendarassistant.network.GoogleApi
+import com.example.calendarassistant.network.api.GoogleApi
 import com.example.calendarassistant.network.dto.google.directions.internal.Steps
 import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.network.location.LocationService
-import com.example.calendarassistant.services.NetworkService
+import com.example.calendarassistant.model.services.NetworkService
 import com.example.calendarassistant.utilities.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -204,3 +204,4 @@ class TestVM @Inject constructor(
 // TODO:
 //  Behöver vi ha lon & lat i ui (förutom för de gps funktionerna som ligger i HomeScreen) eller
 //  är det för att trigga uppdatering av ui?
+*/

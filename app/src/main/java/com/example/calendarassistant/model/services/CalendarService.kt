@@ -1,8 +1,8 @@
-package com.example.calendarassistant.services
+package com.example.calendarassistant.model.services
 
 import android.util.Log
-import com.example.calendarassistant.login.GoogleAuthClient
-import com.example.calendarassistant.login.GoogleCalendar
+import com.example.calendarassistant.model.google.GoogleAuthClient
+import com.example.calendarassistant.model.google.GoogleCalendar
 import java.time.LocalDate
 
 class CalendarService(

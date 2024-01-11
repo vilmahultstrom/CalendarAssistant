@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
+/**
+ *  Keeps and updates deviation information for transit (SL)
+ */
 
 object DeviationInformation {
-
-//    private val _transitDeviations = MutableStateFlow<List<DeviationData>>(listOf())
-//    var transitDeviations: StateFlow<List<DeviationData>> = _transitDeviations
 
     private var deviationInformation = MutableSharedFlow<TransitDeviationData>()
 
@@ -22,8 +22,6 @@ object DeviationInformation {
                 transitStepsDeviations = transitStepsDeviations
             )
         )
-
-        //_transitDeviations.value = transitStepsDeviations
     }
 
     fun getNextTransitDeviationsInformation():

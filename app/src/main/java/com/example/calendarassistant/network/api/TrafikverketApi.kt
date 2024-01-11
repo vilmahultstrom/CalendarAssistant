@@ -1,4 +1,4 @@
-package com.example.calendarassistant.network
+package com.example.calendarassistant.network.api
 
 import retrofit2.Response
 import retrofit2.http.POST

@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.example.calendarassistant.data.AndroidAlarmScheduler
-import com.example.calendarassistant.model.AlarmItem
+import com.example.calendarassistant.model.alarm.AndroidAlarmScheduler
+import com.example.calendarassistant.model.alarm.AlarmItem
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package com.example.calendarassistant.login
+package com.example.calendarassistant.login_notused
 
 interface SignInInterface {
     fun attemptSignIn()

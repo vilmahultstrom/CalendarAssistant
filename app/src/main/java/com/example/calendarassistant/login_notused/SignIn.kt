@@ -1,4 +1,4 @@
-package com.example.calendarassistant.login
+package com.example.calendarassistant.login_notused
 
 import android.app.Activity
 import android.content.IntentSender
@@ -19,18 +19,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calendarassistant.R
 import com.example.calendarassistant.enums.BMRoutes
-import com.example.calendarassistant.ui.screens.CalendarScreen
-import com.example.calendarassistant.ui.screens.HomeScreen
-import com.example.calendarassistant.ui.screens.LoginScreen
+import com.example.calendarassistant.model.google.GoogleCalendar
 import com.example.calendarassistant.ui.theme.CalendarAssistantTheme
-import com.example.calendarassistant.ui.viewmodels.TestVM
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
 
-const private val TAG= "GoogleSignIn"
+private const val TAG= "GoogleSignIn"
 
 /**
  * followed this tutorial:
@@ -55,8 +52,7 @@ class SignIn: AppCompatActivity(), SignInInterface {
         //setContentView(R.layout.activity_main)
 
         oneTapClient = Identity.getSignInClient(this)
-        Log.d(TAG, "oneTapClient is not null: " + (oneTapClient!=null).toString())
-        Log.d(TAG, "onetapClient string: "+ oneTapClient.toString())
+        Log.d(TAG, "oneTapClient string: $oneTapClient")
         signUpRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -108,9 +104,9 @@ class SignIn: AppCompatActivity(), SignInInterface {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val testVM = hiltViewModel<TestVM>()
-                    testVM.setSignInAttemptListener(this)
-                    testVM.setFetchEventsGoogleListener(this)
+                    //val testVM = hiltViewModel<TestVM>()
+                    //testVM.setSignInAttemptListener(this)
+                    //testVM.setFetchEventsGoogleListener(this)
 
                     val navController = rememberNavController()
                     NavHost(
@@ -118,7 +114,7 @@ class SignIn: AppCompatActivity(), SignInInterface {
                         startDestination = BMRoutes.Login.route
                     ) {
                         composable(BMRoutes.Login.route) {
-                            LoginScreen(testVM, navController)
+                            //LoginScreen(testVM, navController)
                         }
                     }
                 }
@@ -129,8 +125,7 @@ class SignIn: AppCompatActivity(), SignInInterface {
     override fun attemptSignIn() {
         //testInit()
         Log.d(TAG, "inside attemptSignIn")
-        Log.d(TAG, "oneTapClient is not null: " + (oneTapClient!=null).toString())
-        Log.d(TAG, "onetapClient string: "+oneTapClient.toString())
+        Log.d(TAG, "oneTapClient string: $oneTapClient")
         oneTapClient.beginSignIn(signUpRequest)
             .addOnSuccessListener(this) { result ->
                 try {

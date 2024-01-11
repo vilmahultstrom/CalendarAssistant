@@ -1,6 +1,5 @@
 package com.example.calendarassistant.ui.screens.components.calendarScreenComponents
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calendarassistant.R
-import com.example.calendarassistant.model.calendar.CalendarEvent
+import com.example.calendarassistant.model.CalendarEvent
 import com.example.calendarassistant.ui.theme.ButtonBlue
-import com.example.calendarassistant.ui.theme.DarkViolet
 import com.example.calendarassistant.ui.theme.LightRed
 import com.example.calendarassistant.ui.theme.RoyalPurple80
 import com.example.calendarassistant.ui.theme.TextWhite
