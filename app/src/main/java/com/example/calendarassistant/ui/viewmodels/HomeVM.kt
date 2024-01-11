@@ -61,10 +61,9 @@ class HomeVM @Inject constructor(
         )
     )
     val uiState: StateFlow<UiState> = _uiState
-//    val uiState: StateFlow<UiState> // TODO: vilken variant? Detta är mer robust, men speler ej så stor roll...
-//        get() = _uiState.asStateFlow()
 
     val transitSteps: StateFlow<List<Steps>> = TravelInformation.transitSteps
+
 
     fun getUsername(): String {
         val user = googleAuthClient.getSignedInUser()
@@ -93,7 +92,6 @@ class HomeVM @Inject constructor(
      *  Test to get events with place data
      *  TODO: Should maybe live in model
      */
-
     private fun getAllEventsWithLocationFromCalendars() {
         var totalEvents = 0
         val events = mutableListOf<CalendarEvent>()

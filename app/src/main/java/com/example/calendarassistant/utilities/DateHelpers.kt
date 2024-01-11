@@ -23,6 +23,11 @@ data class TimeToLeaveDisplay (
 
 object DateHelpers {
 
+    fun localDateTimeToString(date: LocalDateTime): String {
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        return date.format(dateTimeFormatter)
+    }
+
     fun getCurrentMonthDates(date: LocalDate): List<String> {
         val yearMonth = YearMonth.of(date.year, date.month)
         val daysInMonth = yearMonth.lengthOfMonth()
@@ -30,13 +35,10 @@ object DateHelpers {
         return (1..daysInMonth).map { it.toString() }
     }
 
-
-
     fun convertUnixTimeToLocalDateTime(unixTime: Long): LocalDateTime {
         val instant = Instant.ofEpochSecond(unixTime)
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
     }
-
 
     /**
      *  DateString format is "2024-01-19T09:00:00.000Z"
@@ -47,7 +49,6 @@ object DateHelpers {
         val systemTimeZone = ZoneId.systemDefault()
         return utcDateTime.withZoneSameInstant(systemTimeZone)
     }
-
 
     /**
      *  Returns a string with the format HHh:MMm from
@@ -69,7 +70,6 @@ object DateHelpers {
             TimeToLeaveDisplay("${minutes.absoluteValue}m", onTime)
         }
     }
-
 
     /**
      * converts from seconds since Unix epoch (January 1, 1970, 00:00:00 GMT) to format of pattern "HH:mm yyyy-MM-dd"

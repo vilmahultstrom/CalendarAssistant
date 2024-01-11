@@ -6,9 +6,9 @@ import android.content.IntentSender
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calendarassistant.model.alarm.AlarmOffset
 import com.example.calendarassistant.model.google.GoogleAuthClient
 import com.example.calendarassistant.model.google.SignInState
-import com.example.calendarassistant.model.alarm.AlarmOffset
 import com.example.calendarassistant.model.services.CalendarService
 import com.example.calendarassistant.utilities.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,9 +64,13 @@ class SettingsVM @Inject constructor(
             if (resultCode == RESULT_OK && data != null) {
                 val signInResult = googleAuthClient.getSignInResultFromIntent(data)
                 calendarService.getUpcomingEventsForOneWeek()
-                _signInState.value = SignInState(isSignInSuccessful = true, signInError = "Successfully signed in")
+                _signInState.value =
+                    SignInState(isSignInSuccessful = true, signInError = "Successfully signed in")
             } else {
-                Log.d(TAG, "Error signing in, Result code: " + resultCode.toString() + " " + data.toString())
+                Log.d(
+                    TAG,
+                    "Error signing in, Result code: " + resultCode.toString() + " " + data.toString()
+                )
             }
         }
     }
@@ -78,4 +82,13 @@ class SettingsVM @Inject constructor(
     fun setAlarmOffset(minutes: Long) {
         AlarmOffset.setAlarmOffset(minutes = minutes)
     }
+
+
+    /*    private fun saveSettings() {
+            SettingsStorage.saveSettings(
+                getApplication<Application>().applicationContext,
+                _settings.value,
+                LocalDateTime.now()
+            )
+        }*/
 }
