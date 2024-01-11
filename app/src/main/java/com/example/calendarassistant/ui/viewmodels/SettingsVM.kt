@@ -1,6 +1,7 @@
 package com.example.calendarassistant.ui.viewmodels
 
 import android.app.Activity.RESULT_OK
+import android.app.Application
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
@@ -13,8 +14,10 @@ import com.example.calendarassistant.login.GoogleAuthClient
 import com.example.calendarassistant.login.SignInResult
 import com.example.calendarassistant.login.SignInState
 import com.example.calendarassistant.model.AlarmOffset
+import com.example.calendarassistant.persistence.SettingsStorage
 import com.example.calendarassistant.services.CalendarService
 import com.example.calendarassistant.utilities.NotificationHelper
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +26,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 private const val TAG = "SettingsVm"
@@ -83,4 +87,13 @@ class SettingsVM @Inject constructor(
     fun setAlarmOffset(minutes: Long) {
         AlarmOffset.setAlarmOffset(minutes = minutes)
     }
+
+
+/*    private fun saveSettings() {
+        SettingsStorage.saveSettings(
+            getApplication<Application>().applicationContext,
+            _settings.value,
+            LocalDateTime.now()
+        )
+    }*/
 }

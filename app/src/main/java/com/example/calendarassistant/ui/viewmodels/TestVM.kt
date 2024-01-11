@@ -30,11 +30,6 @@ import javax.inject.Inject
 
 private const val TAG = "TestVm"
 
-/*
-interface CalendarAssistantViewModel {
-    val uiState: StateFlow<UiState>
-}
-*/
 
 @HiltViewModel
 class TestVM @Inject constructor(
@@ -109,15 +104,14 @@ class TestVM @Inject constructor(
         isFetchingLocationData = false
     }
 
+    private fun clearLocationData() {
+        _uiState.update { it.copy(currentLatitude = "", currentLongitude = "") }
+    }
 
     private fun fetchTravelInformation() {
         viewModelScope.launch {
             networkService.getTravelInformation(TravelMode.Transit, Calendars.firstEventWithLocation.value) // TODO: ändra till valda TravelMode
         }
-    }
-
-    private fun clearLocationData() {
-        _uiState.update { it.copy(currentLatitude = "", currentLongitude = "") }
     }
 
     /*fun setTravelMode(mode: TravelMode) {
@@ -157,12 +151,6 @@ class TestVM @Inject constructor(
                 networkService.getDeviationInformation()
             }
 
-            /**
-             * TODO:
-             *  Om vi inte vill anropa GPS hela tiden? Eller vill vi det?
-             *  Borde vi ha ett intervall för hur mycket lon och lat ska ändras för att kolla current position igen?
-             */
-
             // Coroutine for collecting location updates when
             launch {
                 LocationRepository.getLocationUpdates().collect { location ->
@@ -200,7 +188,3 @@ class TestVM @Inject constructor(
         }
     }
 }
-
-// TODO:
-//  Behöver vi ha lon & lat i ui (förutom för de gps funktionerna som ligger i HomeScreen) eller
-//  är det för att trigga uppdatering av ui?

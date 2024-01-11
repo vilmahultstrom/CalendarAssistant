@@ -93,18 +93,6 @@ fun TravelInformationExpandableSection(
     }
 }
 
-// TODO: move to vm
-private fun isContainingInfo(deviationInfo: DeviationData) : Boolean {
-    if (!deviationInfo.deviations.isNullOrEmpty()) {
-        // Checks if any step has delay or deviations info
-        return deviationInfo.deviations.any { item ->
-            item.importanceLevel != 0 || item.text.isNullOrEmpty()
-                    || !item.consequence.isNullOrEmpty()
-        }
-    }
-    return false
-}
-
 @Composable
 fun TravelStepCard(
     departureTime: String?,
@@ -243,4 +231,16 @@ fun DeviationText(
                 .padding(horizontal = 8.dp)
         )
     }
+}
+
+// TODO: move to vm or helper class?
+private fun isContainingInfo(deviationInfo: DeviationData) : Boolean {
+    if (!deviationInfo.deviations.isNullOrEmpty()) {
+        // Checks if any step has delay or deviations info
+        return deviationInfo.deviations.any { item ->
+            item.importanceLevel != 0 || item.text.isNullOrEmpty()
+                    || !item.consequence.isNullOrEmpty()
+        }
+    }
+    return false
 }
