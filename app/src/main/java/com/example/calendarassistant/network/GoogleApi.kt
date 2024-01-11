@@ -79,4 +79,13 @@ object GoogleApi {
         return directionsInstance.getDirectionsArrivalTime(arrivalTime, originString, destination, mode.toString())
     }
 
+    suspend fun getDirectionsByCoordinatesOriginDestinationPlace(
+        origin: Pair<String, String>,
+        destination: String,
+        mode: TravelMode
+    ): Response<GoogleDirectionsResponse> {
+        val originString = origin.first + "," + origin.second
+        return directionsInstance.getDirections(originString, destination, mode.toString())
+    }
+
 }

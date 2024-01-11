@@ -23,12 +23,11 @@ import com.example.calendarassistant.network.location.LocationRepository
 import com.example.calendarassistant.utilities.DateHelpers
 import com.example.calendarassistant.utilities.TimeToLeaveDisplay
 import java.time.Duration
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import java.util.Locale
 
 private const val TAG = "NetworkService"
 
@@ -75,7 +74,7 @@ class NetworkService : INetworkService {
             //val arrivalTime = getArrivalTime(nextEvent.start)
 
             // Google api-call
-            val response = fetchGoogleDirections(
+            var response = fetchGoogleDirectionsWithArrivalTime(
                 calendarEvent.startDateTime,
                 lastLocationCoordinates,
                 location,
@@ -89,9 +88,15 @@ class NetworkService : INetworkService {
                 throw INetworkService.NetworkException("No directions found")
             }
 
-
-
             if (travelMode == TravelMode.Transit) {
+
+                /* If late to transit, check next departure, //TODO: This is a quick fix, somehow make it so two calls to google isnt needed */
+                val departureTime = getFirstTransitDeparture(response)
+                val currentTime = ZonedDateTime.now().toEpochSecond()
+                if (departureTime != null && currentTime > departureTime) {
+                    response = fetchGoogleDirectionsNoTime(lastLocationCoordinates, location, travelMode)
+                }
+                /**************************************************************/
                 processGoogleDirectionsResponse(response)
             } else {
                 processNonTransitResponse(response, calendarEvent.startDateTime)
@@ -101,6 +106,17 @@ class NetworkService : INetworkService {
             Log.d(TAG, e.printStackTrace().toString())
             Log.e(TAG, "Error in getTravelInformation: ${e.message}")
         }
+    }
+
+    private fun getFirstTransitDeparture(response: GoogleDirectionsResponse) : Int? {
+        val steps = response.routes.first().legs.first().steps
+
+        for (step in steps) {
+            if (step.travelMode == TravelMode.Transit.toString().uppercase(Locale.ENGLISH)) {
+                return step.transitDetails?.departureTime?.value
+            }
+        }
+        return null
     }
 
     private fun getLocationOrThrow(): Pair<String, String> {
@@ -116,7 +132,7 @@ class NetworkService : INetworkService {
         return ZonedDateTime.parse(time).toEpochSecond() // TODO: vad gör denna, när påverkar den tiden?
     }
 
-    private suspend fun fetchGoogleDirections(
+    private suspend fun fetchGoogleDirectionsWithArrivalTime(
         arrivalTime: Long,
         origin: Pair<String, String>,
         destination: String,
@@ -124,6 +140,22 @@ class NetworkService : INetworkService {
     ): GoogleDirectionsResponse {
         val response = GoogleApi.getDirectionsByCoordinatesOriginDestinationPlace(
             arrivalTime = arrivalTime,
+            origin = origin,
+            destination = destination,
+            mode = mode
+        )
+        if (!response.isSuccessful) {
+            throw INetworkService.NetworkException("Unsuccessful network call to Google Maps api")
+        }
+        return response.body()!!
+    }
+
+    private suspend fun fetchGoogleDirectionsNoTime(
+        origin: Pair<String, String>,
+        destination: String,
+        mode: TravelMode
+    ): GoogleDirectionsResponse {
+        val response = GoogleApi.getDirectionsByCoordinatesOriginDestinationPlace(
             origin = origin,
             destination = destination,
             mode = mode
